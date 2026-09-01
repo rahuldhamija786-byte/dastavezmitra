@@ -50,6 +50,10 @@ Official website repository for **DASTAVEZ MITRA** — a modern, mobile-first do
 
 ## 🛠️ Architecture & Features
 
+- **🤖 AI Legal Information Assistant ("Dastavez Legal Info Assistant")**:
+  - Educational legal information assistant covering **BNS 2023, BNSS 2023, BSA 2023**, legacy IPC/CrPC, Labour Codes, Consumer Protection Act, NI Act Section 138, and Gurugram documentation norms.
+  - Time-aware calling hours widget (9:00 AM – 7:00 PM IST) with 24/7 WhatsApp support.
+  - Dedicated view at `#/legal-assistant` plus interactive floating launcher across all pages.
 - **Split Contact CTAs**: Dual actions across the entire site — **WhatsApp to 9871592002** and **Call to 9540403071**.
 - **Mobile-First UX**: Responsive from 320px screens up to desktop with sticky dual action bar, touch drawer, and clean typography.
 - **Secure Visitor Lead Capture**: Online enquiry form with 10-digit Indian mobile validation, honeypot bot trap, rate limiting, and explicit user consent.
@@ -58,6 +62,7 @@ Official website repository for **DASTAVEZ MITRA** — a modern, mobile-first do
   - Metrics cards (Total Leads, Today's Leads, New, Contacted, Follow-up, Converted, Closed).
   - Search, filter by status/service, sort, 1-click WhatsApp/Call actions, and CSV export.
 - **Serverless API Layer**:
+  - `POST /api/chat` — Public AI legal information query handler with rate limiting & anti-injection safeguards.
   - `POST /api/leads` — Public lead creation with validation and throttling.
   - `GET /api/leads` — Authenticated lead listing.
   - `POST /api/admin-login` — Secure admin authentication.

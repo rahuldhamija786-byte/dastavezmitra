@@ -14,6 +14,29 @@ let adminFilterService = 'all';
 let adminSearchTerm = '';
 let adminSortOrder = 'newest';
 
+// AI Chat Assistant State
+let aiChatMessages = [
+  {
+    role: 'assistant',
+    text: `Namaste! Main **Dastavez Legal Info Assistant** hoon.\n\nMain aapko general legal information simple language mein samjhane mein madad kar sakta hoon.\n\nAap apna legal prashn simple shabdo mein pooch sakte hain (Jaise: *Employer ne salary nahi di, Cheque bounce ho gaya, Traffic challan aaya hai, BNS vs IPC, FIR procedure, ya Marriage registration*).`
+  }
+];
+let isAiTyping = false;
+
+// Check if current time is within calling hours (9 AM - 7 PM IST)
+function isCallingHoursActive() {
+  try {
+    const istString = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+    const istHours = new Date(istString).getHours();
+    return istHours >= 9 && istHours < 19;
+  } catch (err) {
+    const utcHours = new Date().getUTCHours();
+    const utcMinutes = new Date().getUTCMinutes();
+    const istHours = Math.floor(((utcHours * 60 + utcMinutes + 330) % 1440) / 60);
+    return istHours >= 9 && istHours < 19;
+  }
+}
+
 // Icons helper
 function getIconHtml(iconName) {
   const iconMap = {
@@ -46,7 +69,7 @@ function getIconHtml(iconName) {
   return iconMap[iconName] || iconMap['file-text'];
 }
 
-// Render Document Details
+// Render Document Details for Service View / Modal / Hub
 function renderServiceDocuments(service) {
   if (service.slug === 'marriage-registration' || service.hindiHeading) {
     return `
@@ -157,7 +180,6 @@ function renderLeadFormComponent(preselectedServiceName = '', sourcePage = '/') 
       <div id="leadFormAlert"></div>
 
       <form id="leadCaptureForm" onsubmit="handleLeadSubmit(event, '${sourcePage}')" class="lead-form-grid">
-        <!-- Anti-Spam Honeypot -->
         <div style="display:none;" aria-hidden="true">
           <input type="text" name="website_hp" id="website_hp" tabindex="-1" autocomplete="off" />
         </div>
@@ -263,10 +285,9 @@ function renderLeadFormComponent(preselectedServiceName = '', sourcePage = '/') 
   `;
 }
 
-// Render Service Card with Separate WhatsApp & Call Buttons
+// Render Service Card
 function renderServiceCard(service) {
   const waUrl = getWhatsappLink(service.whatsappMessage);
-  const callUrl = getCallLink();
 
   return `
     <article class="service-card" data-category="${service.category}" id="card-${service.slug}">
@@ -304,6 +325,7 @@ function renderServiceCard(service) {
 // Render Home View
 function renderHomeView() {
   const filtered = filterServices();
+  const callingHoursActive = isCallingHoursActive();
   
   return `
     <!-- Hero Section -->
@@ -332,6 +354,9 @@ function renderHomeView() {
               ${getIconHtml('phone')}
               CALL: 9540403071
             </a>
+            <a href="#/legal-assistant" class="btn-secondary" style="border-color: #0284c7; color: #0284c7; font-weight: 700;">
+              🤖 AI LEGAL ASSISTANT
+            </a>
           </div>
 
           <div class="hero-highlights">
@@ -341,7 +366,7 @@ function renderHomeView() {
             </div>
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Calling: <strong>9540403071</strong></span>
+              <span>Calling: <strong>9540403071</strong> (9 AM–7 PM)</span>
             </div>
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -354,34 +379,36 @@ function renderHomeView() {
         <div class="hero-card-preview">
           <div class="preview-header">
             <div>
-              <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary);">Quick Service Finder</h3>
-              <p style="font-size: 0.8rem; color: var(--color-text-muted);">Popular documentation assistance</p>
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary);">AI Legal Info Assistant</h3>
+              <p style="font-size: 0.8rem; color: var(--color-text-muted);">Ask general legal questions in simple Hindi/English</p>
             </div>
             <span class="preview-status"><span class="status-dot"></span> Online</span>
           </div>
 
           <div class="preview-service-list">
-            <a href="#/services/vehicle-noc-form-28" class="preview-service-item">
-              <span>📄 Vehicle NOC – Form 28</span>
+            <a href="#/legal-assistant" class="preview-service-item">
+              <span>💼 Unpaid Salary / Labour Law</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
-            <a href="#/services/international-driving-licence" class="preview-service-item">
-              <span>💳 International Driving Licence</span>
+            <a href="#/legal-assistant" class="preview-service-item">
+              <span>💳 Cheque Bounce / Section 138</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
-            <a href="#/services/marriage-registration" class="preview-service-item">
-              <span>💍 Marriage Registration (शादी दस्तावेज़)</span>
+            <a href="#/legal-assistant" class="preview-service-item">
+              <span>⚖️ BNS, 2023 vs Legacy IPC</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
-            <a href="#/services/gazette-name-change" class="preview-service-item">
-              <span>📑 Gazette Notification / Name Change</span>
+            <a href="#/legal-assistant" class="preview-service-item">
+              <span>🚗 Traffic Challan & RTO Help</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
           </div>
 
           <div class="preview-wa-direct">
-            <p>Direct Phone & WhatsApp Support</p>
-            <div style="display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.5rem;">
+            <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-bottom: 0.4rem;">
+              ${callingHoursActive ? '🟢 Call Support Available: 9:00 AM – 7:00 PM' : '🌙 WhatsApp Available 24/7 (Call: 9 AM–7 PM)'}
+            </p>
+            <div style="display: flex; gap: 0.4rem; justify-content: center;">
               <a href="tel:+919540403071" class="btn-card-call" style="flex: 1; padding: 0.6rem; justify-content: center;">
                 📞 Call 9540403071
               </a>
@@ -478,7 +505,7 @@ function renderHomeView() {
           <div class="step-card">
             <div class="step-badge">3</div>
             <h3 class="step-title">Call or WhatsApp</h3>
-            <p class="step-desc">Connect on WhatsApp at 9871592002 or call Helpline 9540403071 for immediate guidance.</p>
+            <p class="step-desc">Connect on WhatsApp at 9871592002 or call Helpline 9540403071 (9 AM–7 PM) for immediate guidance.</p>
           </div>
 
           <div class="step-card">
@@ -500,7 +527,7 @@ function renderHomeView() {
         <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
           <a href="tel:+919540403071" class="btn-secondary" style="font-size: 1rem; padding: 0.85rem 1.5rem; font-weight: 700;">
             ${getIconHtml('phone')}
-            CALL: 9540403071
+            CALL: 9540403071 (9 AM–7 PM)
           </a>
           <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1rem; padding: 0.85rem 1.5rem;">
             ${getIconHtml('whatsapp')}
@@ -511,6 +538,212 @@ function renderHomeView() {
     </section>
   `;
 }
+
+// Render Dedicated AI Legal Assistant Page View
+function renderLegalAssistantView() {
+  const callingHoursActive = isCallingHoursActive();
+
+  return `
+    <div class="ai-assistant-wrapper">
+      <div class="container">
+        <div class="ai-assistant-card">
+          <!-- Header -->
+          <div class="ai-chat-header">
+            <div class="ai-chat-header-info">
+              <div class="ai-bot-avatar">🤖</div>
+              <div>
+                <h2 class="ai-bot-title">Dastavez Legal Info Assistant</h2>
+                <p class="ai-bot-subtitle">General Legal Information Assistant</p>
+              </div>
+            </div>
+
+            <span class="ai-calling-status-badge">
+              ${callingHoursActive ? '📞 Calling Hours Online (9 AM – 7 PM)' : '🌙 WhatsApp 24/7 (Call: 9 AM–7 PM)'}
+            </span>
+          </div>
+
+          <!-- Disclaimer Bar -->
+          <div class="ai-chat-disclaimer-bar">
+            <strong>Disclaimer:</strong> Dastavez Legal Info Assistant provides general legal information for educational purposes only. It is not a substitute for individual legal advice or legal representation.
+          </div>
+
+          <!-- Messages Area -->
+          <div class="ai-chat-messages" id="mainChatMessages">
+            ${renderMessagesHtml(aiChatMessages)}
+          </div>
+
+          <!-- Quick Suggestions -->
+          <div class="chat-quick-prompts">
+            <button class="prompt-chip" onclick="sendMainQuery('My employer has not paid my salary.')">💼 Unpaid Salary</button>
+            <button class="prompt-chip" onclick="sendMainQuery('Someone gave me a cheque and it bounced. What to do?')">💳 Cheque Bounce</button>
+            <button class="prompt-chip" onclick="sendMainQuery('I received a traffic challan. How to resolve?')">🚗 Traffic Challan</button>
+            <button class="prompt-chip" onclick="sendMainQuery('What is BNS 2023 vs IPC 1860?')">⚖️ BNS vs IPC</button>
+            <button class="prompt-chip" onclick="sendMainQuery('What documents are required for marriage registration in Gurugram?')">💍 Marriage Docs</button>
+            <button class="prompt-chip" onclick="sendMainQuery('What is an FIR and how is bail obtained?')">📑 FIR & Bail</button>
+          </div>
+
+          <!-- Input Area -->
+          <form class="ai-chat-input-area" onsubmit="handleMainChatSubmit(event)">
+            <input 
+              type="text" 
+              id="mainChatInput" 
+              class="ai-chat-input" 
+              placeholder="Type your legal query in simple Hindi, Hinglish or English..." 
+              maxlength="500" 
+              autocomplete="off"
+            />
+            <button type="submit" class="btn-ai-send" id="mainChatSendBtn" aria-label="Send legal query">
+              ${getIconHtml('send')}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Convert message text formatting (Markdown bold/lists to safe HTML)
+function formatMessageText(text) {
+  if (!text) return '';
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '<br/><br/>')
+    .replace(/\n• /g, '<br/>• ')
+    .replace(/\n---/g, '<hr/>');
+}
+
+// Render Chat Messages List HTML
+function renderMessagesHtml(messages) {
+  const callingHoursActive = isCallingHoursActive();
+
+  return messages.map(m => {
+    if (m.role === 'user') {
+      return `
+        <div class="chat-bubble user">
+          ${formatMessageText(m.text)}
+        </div>
+      `;
+    }
+
+    return `
+      <div class="chat-bubble bot">
+        <div>${formatMessageText(m.text)}</div>
+        <div class="chat-cta-box">
+          <div class="chat-cta-prompt">क्या आप अपनी समस्या के बारे में expert opinion लेना चाहते हैं?</div>
+          <div class="chat-cta-actions">
+            ${callingHoursActive ? `
+              <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
+                ${getIconHtml('phone')} Call: 9540403071
+              </a>
+            ` : `
+              <span style="font-size: 0.76rem; color: var(--color-text-muted); align-self: center;">
+                Call hours: 9 AM–7 PM (9540403071)
+              </span>
+            `}
+            <a href="${getWhatsappLink('Hello DASTAVEZ MITRA, I was using the AI Legal Assistant and want expert assistance.')}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
+              ${getIconHtml('whatsapp')} WhatsApp: 9871592002
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ==========================================
+// AI Chat Execution Engine
+// ==========================================
+async function executeChatQuery(queryText, renderTarget) {
+  if (!queryText || !queryText.trim() || isAiTyping) return;
+
+  const cleanQuery = queryText.trim();
+  aiChatMessages.push({ role: 'user', text: cleanQuery });
+
+  isAiTyping = true;
+  updateChatUIs();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: cleanQuery })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      aiChatMessages.push({ role: 'assistant', text: data.reply });
+    } else {
+      aiChatMessages.push({
+        role: 'assistant',
+        text: data.error || 'Aapke query ko process karne mein takleef hui. Kripya hamare helpline par direct WhatsApp ya call karein.'
+      });
+    }
+  } catch (err) {
+    aiChatMessages.push({
+      role: 'assistant',
+      text: 'Server se connect nahi ho paya. Kripya seedhe WhatsApp (9871592002) ya Call (9540403071) par sampark karein.'
+    });
+  } finally {
+    isAiTyping = false;
+    updateChatUIs();
+  }
+}
+
+function updateChatUIs() {
+  const mainMessages = document.getElementById('mainChatMessages');
+  if (mainMessages) {
+    mainMessages.innerHTML = renderMessagesHtml(aiChatMessages) + (isAiTyping ? '<div class="chat-bubble bot" style="opacity: 0.7;"><em>Dastavez Legal Assistant is typing...</em></div>' : '');
+    mainMessages.scrollTop = mainMessages.scrollHeight;
+  }
+
+  const floatingMessages = document.getElementById('floatingChatMessages');
+  if (floatingMessages) {
+    floatingMessages.innerHTML = renderMessagesHtml(aiChatMessages) + (isAiTyping ? '<div class="chat-bubble bot" style="opacity: 0.7;"><em>Typing...</em></div>' : '');
+    floatingMessages.scrollTop = floatingMessages.scrollHeight;
+  }
+}
+
+window.handleMainChatSubmit = function(e) {
+  e.preventDefault();
+  const input = document.getElementById('mainChatInput');
+  if (!input) return;
+  const val = input.value;
+  input.value = '';
+  executeChatQuery(val);
+};
+
+window.sendMainQuery = function(promptText) {
+  executeChatQuery(promptText);
+};
+
+window.handleFloatingChatSubmit = function(e) {
+  e.preventDefault();
+  const input = document.getElementById('floatingChatInput');
+  if (!input) return;
+  const val = input.value;
+  input.value = '';
+  executeChatQuery(val);
+};
+
+window.sendFloatingQuery = function(promptText) {
+  executeChatQuery(promptText);
+};
+
+window.toggleFloatingAiWidget = function(forceState) {
+  const drawer = document.getElementById('floatingAiDrawer');
+  if (!drawer) return;
+
+  const isOpen = forceState !== undefined ? forceState : !drawer.classList.contains('open');
+  drawer.classList.toggle('open', isOpen);
+  drawer.setAttribute('aria-hidden', (!isOpen).toString());
+
+  if (isOpen) {
+    updateChatUIs();
+    const input = document.getElementById('floatingChatInput');
+    if (input) setTimeout(() => input.focus(), 150);
+  }
+};
 
 // Render Services Catalog View
 function renderServicesView() {
@@ -748,25 +981,13 @@ function renderHowItWorksView() {
         <div class="step-card">
           <div class="step-badge">3</div>
           <h3 class="step-title">Call or WhatsApp</h3>
-          <p class="step-desc">Reach out via WhatsApp at 9871592002 or Call Helpline 9540403071 for immediate consultation.</p>
+          <p class="step-desc">Reach out via WhatsApp at 9871592002 or Call Helpline 9540403071 (9 AM–7 PM) for immediate consultation.</p>
         </div>
 
         <div class="step-card">
           <div class="step-badge">4</div>
           <h3 class="step-title">Get Assistance</h3>
           <p class="step-desc">Get guided preparation, form assistance, and completion support for your documentation.</p>
-        </div>
-      </div>
-
-      <div style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 2.5rem; max-width: 800px; margin: 0 auto; box-shadow: var(--shadow-md);">
-        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem;">Direct Contact Channels</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
-          <a href="tel:+919540403071" class="btn-card-call" style="padding: 1rem; justify-content: center; font-size: 1rem;">
-            ${getIconHtml('phone')} Call: 9540403071
-          </a>
-          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 1rem; justify-content: center; font-size: 1rem;">
-            ${getIconHtml('whatsapp')} WhatsApp: 9871592002
-          </a>
         </div>
       </div>
     </div>
@@ -802,7 +1023,7 @@ function renderAboutView() {
           </p>
           <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;">
             <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700;">
-              ${getIconHtml('phone')} Call: 9540403071
+              ${getIconHtml('phone')} Call: 9540403071 (9 AM–7 PM)
             </a>
             <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
               ${getIconHtml('whatsapp')} WhatsApp: 9871592002
@@ -816,6 +1037,8 @@ function renderAboutView() {
 
 // Render Contact View
 function renderContactView() {
+  const callingHoursActive = isCallingHoursActive();
+
   return `
     <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
       <div class="contact-hero-banner">
@@ -833,7 +1056,7 @@ function renderContactView() {
         <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
           <a href="tel:+919540403071" class="btn-secondary" style="font-size: 1.05rem; padding: 0.9rem 1.8rem; font-weight: 700;">
             ${getIconHtml('phone')}
-            CALL: 9540403071
+            CALL: 9540403071 ${callingHoursActive ? '(Online Now)' : '(9 AM–7 PM)'}
           </a>
           <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.05rem; padding: 0.9rem 1.8rem;">
             ${getIconHtml('whatsapp')}
@@ -851,7 +1074,7 @@ function renderContactView() {
           <div>
             <h3 class="channel-title">WhatsApp Support</h3>
             <p class="channel-handle">9871592002</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct chat for quick document checks & checklist queries.</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct chat for quick document checks & checklist queries (24/7).</p>
           </div>
           <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-wa">
             ${getIconHtml('whatsapp')}
@@ -867,7 +1090,7 @@ function renderContactView() {
           <div>
             <h3 class="channel-title">Calling Helpline</h3>
             <p class="channel-handle">9540403071</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct voice call for inquiries and consultation in Gurugram.</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct voice call (9:00 AM – 7:00 PM IST) for consultations.</p>
           </div>
           <a href="tel:+919540403071" class="btn-secondary" style="justify-content: center; font-weight: 700;">
             ${getIconHtml('phone')}
@@ -910,7 +1133,7 @@ function renderLegalPrivacyView() {
       <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">1. Information We Collect</h3>
         <p style="margin-bottom: 1.25rem;">
-          When you submit an enquiry through our lead form or connect with us via WhatsApp/Phone, we collect basic contact information: your Full Name, Mobile Number, requested documentation service, optional email address, and message details. We do not ask for or collect sensitive numbers (such as Aadhaar numbers, PAN card numbers, OTPs, or bank account details) on the initial enquiry form.
+          When you submit an enquiry through our lead form, AI Assistant, or connect with us via WhatsApp/Phone, we collect basic contact information: Full Name, Mobile Number, requested documentation service, optional email address, and message details. We do not ask for or collect sensitive numbers (such as Aadhaar numbers, PAN numbers, OTPs, bank accounts, or UPI PINs) on the initial enquiry form.
         </p>
 
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">2. How Enquiry Information is Used</h3>
@@ -932,7 +1155,7 @@ function renderLegalPrivacyView() {
         <p>
           For any privacy-related queries, please contact DASTAVEZ MITRA at:<br/>
           • WhatsApp: <strong>9871592002</strong><br/>
-          • Helpline Call: <strong>9540403071</strong><br/>
+          • Helpline Call: <strong>9540403071</strong> (9 AM–7 PM)<br/>
           • Office: ${BRAND_INFO.officeAddress}
         </p>
       </div>
@@ -1038,7 +1261,7 @@ function renderLegalTermsView() {
 
         <div class="terms-clause-card">
           <h3>18. Contact & Clarifications</h3>
-          <p>For any queries, clarifications regarding document checklists, or service scope, customers may contact DASTAVEZ MITRA directly via WhatsApp at <strong>9871592002</strong>, Call at <strong>9540403071</strong>, or visit our office desk at <strong>${BRAND_INFO.officeAddress}</strong>.</p>
+          <p>For any queries, clarifications regarding document checklists, or service scope, customers may contact DASTAVEZ MITRA directly via WhatsApp at <strong>9871592002</strong>, Call at <strong>9540403071</strong> (9 AM–7 PM), or visit our office desk at <strong>${BRAND_INFO.officeAddress}</strong>.</p>
         </div>
       </div>
     </div>
@@ -1083,14 +1306,12 @@ function renderAdminView() {
     `;
   }
 
-  // Authenticated CRM Dashboard
   const stats = adminStatsData || { total: 0, today: 0, new: 0, contacted: 0, followup: 0, converted: 0, closed: 0 };
   const filteredLeads = getFilteredAdminLeads();
 
   return `
     <div class="admin-view-wrapper">
       <div class="container" style="max-width: 1100px;">
-        <!-- Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
           <div>
             <span class="section-tag" style="background: #e0f2fe; color: #0284c7;">Internal CRM</span>
@@ -1115,7 +1336,6 @@ function renderAdminView() {
           </div>
         </div>
 
-        <!-- Top Metrics Cards -->
         <div class="admin-stats-grid">
           <div class="admin-stat-card stat-today">
             <span class="stat-label">Today's Leads</span>
@@ -1143,7 +1363,6 @@ function renderAdminView() {
           </div>
         </div>
 
-        <!-- Filter and Search Bar -->
         <div class="admin-controls-card">
           <input 
             type="text" 
@@ -1176,7 +1395,6 @@ function renderAdminView() {
           </div>
         </div>
 
-        <!-- Leads Table / Mobile Cards -->
         <div class="admin-table-container">
           <table class="admin-table">
             <thead>
@@ -1537,7 +1755,7 @@ window.handleAdminSort = function(val) {
   if (app && window.location.hash === '#/admin') app.innerHTML = renderAdminView();
 };
 
-// Lead Detail / Status Management Modal
+// Lead Detail Modal
 window.openLeadDetailModal = function(leadId) {
   const lead = adminLeadsData.find(l => l.id === leadId);
   if (!lead) return;
@@ -1740,22 +1958,18 @@ function router() {
   const appContainer = document.getElementById('app-root');
   if (!appContainer) return;
 
-  // Close mobile drawer on route change
   window.toggleMobileMenu(false);
   window.closeServiceModal();
   window.closeLeadModal();
 
-  // Highlight Nav Links
   document.querySelectorAll('.nav-link, .drawer-links a').forEach(link => {
     const href = link.getAttribute('href');
     const isCurrent = (hash === '/' && href === '#/') || (hash !== '/' && href === `#${hash}`);
     link.classList.toggle('active', isCurrent);
   });
 
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'instant' });
 
-  // Route matching
   if (hash === '/' || hash === '') {
     appContainer.innerHTML = renderHomeView();
   } else if (hash === '/services') {
@@ -1763,6 +1977,9 @@ function router() {
   } else if (hash.startsWith('/services/')) {
     const slug = hash.replace('/services/', '');
     appContainer.innerHTML = renderServiceDetailView(slug);
+  } else if (hash === '/legal-assistant') {
+    appContainer.innerHTML = renderLegalAssistantView();
+    updateChatUIs();
   } else if (hash === '/enquiry') {
     appContainer.innerHTML = renderEnquiryView();
   } else if (hash === '/documents') {
@@ -1804,7 +2021,6 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', router);
   router();
 
-  // Close modals when clicking backdrop
   ['serviceModal', 'leadModal'].forEach(id => {
     const modal = document.getElementById(id);
     if (modal) {
@@ -1817,16 +2033,15 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Escape key closes modal or drawer
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       window.closeServiceModal();
       window.closeLeadModal();
       window.toggleMobileMenu(false);
+      window.toggleFloatingAiWidget(false);
     }
   });
 
-  // Preload admin stats if token present
   if (adminToken) {
     fetchAdminData();
   }
