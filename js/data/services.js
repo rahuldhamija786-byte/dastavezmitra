@@ -1,7 +1,7 @@
 /**
  * DASTAVEZ MITRA - Centralized Services Data Store
- * All services configured with editable fields.
- * To add, modify, or remove services, update this data array.
+ * All services configured with editable fields and priority sorting.
+ * Services with confirmed Required Documents appear first.
  */
 
 export const BRAND_INFO = {
@@ -15,11 +15,12 @@ export const BRAND_INFO = {
   whatsappDisplayNumber: "9871592002 | 9540403071",
   whatsappUrlPrefix: "https://wa.me/919871592002",
   serviceLocationNotice: "Services currently available in Gurugram only.",
+  officeAddress: "Seat No. 4, R C Khatana Lane, Hall No. 8, District and Sessions Court, Gurugram",
   instagramHandle: "@dastavezmitra",
   instagramUrl: "https://instagram.com/dastavezmitra",
   facebookName: "DASTAVEZ MITRA",
   facebookUrl: "https://facebook.com",
-  defaultWhatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with a documentation service.",
+  defaultWhatsappMessage: "Hello DASTAVEZ MITRA, I want information about documentation services.",
   disclaimer: "DASTAVEZ MITRA is a documentation and assistance service. Service availability, processing time, required documents and applicable procedures may vary depending on the service, authority and individual case. Information on this website is for general guidance and should be verified for the specific service."
 };
 
@@ -34,86 +35,9 @@ export const SERVICE_CATEGORIES = [
 ];
 
 export const SERVICES = [
-  {
-    id: "rc-transfer",
-    slug: "rc-transfer",
-    name: "RC Transfer",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "car",
-    shortDescription: "Complete assistance for transferring vehicle registration certificate ownership between parties.",
-    whoNeedsThis: "Individuals buying or selling pre-owned cars, two-wheelers, commercial vehicles, or transferring vehicle ownership within family.",
-    documents: [],
-    process: [
-      "Select RC Transfer & connect with DASTAVEZ MITRA on WhatsApp.",
-      "Receive guidance on the required forms and vehicle verification documents.",
-      "Prepare and compile the application file with guidance.",
-      "Submit and track transfer progress."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need help with RC Transfer.",
-    notes: "Requirements and procedures may vary based on whether the vehicle is within the same RTO jurisdiction or inter-state."
-  },
-  {
-    id: "vehicle-documentation-rto",
-    slug: "rto-work",
-    name: "Vehicle Documentation / RTO Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "shield-check",
-    shortDescription: "End-to-end documentation assistance for all general RTO and vehicle-related paperwork.",
-    whoNeedsThis: "Vehicle owners needing help navigating various RTO documentation procedures, fitness renewal, or updates.",
-    documents: [],
-    process: [
-      "Reach out on WhatsApp specifying your vehicle documentation requirement.",
-      "Get clear instructions on the specific forms and paperwork needed.",
-      "Review your document readiness before final submission.",
-      "Follow guided steps to complete your RTO task smoothly."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Vehicle Documentation / RTO Work.",
-    notes: "Guidelines vary depending on vehicle type (private or commercial) and local RTO regulations."
-  },
-  {
-    id: "rta-work",
-    slug: "rta-work",
-    name: "RTA Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "truck",
-    shortDescription: "Assistance with regional transport authority filings, permits, endorsements, and renewals.",
-    whoNeedsThis: "Commercial vehicle owners, transport operators, and individuals with RTA specific filings.",
-    documents: [],
-    process: [
-      "Contact us via WhatsApp with your RTA requirements.",
-      "Receive checklist of required documentation for your specific RTA authority.",
-      "Draft and organize application papers correctly.",
-      "Proceed with authorized submission steps."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with RTA Work.",
-    notes: "RTA rules and requirements are determined by state transport departments."
-  },
-  {
-    id: "traffic-challan-assistance",
-    slug: "traffic-challan",
-    name: "Traffic Challan Assistance",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "alert-circle",
-    shortDescription: "Guidance on checking pending e-challans, virtual court challans, and resolution assistance.",
-    whoNeedsThis: "Vehicle owners who have received camera/e-challans or notice challans and need help understanding resolution procedures.",
-    documents: [],
-    process: [
-      "Share your vehicle details / challan number via WhatsApp.",
-      "We help verify challan status and appropriate resolution channel.",
-      "Receive guidance on online portal settlement or virtual court procedures.",
-      "Obtain payment confirmation / closure guidance."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance regarding a Traffic Challan.",
-    notes: "Challan disposal timelines and options depend on the issuing traffic police wing and court portal."
-  },
+  // ==========================================
+  // PRIORITY SERVICES (With Confirmed Required Documents)
+  // ==========================================
   {
     id: "noc-vehicle-work",
     slug: "vehicle-noc-form-28",
@@ -123,6 +47,7 @@ export const SERVICES = [
     icon: "file-check",
     shortDescription: "Assistance with Form 28 No Objection Certificate (NOC) documentation for inter-state and inter-RTO vehicle re-registration.",
     whoNeedsThis: "Vehicle owners relocating or selling their vehicle across state or RTO jurisdictions requiring Form 28 NOC.",
+    hasConfirmedDocs: true,
     documents: [
       "Form 28 – 3 Copies",
       "Chassis Number Sketch with Pencil – 3 Copies",
@@ -141,7 +66,7 @@ export const SERVICES = [
       "Submit application at RTO for NOC issuance."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Vehicle NOC – Form 28.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Vehicle NOC – Form 28.",
     notes: "Chassis Number Sketch with Pencil – 3 Copies and Form 28 – 3 Copies are mandatory for NOC processing."
   },
   {
@@ -153,6 +78,7 @@ export const SERVICES = [
     icon: "credit-card",
     shortDescription: "Complete documentation assistance for acquiring an International Driving Permit / Licence (IDP/IDL).",
     whoNeedsThis: "Indian driving licence holders planning to travel, visit, or drive vehicles abroad internationally.",
+    hasConfirmedDocs: true,
     documents: [
       "Driving Licence (DL) Copy",
       "Visa Copy",
@@ -168,7 +94,7 @@ export const SERVICES = [
       "Track International Driving Licence processing and issuance."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with International Driving Licence.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about International Driving Licence.",
     notes: "Valid Indian Driving Licence, valid passport, and visa copy are required for processing."
   },
   {
@@ -180,6 +106,7 @@ export const SERVICES = [
     icon: "credit-card",
     shortDescription: "Documentation support and application guidance for obtaining a Learner's Licence (LL).",
     whoNeedsThis: "New drivers applying for a Learner's Licence or needing assistance with Sarathi portal documentation.",
+    hasConfirmedDocs: true,
     documents: [
       "1 Passport Size Photograph",
       "DOB Proof",
@@ -195,7 +122,7 @@ export const SERVICES = [
       "Appear for the online/RTO learner test with verified documentation."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Learner Licence.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Learner Licence.",
     notes: "Ensure address proofs and DOB proof match exactly with official identification records."
   },
   {
@@ -207,6 +134,7 @@ export const SERVICES = [
     icon: "copy",
     shortDescription: "Documentation assistance for obtaining a duplicate Registration Certificate in case of loss, damage, or theft.",
     whoNeedsThis: "Vehicle owners whose original RC is misplaced, lost, damaged, or stolen.",
+    hasConfirmedDocs: true,
     documents: [
       "Form 26",
       "FIR Copy",
@@ -222,7 +150,7 @@ export const SERVICES = [
       "Guidance on RTO application submission for duplicate RC issuance."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance for Duplicate RC.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Duplicate RC.",
     notes: "Form 26 and FIR/NCRB copy are essential prerequisites for duplicate RC processing."
   },
   {
@@ -234,6 +162,7 @@ export const SERVICES = [
     icon: "check-circle",
     shortDescription: "Documentation support for removing bank hypothecation/loan entry (HP Cancel) from vehicle RC.",
     whoNeedsThis: "Vehicle owners who have cleared their auto loan and need hypothecation removed from their registration certificate.",
+    hasConfirmedDocs: true,
     documents: [
       "Form 35 – 2 Copies",
       "Bank NOC Letter",
@@ -250,7 +179,7 @@ export const SERVICES = [
       "Submit at RTO for updated clean RC issuance."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with HP Cancel.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about HP Cancel.",
     notes: "Bank NOC letter is valid for a limited period; ensure timely submission along with Form 35 (2 copies)."
   },
   {
@@ -262,7 +191,20 @@ export const SERVICES = [
     icon: "heart",
     shortDescription: "Documentation and appointment assistance for legal marriage registration certificate.",
     whoNeedsThis: "Newly married couples or couples needing a formal marriage registration certificate for passport, visa, or official records.",
-    documents: [],
+    hasConfirmedDocs: true,
+    hindiHeading: "शादी रजिस्टर करने हेतु आवश्यक दस्तावेज़",
+    documents: [
+      "पति-पत्नी के आधार कार्ड",
+      "दोनों के दसवीं की मार्कशीट / जन्म प्रमाण पत्र",
+      "दोनों के वोटर कार्ड",
+      "एक जॉइंट फोटो सादे कपड़ों में",
+      "दोनों की 1-1 पासपोर्ट साइज़ फोटो",
+      "शादी की जगह का प्रमाण पत्र या बिल",
+      "पंडित का आधार कार्ड",
+      "शादी की 4 फोटो",
+      "दो गवाहों के आधार कार्ड",
+      "Family ID"
+    ],
     process: [
       "Connect on WhatsApp to check applicable marriage acts and requirements.",
       "Gather and organize identity proofs, address proofs, and witness documents.",
@@ -270,8 +212,147 @@ export const SERVICES = [
       "Attend the verification appointment with complete paperwork."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Marriage Registration.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Marriage Registration.",
     notes: "Marriage registration requirements depend on jurisdiction and the governing act (Hindu Marriage Act, Special Marriage Act, etc.)."
+  },
+  {
+    id: "gazette-name-change",
+    slug: "gazette-name-change",
+    name: "Gazette Notification / Name Change",
+    category: "identity-certificates",
+    categoryName: "Certificates & Gazette",
+    icon: "book-open",
+    shortDescription: "Step-by-step documentation guidance for official name change publication in the Gazette (Under 18 & 18+).",
+    whoNeedsThis: "Parents/guardians of minors (under 18) and adults changing name, correcting discrepancies, or updating official records.",
+    hasConfirmedDocs: true,
+    gazetteSections: {
+      under18: {
+        title: "Under 18 – Required Documents",
+        groups: [
+          {
+            title: "3 Documents of Child",
+            items: ["Aadhaar Card", "Birth Certificate", "School ID"]
+          },
+          {
+            title: "2 Documents of Father",
+            items: ["Aadhaar Card", "Voter ID"]
+          },
+          {
+            title: "2 Documents of Mother",
+            items: ["Aadhaar Card", "Voter ID"]
+          },
+          {
+            title: "Additional Documents",
+            items: [
+              "2 Passport Size Photographs Each",
+              "2 Witnesses' Name, Address and Mobile Number"
+            ]
+          }
+        ],
+        serviceAddressNotice: "DASTAVEZ MITRA Office / Assistance Desk: Seat No. 4, R C Khatana Lane, Hall No. 8, District and Sessions Court, Gurugram"
+      },
+      above18: {
+        title: "18 and Above",
+        message: "Required documents for applicants aged 18 years and above may vary according to the applicable process. Please contact DASTAVEZ MITRA for the current document checklist."
+      }
+    },
+    process: [
+      "Contact DASTAVEZ MITRA on WhatsApp for minor/adult name change workflow.",
+      "Draft name change affidavit and receive newspaper advertisement guidelines.",
+      "Publish in required daily newspapers and compile the gazette application dossier.",
+      "Submit application to the Government Printing Department and track publication."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Gazette Notification / Name Change.",
+    notes: "Gazette notification is the official standard proof accepted across government departments, banks, and passport offices."
+  },
+
+  // ==========================================
+  // OTHER SERVICES (Retaining existing info)
+  // ==========================================
+  {
+    id: "rc-transfer",
+    slug: "rc-transfer",
+    name: "RC Transfer",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "car",
+    shortDescription: "Complete assistance for transferring vehicle registration certificate ownership between parties.",
+    whoNeedsThis: "Individuals buying or selling pre-owned cars, two-wheelers, commercial vehicles, or transferring vehicle ownership within family.",
+    hasConfirmedDocs: false,
+    documents: [],
+    process: [
+      "Select RC Transfer & connect with DASTAVEZ MITRA on WhatsApp.",
+      "Receive guidance on the required forms and vehicle verification documents.",
+      "Prepare and compile the application file with guidance.",
+      "Submit and track transfer progress."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about RC Transfer.",
+    notes: "Requirements and procedures may vary based on whether the vehicle is within the same RTO jurisdiction or inter-state."
+  },
+  {
+    id: "vehicle-documentation-rto",
+    slug: "rto-work",
+    name: "Vehicle Documentation / RTO Work",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "shield-check",
+    shortDescription: "End-to-end documentation assistance for all general RTO and vehicle-related paperwork.",
+    whoNeedsThis: "Vehicle owners needing help navigating various RTO documentation procedures, fitness renewal, or updates.",
+    hasConfirmedDocs: false,
+    documents: [],
+    process: [
+      "Reach out on WhatsApp specifying your vehicle documentation requirement.",
+      "Get clear instructions on the specific forms and paperwork needed.",
+      "Review your document readiness before final submission.",
+      "Follow guided steps to complete your RTO task smoothly."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Vehicle Documentation / RTO Work.",
+    notes: "Guidelines vary depending on vehicle type (private or commercial) and local RTO regulations."
+  },
+  {
+    id: "rta-work",
+    slug: "rta-work",
+    name: "RTA Work",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "truck",
+    shortDescription: "Assistance with regional transport authority filings, permits, endorsements, and renewals.",
+    whoNeedsThis: "Commercial vehicle owners, transport operators, and individuals with RTA specific filings.",
+    hasConfirmedDocs: false,
+    documents: [],
+    process: [
+      "Contact us via WhatsApp with your RTA requirements.",
+      "Receive checklist of required documentation for your specific RTA authority.",
+      "Draft and organize application papers correctly.",
+      "Proceed with authorized submission steps."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about RTA Work.",
+    notes: "RTA rules and requirements are determined by state transport departments."
+  },
+  {
+    id: "traffic-challan-assistance",
+    slug: "traffic-challan",
+    name: "Traffic Challan Assistance",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "alert-circle",
+    shortDescription: "Guidance on checking pending e-challans, virtual court challans, and resolution assistance.",
+    whoNeedsThis: "Vehicle owners who have received camera/e-challans or notice challans and need help understanding resolution procedures.",
+    hasConfirmedDocs: false,
+    documents: [],
+    process: [
+      "Share your vehicle details / challan number via WhatsApp.",
+      "We help verify challan status and appropriate resolution channel.",
+      "Receive guidance on online portal settlement or virtual court procedures.",
+      "Obtain payment confirmation / closure guidance."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Traffic Challan Assistance.",
+    notes: "Challan disposal timelines and options depend on the issuing traffic police wing and court portal."
   },
   {
     id: "same-day-marriage-assistance",
@@ -282,6 +363,7 @@ export const SERVICES = [
     icon: "zap",
     shortDescription: "Step-by-step documentation guidance for urgent marriage registration and certification.",
     whoNeedsThis: "Couples needing fast-track documentation for urgent travel, visa deadlines, or official verification.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "WhatsApp DASTAVEZ MITRA with your urgent requirements.",
@@ -290,7 +372,7 @@ export const SERVICES = [
       "Follow expedited documentation workflow."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance for Same Day Marriage documentation.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Same Day Marriage Assistance.",
     notes: "Scheduling and availability depend on the registrar office slots and complete document readiness."
   },
   {
@@ -302,6 +384,7 @@ export const SERVICES = [
     icon: "sun",
     shortDescription: "Documentation support for solemnizing and recording Arya Samaj wedding rites followed by registration.",
     whoNeedsThis: "Couples looking for guidance on documentation requirements for Arya Samaj wedding rituals and subsequent government registration.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Connect via WhatsApp for age, identity, and ritual document checklist.",
@@ -310,7 +393,7 @@ export const SERVICES = [
       "Guidance on subsequent SDM/Registrar legal registration."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance for Arya Samaj Marriage documentation.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Arya Samaj Marriage.",
     notes: "Both parties must fulfill age and identity criteria according to applicable norms."
   },
   {
@@ -322,6 +405,7 @@ export const SERVICES = [
     icon: "users",
     shortDescription: "Drafting mutual cohabitation and live-in relationship agreements detailing mutual terms.",
     whoNeedsThis: "Couples living together seeking a clear written mutual declaration and understanding of terms and responsibilities.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Reach out on WhatsApp with your key preferences and terms.",
@@ -330,7 +414,7 @@ export const SERVICES = [
       "Execute the agreement on appropriate stamp paper with notarization guidance."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Live-In Relationship Agreement drafting.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Live-In Relationship Agreement.",
     notes: "Agreements are drafted based on mutual consent of both consenting adults."
   },
   {
@@ -342,6 +426,7 @@ export const SERVICES = [
     icon: "file-text",
     shortDescription: "Preparation and drafting of all types of general, name discrepancy, address, and declaration affidavits.",
     whoNeedsThis: "Anyone needing an official sworn statement or declaration for passport, college admission, duplicate docs, or bank purposes.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Send details of the affidavit purpose and specific requirement on WhatsApp.",
@@ -350,7 +435,7 @@ export const SERVICES = [
       "Assistance with attestation and completion."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need help with an Affidavit.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Affidavit.",
     notes: "Stamp duty values vary by state and affidavit purpose."
   },
   {
@@ -362,6 +447,7 @@ export const SERVICES = [
     icon: "clipboard",
     shortDescription: "Custom drafting for rent agreements, service contracts, sale agreements, and general commercial agreements.",
     whoNeedsThis: "Landlords, tenants, freelancers, vendors, and individuals needing structured agreements with clearly stated clauses.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Share your contract details and specific requirements on WhatsApp.",
@@ -370,28 +456,8 @@ export const SERVICES = [
       "Guidance on execution, stamp duty, and witness verification."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need help with an Agreement.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Agreement Drafting.",
     notes: "Stamp duty and registration requirements vary depending on agreement tenure and asset value."
-  },
-  {
-    id: "gazette-name-change",
-    slug: "gazette-name-change",
-    name: "Gazette / Name Change",
-    category: "identity-certificates",
-    categoryName: "Certificates & Gazette",
-    icon: "book-open",
-    shortDescription: "Step-by-step documentation guidance for official name change publication in the Central or State Gazette.",
-    whoNeedsThis: "Persons wishing to change their name, correct spelling discrepancies, or update name after marriage/divorce.",
-    documents: [],
-    process: [
-      "Contact DASTAVEZ MITRA on WhatsApp for the name change workflow.",
-      "Draft name change affidavit and receive newspaper advertisement guidelines.",
-      "Publish in required daily newspapers and compile the gazette application dossier.",
-      "Submit application to the Government Printing Department and track publication."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Gazette / Name Change.",
-    notes: "Gazette notification is the official standard proof accepted across government departments, banks, and passport offices."
   },
   {
     id: "will-testament-documentation",
@@ -402,6 +468,7 @@ export const SERVICES = [
     icon: "feather",
     shortDescription: "Assistance in drafting clear testamentary documents and wills for estate and asset succession.",
     whoNeedsThis: "Individuals wanting to clearly document their wishes regarding asset distribution and estate succession among heirs.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Discuss your asset allocation overview on WhatsApp.",
@@ -410,7 +477,7 @@ export const SERVICES = [
       "Guidance on execution, registration (if desired), and safekeeping."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Will / Testament Documentation.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Will / Testament Documentation.",
     notes: "Registration of a will is optional but provides an added layer of authenticity."
   },
   {
@@ -422,6 +489,7 @@ export const SERVICES = [
     icon: "user-check",
     shortDescription: "Documentation support for claiming legal heirship / survivor certificate for asset transfers and claims.",
     whoNeedsThis: "Surviving family members needing official documentation to claim deceased person's bank balances, PF, insurance, or property.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Connect via WhatsApp with details of the deceased and surviving family members.",
@@ -430,7 +498,7 @@ export const SERVICES = [
       "Follow submission guidelines at the local Revenue / Tehsildar office."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Legal Heir Certificate documentation.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Legal Heir Certificate.",
     notes: "Procedures may differ between rural (Panchayat/Tehsil) and urban (SDM/Revenue) administrative bodies."
   },
   {
@@ -442,6 +510,7 @@ export const SERVICES = [
     icon: "award",
     shortDescription: "Drafting General Power of Attorney documents authorizing trusted persons to handle broad affairs.",
     whoNeedsThis: "NRIs, elderly persons, or busy individuals granting broad authorization to a family member or representative.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Specify scope of powers and details of principal and attorney on WhatsApp.",
@@ -450,7 +519,7 @@ export const SERVICES = [
       "Guidance on execution, stamp duty payment, and sub-registrar registration."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with GPA (General Power of Attorney).",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about GPA / General Power of Attorney.",
     notes: "GPA involving immovable property generally mandates compulsory registration under state stamp laws."
   },
   {
@@ -462,6 +531,7 @@ export const SERVICES = [
     icon: "target",
     shortDescription: "Drafting specific, purpose-limited Power of Attorney documents for defined transactions or tasks.",
     whoNeedsThis: "Persons needing to authorize someone for a specific single task such as property registration, bank matter, or vehicle sale.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Define the specific purpose and transaction on WhatsApp.",
@@ -470,7 +540,7 @@ export const SERVICES = [
       "Guidance on stamping, notarization, or registration as needed."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with SPA (Special Power of Attorney).",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about SPA / Special Power of Attorney.",
     notes: "An SPA is automatically restricted to the specific task mentioned and terminates upon its completion."
   },
   {
@@ -482,6 +552,7 @@ export const SERVICES = [
     icon: "layers",
     shortDescription: "Assistance with custom paperwork, miscellaneous certificates, declarations, and general documentation needs.",
     whoNeedsThis: "Anyone with custom documentation needs not explicitly listed in the standard categories.",
+    hasConfirmedDocs: false,
     documents: [],
     process: [
       "Describe your specific documentation requirement on WhatsApp.",
@@ -490,7 +561,7 @@ export const SERVICES = [
       "Proceed with prepared and verified documentation."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with a custom documentation service.",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Other Documentation Services.",
     notes: "Tell us what paperwork or certificate you need assistance with, and we will guide you."
   }
 ];
@@ -530,6 +601,9 @@ export function getServiceBySlug(slugOrId) {
   }
   if (normalized === 'hp-cancellation') {
     return SERVICES.find(s => s.slug === 'hp-cancel') || null;
+  }
+  if (normalized === 'gazette-name-change' || normalized === 'gazette') {
+    return SERVICES.find(s => s.slug === 'gazette-name-change') || null;
   }
 
   return null;

@@ -34,6 +34,111 @@ function getIconHtml(iconName) {
   return iconMap[iconName] || iconMap['file-text'];
 }
 
+// Render Document Details for Service View / Modal / Hub
+function renderServiceDocuments(service) {
+  // Marriage Registration in Hindi
+  if (service.slug === 'marriage-registration' || service.hindiHeading) {
+    return `
+      <div class="docs-alert-box">
+        <div class="docs-hindi-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>${service.hindiHeading || 'शादी रजिस्टर करने हेतु आवश्यक दस्तावेज़'}</span>
+        </div>
+        <ul class="docs-numbered-list">
+          ${service.documents.map((doc, idx) => `
+            <li class="docs-numbered-item">
+              <span class="docs-num-pill">${idx + 1}</span>
+              <span><strong>${doc}</strong></span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  // Gazette Notification (Two Sections: Under 18 and 18 and Above)
+  if (service.gazetteSections) {
+    const { under18, above18 } = service.gazetteSections;
+    return `
+      <div class="docs-alert-box" style="background: #f0f7ff; border-style: solid;">
+        <div class="docs-alert-title" style="font-size: 1.05rem; margin-bottom: 0.85rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Gazette Notification – Required Documents
+        </div>
+
+        <!-- Section A: Under 18 -->
+        <div class="gazette-section-card">
+          <div class="gazette-section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            Section A: ${under18.title}
+          </div>
+          ${under18.groups.map(group => `
+            <div class="gazette-group">
+              <div class="gazette-group-title">• ${group.title}:</div>
+              <ul class="docs-checklist" style="margin-top: 0.25rem; margin-left: 0.75rem;">
+                ${group.items.map(item => `
+                  <li class="docs-checklist-item">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>${item}</strong></span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          `).join('')}
+          <div class="gazette-address-notice">
+            <strong>📍 Service / Office Address:</strong><br/>
+            ${under18.serviceAddressNotice}
+          </div>
+        </div>
+
+        <!-- Section B: 18 and Above -->
+        <div class="gazette-section-card" style="border-color: #cbd5e1; margin-bottom: 0;">
+          <div class="gazette-section-title" style="color: var(--color-primary);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            Section B: ${above18.title}
+          </div>
+          <div class="gazette-pending-notice">
+            <p>${above18.message}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Standard Document List
+  if (service.documents && service.documents.length > 0) {
+    return `
+      <div class="docs-alert-box">
+        <div class="docs-alert-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Required Documents
+        </div>
+        <ul class="docs-checklist">
+          ${service.documents.map(doc => `
+            <li class="docs-checklist-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>${doc}</strong></span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  // Fallback for services without supplied document list
+  return `
+    <div class="docs-alert-box">
+      <div class="docs-alert-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Required Documents
+      </div>
+      <p class="docs-alert-desc">
+        Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
+      </p>
+    </div>
+  `;
+}
+
 // Render Service Card
 function renderServiceCard(service) {
   const waUrl = getWhatsappLink(service.whatsappMessage);
@@ -50,9 +155,9 @@ function renderServiceCard(service) {
         <p class="card-desc">${service.shortDescription}</p>
       </div>
       <div class="card-actions">
-        <button class="btn-card-docs" onclick="openServiceDetail('${service.slug}')" aria-label="View required documents for ${service.name}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Req. Docs
+        <button class="btn-card-docs" onclick="openServiceDetail('${service.slug}')" aria-label="View Required Documents for ${service.name}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Required Documents
         </button>
         <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" aria-label="Contact now on WhatsApp for ${service.name}">
           ${getIconHtml('whatsapp')}
@@ -123,16 +228,16 @@ function renderHomeView() {
           </div>
 
           <div class="preview-service-list">
-            <a href="#/services/rc-transfer" class="preview-service-item">
-              <span>🚗 RC Transfer & Vehicle Paperwork</span>
+            <a href="#/services/vehicle-noc-form-28" class="preview-service-item">
+              <span>📄 Vehicle NOC – Form 28</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="#/services/international-driving-licence" class="preview-service-item">
               <span>💳 International Driving Licence</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
-            <a href="#/services/vehicle-noc-form-28" class="preview-service-item">
-              <span>📄 Vehicle NOC – Form 28</span>
+            <a href="#/services/learner-licence" class="preview-service-item">
+              <span>🪪 Learner Licence Application</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="#/services/marriage-registration" class="preview-service-item">
@@ -165,7 +270,7 @@ function renderHomeView() {
               ${BRAND_INFO.serviceLocationNotice}
             </span>
           </div>
-          <p class="section-subtitle">Select your service below to view required documents or connect directly on WhatsApp.</p>
+          <p class="section-subtitle">Select your service below to view Required Documents or connect directly on WhatsApp.</p>
         </div>
 
         <div class="filter-controls-wrapper">
@@ -177,7 +282,7 @@ function renderHomeView() {
               type="text" 
               id="serviceSearchInput" 
               class="search-input" 
-              placeholder="Search services (e.g. International Driving Licence, RC Transfer, NOC, Learner Licence...)"
+              placeholder="Search services (e.g. Vehicle NOC, International DL, Marriage, Gazette, Learner)..."
               value="${currentSearchQuery}"
               oninput="handleSearchChange(this.value)"
             />
@@ -224,7 +329,7 @@ function renderHomeView() {
           <div class="step-card">
             <div class="step-badge">2</div>
             <h3 class="step-title">Check Required Documents</h3>
-            <p class="step-desc">Click "Req. Docs" to review the basic guidelines and document checklist before proceeding.</p>
+            <p class="step-desc">Click "Required Documents" to review the guidelines and document checklist before proceeding.</p>
           </div>
 
           <div class="step-card">
@@ -307,8 +412,8 @@ function renderHomeView() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div class="why-content">
-              <h4>Social Presence</h4>
-              <p>Follow our updates and tips on Instagram @dastavezmitra and Facebook.</p>
+              <h4>Court & Legal Presence</h4>
+              <p>Located at District & Sessions Court, Gurugram for prompt guidance and assistance.</p>
             </div>
           </div>
         </div>
@@ -357,7 +462,7 @@ function renderServicesView() {
             type="text" 
             id="serviceSearchInput" 
             class="search-input" 
-            placeholder="Filter services by keyword (e.g. International DL, Form 28, Learner, Duplicate RC)..."
+            placeholder="Filter services by keyword (e.g. Form 28, International DL, Marriage, Gazette)..."
             value="${currentSearchQuery}"
             oninput="handleSearchChange(this.value)"
           />
@@ -428,26 +533,7 @@ function renderServiceDetailView(slug) {
         </div>
 
         <!-- Required Documents Section -->
-        <div class="docs-alert-box">
-          <div class="docs-alert-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Required Documents
-          </div>
-          ${service.documents && service.documents.length > 0 ? `
-            <ul class="docs-checklist">
-              ${service.documents.map(doc => `
-                <li class="docs-checklist-item">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span><strong>${doc}</strong></span>
-                </li>
-              `).join('')}
-            </ul>
-          ` : `
-            <p class="docs-alert-desc">
-              Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
-            </p>
-          `}
-        </div>
+        ${renderServiceDocuments(service)}
 
         <!-- Step by Step Process -->
         <div class="detail-card-box">
@@ -499,7 +585,7 @@ function renderDocumentsView() {
             ${BRAND_INFO.serviceLocationNotice}
           </span>
         </div>
-        <p class="section-subtitle">Find document guidelines for your specific service and inquire directly with our team.</p>
+        <p class="section-subtitle">Find document guidelines for your specific service and inquire directly with our team in Gurugram.</p>
       </div>
 
       <div style="max-width: 850px; margin: 0 auto;">
@@ -518,23 +604,7 @@ function renderDocumentsView() {
             <p style="font-size: 0.92rem; color: var(--color-text-muted); margin-bottom: 0.75rem;">
               ${s.shortDescription}
             </p>
-            ${s.documents && s.documents.length > 0 ? `
-              <div style="background: #eff6ff; border-radius: var(--radius-md); padding: 1rem; border: 1.5px dashed #93c5fd; margin-bottom: 0.5rem;">
-                <p style="font-weight: 700; color: var(--color-accent); font-size: 0.9rem; margin-bottom: 0.5rem;">Required Documents Checklist:</p>
-                <ul class="docs-checklist" style="margin-top: 0;">
-                  ${s.documents.map(doc => `
-                    <li class="docs-checklist-item">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>${doc}</span>
-                    </li>
-                  `).join('')}
-                </ul>
-              </div>
-            ` : `
-              <div style="background: #f8fafc; border-radius: var(--radius-md); padding: 0.85rem; border: 1px solid var(--color-border); font-size: 0.88rem; color: var(--color-text-main);">
-                <strong>Document Guidance:</strong> Exact document requirements depend on jurisdiction and case specifications in Gurugram. Connect on WhatsApp (<strong>${BRAND_INFO.whatsappNumber}</strong>) or call <strong>${BRAND_INFO.contactNumbersDisplay}</strong> to receive the tailored document checklist.
-              </div>
-            `}
+            ${renderServiceDocuments(s)}
           </div>
         `).join('')}
       </div>
@@ -624,14 +694,14 @@ function renderAboutView() {
       <div style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 2.5rem; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
         <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Who We Are</h3>
         <p style="font-size: 1rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
-          <strong>DASTAVEZ MITRA</strong> is an independent documentation and assistance service operating in Gurugram. Navigating paperwork for vehicle transfers, Form 28 NOC, duplicate RC, driving licences, affidavits, marriage registrations, power of attorney, agreements, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
+          <strong>DASTAVEZ MITRA</strong> is an independent documentation and paperwork assistance service operating in Gurugram. Navigating paperwork for vehicle transfers, Form 28 NOC, duplicate RC, driving licences, affidavits, marriage registrations, power of attorney, agreements, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
         </p>
 
         <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Our Core Focus Areas in Gurugram</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
           <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
             <strong style="color: var(--color-primary);">🚗 Vehicle & RTO Services</strong>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">RC transfers, duplicate RC, Vehicle NOC Form 28, HP Cancel, International DL.</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">Vehicle NOC Form 28, duplicate RC, HP Cancel, International DL, Learner DL.</p>
           </div>
           <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
             <strong style="color: var(--color-primary);">💍 Marriage Documentation</strong>
@@ -648,7 +718,10 @@ function renderAboutView() {
         </div>
 
         <div style="border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
-          <h4 style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">Connect With Us</h4>
+          <h4 style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">Office Location & Connect With Us</h4>
+          <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">
+            📍 <strong>Office Address:</strong> ${BRAND_INFO.officeAddress}
+          </p>
           <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">
             Have a question or need paperwork guidance in Gurugram? Reach out on WhatsApp or call our helpline.
           </p>
@@ -731,18 +804,20 @@ function renderContactView() {
           </div>
         </div>
 
-        <!-- Instagram Card -->
+        <!-- Office Desk Card -->
         <div class="channel-card">
-          <div class="channel-icon-circle ig-circle">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          <div class="channel-icon-circle" style="background: #fef3c7; color: #92400e;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
           <div>
-            <h3 class="channel-title">Instagram</h3>
-            <p class="channel-handle">${BRAND_INFO.instagramHandle}</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Follow for documentation guides, updates & helpful tips.</p>
+            <h3 class="channel-title">Court Office Desk</h3>
+            <p class="channel-handle" style="font-size: 0.88rem; color: var(--color-primary);">District Court, Gurugram</p>
+            <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-bottom: 1.25rem; line-height: 1.4;">
+              ${BRAND_INFO.officeAddress}
+            </p>
           </div>
-          <a href="${BRAND_INFO.instagramUrl}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-ig">
-            Follow on Instagram
+          <a href="${getWhatsappLink('Hello DASTAVEZ MITRA, I want to visit your Gurugram Court office.')}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.85rem; padding: 0.6rem;">
+            Get Office Directions
           </a>
         </div>
       </div>
@@ -750,37 +825,140 @@ function renderContactView() {
   `;
 }
 
-// Render Legal / Privacy View
+// Render Comprehensive Legal & Terms View
 function renderLegalView(type) {
   const isPrivacy = type === 'privacy';
   const title = isPrivacy ? 'Privacy Policy' : 'Terms & Conditions';
 
+  if (isPrivacy) {
+    return `
+      <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 850px;">
+        <h1 style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1.5rem;">Privacy Policy</h1>
+        
+        <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
+          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">1. Information We Receive</h3>
+          <p style="margin-bottom: 1.25rem;">
+            Information and documents shared over WhatsApp, phone, email, or in-person communication channels are used solely for assisting with the specific documentation requirement requested by the user. We do not sell, rent, or distribute user personal details or paperwork to third-party commercial marketing entities.
+          </p>
+
+          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">2. Purpose of Collection</h3>
+          <p style="margin-bottom: 1.25rem;">
+            Personal identity proofs, vehicle details, address proofs, and photos are reviewed strictly for preparing draft applications, affidavits, agreements, or statutory authority submission files as requested by the customer.
+          </p>
+
+          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">3. Data Security & Confidentiality</h3>
+          <p style="margin-bottom: 1.25rem;">
+            We maintain reasonable confidentiality standards and administrative precautions to safeguard documents transmitted for drafting and procedural verification.
+          </p>
+
+          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">4. Contact for Inquiries</h3>
+          <p>
+            For any clarifications regarding documentation services or data privacy policies, contact DASTAVEZ MITRA directly via WhatsApp / Call at <strong>${BRAND_INFO.contactNumbersDisplay}</strong>.
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  // Robust, professionally drafted Terms & Conditions covering all 18 clauses
   return `
-    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 800px;">
-      <h1 style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1.5rem;">${title}</h1>
-      
-      <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
-        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Service Location Notice</h3>
-        <p style="margin-bottom: 1.25rem; font-weight: 600; color: #92400e; background: #fef3c7; padding: 0.5rem 0.75rem; border-radius: 6px;">
-          📍 ${BRAND_INFO.serviceLocationNotice}
-        </p>
+    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 900px;">
+      <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+        <span class="section-tag">Legal Framework & Service Terms</span>
+        <h1 class="section-title">Terms & Conditions</h1>
+        <p class="section-subtitle">Please read these terms carefully before engaging documentation assistance services with DASTAVEZ MITRA.</p>
+      </div>
 
-        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">General Disclaimer</h3>
-        <p style="margin-bottom: 1.25rem;">
-          ${BRAND_INFO.disclaimer}
-        </p>
+      <div style="margin-bottom: 2rem;">
+        <div class="terms-clause-card">
+          <h3>1. Nature of Service</h3>
+          <p>DASTAVEZ MITRA provides documentation drafting, paperwork compilation, procedural guidance, application assistance, and facilitation services. DASTAVEZ MITRA is an independent assistance service and does not own, manage, or control decisions made by government departments, Regional Transport Offices (RTO / RTA), courts, marriage registrars, police authorities, banks, passport offices, or any other statutory authority.</p>
+        </div>
 
-        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">${isPrivacy ? 'Information We Receive' : 'Service Assistance Scope'}</h3>
-        <p style="margin-bottom: 1.25rem;">
-          ${isPrivacy ? 
-            'Information and documents shared over WhatsApp or communication channels are used solely for assisting with the specific documentation requirement requested by the user. We do not sell or distribute user contact details.' : 
-            'DASTAVEZ MITRA provides documentation assistance, form drafting, and procedural guidance in Gurugram. Acceptance, rejection, approval timelines, and fees are governed by the relevant governmental authorities, registrar offices, and transport departments.'}
-        </p>
+        <div class="terms-clause-card">
+          <h3>2. No Guarantee of Government Decision</h3>
+          <p>Submission, drafting, or procedural assistance provided by DASTAVEZ MITRA does not guarantee approval, registration, issuance of certificate/licence, cancellation of hypothecation/challan, reduction of penalties, or any specific outcome. All official approvals, dismissals, timelines, and statutory determinations rest solely within the legal discretion of the respective competent government authorities.</p>
+        </div>
 
-        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Contact for Inquiries</h3>
-        <p>
-          For any clarifications regarding documentation services or policies, contact DASTAVEZ MITRA directly via WhatsApp / Call at <strong>${BRAND_INFO.contactNumbersDisplay}</strong> or Instagram <strong>${BRAND_INFO.instagramHandle}</strong>.
-        </p>
+        <div class="terms-clause-card">
+          <h3>3. Document Responsibility</h3>
+          <p>The customer is solely responsible for providing genuine, valid, complete, and accurate documents, personal details, and identity proofs. DASTAVEZ MITRA acts in good faith based upon information and records provided directly by the customer.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>4. Prohibition of Forged / False Documents</h3>
+          <p>Customers must not submit or request the use of forged, fabricated, counterfeit, altered, tampered, or misleading documents or declarations. Any submission of fraudulent documents is strictly illegal, and the customer assumes sole legal liability for any false information provided.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>5. Government & Authority Delays</h3>
+          <p>Any delay caused by government portals, server downtimes, appointment unavailability, strike, statutory backlog, police verification, physical inspection, administrative processing, or other third-party factors is strictly outside DASTAVEZ MITRA's control. DASTAVEZ MITRA is not liable for delays originating from authority workflows.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>6. Customer Verification</h3>
+          <p>The customer is advised and expected to thoroughly verify and confirm all draft documents, spelling, numbers, dates, and application details before final execution, stamping, or official submission to any authority.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>7. Legal Eligibility</h3>
+          <p>The customer is responsible for ensuring that they satisfy all legal eligibility criteria, age limits, residency rules, marital eligibility, and statutory requirements applicable to the requested service under relevant Indian laws.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>8. Service Fees & Statutory Charges</h3>
+          <p>Fees paid to DASTAVEZ MITRA cover professional drafting, guidance, and assistance services as communicated to the customer. Government fees, statutory taxes, stamp duty, challan payments, and official portal charges, where applicable, are separate statutory liabilities unless explicitly stated in writing.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>9. No Representation as a Government Authority</h3>
+          <p>DASTAVEZ MITRA is an independent private documentation assistance service and is not a government department, official government portal, court, or statutory body. We do not claim to be or represent ourselves as government officials.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>10. Independent Third-Party & Authority Decisions</h3>
+          <p>DASTAVEZ MITRA is not responsible or legally liable for independent decisions, rejections, queries, objections, or actions taken by government officials, registrars, transport officers, or third-party institutions.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>11. Privacy & Document Handling</h3>
+          <p>Customer documents and personal information are handled with professional discretion and used exclusively for the purpose of facilitating the requested documentation assistance, subject to applicable laws.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>12. Accuracy of Website Information</h3>
+          <p>Information, timelines, and guidelines published on this website are provided for general informational purposes. Government rules, statutory forms, and procedural workflows may change periodically without prior notice.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>13. Website Document Guidance</h3>
+          <p>Required document checklists displayed on the website represent standard procedural guidance. Individual cases may be subject to additional verification, supporting affidavits, or specific requirements mandated by the concerned authority.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>14. Limitation of Liability</h3>
+          <p>To the fullest extent permitted by applicable law, DASTAVEZ MITRA, its proprietors, staff, and representatives shall not be liable for indirect, incidental, consequential, or punitive damages, rejection of applications by statutory bodies, policy changes, technical disruptions, or circumstances beyond reasonable control.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>15. Lawful Purpose</h3>
+          <p>All services, draft agreements, affidavits, and consultations provided by DASTAVEZ MITRA must be utilized solely for lawful and legitimate purposes in compliance with the laws of India.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>16. No Circumvention of Legal Norms</h3>
+          <p>DASTAVEZ MITRA does not provide services to evade, bypass, circumvent, or violate any statutory requirement, safety regulation, judicial order, court directive, or transport department guideline.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>17. Changes in Authority Requirements</h3>
+          <p>Statutory rules and document requirements are governed by state transport departments, revenue authorities, and government gazettes. Customers are encouraged to confirm current checklist specifics prior to final submission.</p>
+        </div>
+
+        <div class="terms-clause-card">
+          <h3>18. Contact & Clarifications</h3>
+          <p>For any queries, clarifications regarding document checklists, or service scope, customers may contact DASTAVEZ MITRA directly via WhatsApp / Call at <strong>${BRAND_INFO.contactNumbersDisplay}</strong> or visit our office desk at <strong>${BRAND_INFO.officeAddress}</strong>.</p>
+        </div>
       </div>
     </div>
   `;
@@ -872,26 +1050,7 @@ window.openServiceDetail = function(slug) {
       <p>${service.whoNeedsThis}</p>
     </div>
 
-    <div class="docs-alert-box">
-      <div class="docs-alert-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Required Documents
-      </div>
-      ${service.documents && service.documents.length > 0 ? `
-        <ul class="docs-checklist">
-          ${service.documents.map(doc => `
-            <li class="docs-checklist-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
-              <span><strong>${doc}</strong></span>
-            </li>
-          `).join('')}
-        </ul>
-      ` : `
-        <p class="docs-alert-desc">
-          Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
-        </p>
-      `}
-    </div>
+    ${renderServiceDocuments(service)}
 
     <div class="detail-card-box">
       <h4>

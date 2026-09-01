@@ -4,6 +4,7 @@
 > RTO, Vehicle Documentation, Marriage Registration, Affidavit, Agreement aur anya documentation services ke liye assistance.
 >
 > 📍 **Service Location:** Services currently available in Gurugram only.
+> 🏢 **Court Office Desk:** Seat No. 4, R C Khatana Lane, Hall No. 8, District and Sessions Court, Gurugram
 
 Official website repository for **DASTAVEZ MITRA** — a modern, mobile-first documentation and paperwork assistance platform.
 
@@ -19,24 +20,27 @@ Official website repository for **DASTAVEZ MITRA** — a modern, mobile-first do
 
 ---
 
-## 🚀 Services Provided
+## 🚀 Services Provided (Prioritized with Required Documents)
 
-1. **RC Transfer**
-2. **Vehicle Documentation / RTO Work**
-3. **RTA Work**
-4. **Traffic Challan Assistance**
-5. **Vehicle NOC – Form 28**
-6. **International Driving Licence** *(New)*
-7. **Learner Licence**
-8. **Duplicate RC**
-9. **HP Cancel**
-10. **Marriage Registration**
-11. **Same Day Marriage Assistance**
-12. **Arya Samaj Marriage**
-13. **Live-In Relationship Agreement**
-14. **Affidavit Preparation**
-15. **Agreement Drafting**
-16. **Gazette / Name Change**
+### 🌟 Services with Confirmed Required Documents
+1. **Vehicle NOC – Form 28**
+2. **International Driving Licence**
+3. **Learner Licence**
+4. **Duplicate RC**
+5. **HP Cancel**
+6. **Marriage Registration** *(शादी रजिस्टर करने हेतु आवश्यक दस्तावेज़)*
+7. **Gazette Notification / Name Change** *(Under 18 & 18 and Above)*
+
+### 📁 Other Documentation Services
+8. **RC Transfer**
+9. **Vehicle Documentation / RTO Work**
+10. **RTA Work**
+11. **Traffic Challan Assistance**
+12. **Same Day Marriage Assistance**
+13. **Arya Samaj Marriage**
+14. **Live-In Relationship Agreement**
+15. **Affidavit Preparation**
+16. **Agreement Drafting**
 17. **Will / Testament Documentation**
 18. **Legal Heir Certificate**
 19. **GPA / General Power of Attorney**
@@ -48,10 +52,11 @@ Official website repository for **DASTAVEZ MITRA** — a modern, mobile-first do
 ## 🛠️ Tech Stack & Features
 
 - **Semantic HTML5 & Modern Vanilla CSS3**: Custom design tokens, glassmorphism cards, responsive layouts, and animations.
-- **Client-Side SPA Hash Router**: Deep-linking for all services (`#/services/:slug`, `#/documents`, `#/how-it-works`, `#/about`, `#/contact`).
+- **Client-Side SPA Hash Router**: Deep-linking for all services (`#/services/:slug`, `#/documents`, `#/how-it-works`, `#/about`, `#/contact`, `#/terms`, `#/privacy`).
 - **Dynamic WhatsApp Lead Engine**: Automated URL-safe WhatsApp pre-filled message generator connected to 9871592002.
 - **Centralized Data Hub**: [`js/data/services.js`](js/data/services.js) allows effortless additions and edits of service data and document checklists.
 - **Mobile First**: Sticky WhatsApp action bar, touch drawer menu, and floating WhatsApp CTA.
+- **Comprehensive Legal Protection**: 18-clause professional Terms & Conditions governing documentation assistance, document genuineness responsibilities, and statutory limitations.
 - **SEO Optimized**: Open Graph, Twitter Cards, Schema.org JSON-LD Structured Data.
 
 ---
