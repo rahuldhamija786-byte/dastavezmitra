@@ -1,8 +1,18 @@
-import { BRAND_INFO, SERVICE_CATEGORIES, SERVICES, getWhatsappLink, getServiceBySlug } from './data/services.js';
+import { BRAND_INFO, SERVICE_CATEGORIES, SERVICES, getWhatsappLink, getCallLink, getServiceBySlug } from './data/services.js';
 
 // Global State
 let currentCategory = 'all';
 let currentSearchQuery = '';
+let isSubmittingLead = false;
+
+// Admin Session State (Stored in sessionStorage for security)
+let adminToken = sessionStorage.getItem('dm_admin_token') || null;
+let adminLeadsData = [];
+let adminStatsData = null;
+let adminFilterStatus = 'all';
+let adminFilterService = 'all';
+let adminSearchTerm = '';
+let adminSortOrder = 'newest';
 
 // Icons helper
 function getIconHtml(iconName) {
@@ -27,16 +37,17 @@ function getIconHtml(iconName) {
     'file-check': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 18 17 13"/></svg>',
     'check-circle': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
     'layers': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
-    'whatsapp': '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
-    'map-pin': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+    'whatsapp': '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
+    'phone': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    'map-pin': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    'send': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'
   };
 
   return iconMap[iconName] || iconMap['file-text'];
 }
 
-// Render Document Details for Service View / Modal / Hub
+// Render Document Details
 function renderServiceDocuments(service) {
-  // Marriage Registration in Hindi
   if (service.slug === 'marriage-registration' || service.hindiHeading) {
     return `
       <div class="docs-alert-box">
@@ -56,7 +67,6 @@ function renderServiceDocuments(service) {
     `;
   }
 
-  // Gazette Notification (Two Sections: Under 18 and 18 and Above)
   if (service.gazetteSections) {
     const { under18, above18 } = service.gazetteSections;
     return `
@@ -66,7 +76,6 @@ function renderServiceDocuments(service) {
           Gazette Notification – Required Documents
         </div>
 
-        <!-- Section A: Under 18 -->
         <div class="gazette-section-card">
           <div class="gazette-section-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
@@ -91,7 +100,6 @@ function renderServiceDocuments(service) {
           </div>
         </div>
 
-        <!-- Section B: 18 and Above -->
         <div class="gazette-section-card" style="border-color: #cbd5e1; margin-bottom: 0;">
           <div class="gazette-section-title" style="color: var(--color-primary);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -105,7 +113,6 @@ function renderServiceDocuments(service) {
     `;
   }
 
-  // Standard Document List
   if (service.documents && service.documents.length > 0) {
     return `
       <div class="docs-alert-box">
@@ -125,7 +132,6 @@ function renderServiceDocuments(service) {
     `;
   }
 
-  // Fallback for services without supplied document list
   return `
     <div class="docs-alert-box">
       <div class="docs-alert-title">
@@ -133,15 +139,135 @@ function renderServiceDocuments(service) {
         Required Documents
       </div>
       <p class="docs-alert-desc">
-        Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
+        Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> for customized checklist guidance.
       </p>
     </div>
   `;
 }
 
-// Render Service Card
+// Render Lead Capture Form Component
+function renderLeadFormComponent(preselectedServiceName = '', sourcePage = '/') {
+  return `
+    <div class="lead-card-box" id="leadFormContainer">
+      <div class="lead-form-header">
+        <h3 class="lead-form-title">Request Documentation Assistance</h3>
+        <p class="lead-form-subtitle">Fill in your basic details below and our team will get in touch with you directly in Gurugram.</p>
+      </div>
+
+      <div id="leadFormAlert"></div>
+
+      <form id="leadCaptureForm" onsubmit="handleLeadSubmit(event, '${sourcePage}')" class="lead-form-grid">
+        <!-- Anti-Spam Honeypot -->
+        <div style="display:none;" aria-hidden="true">
+          <input type="text" name="website_hp" id="website_hp" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leadName">
+            Full Name <span class="required-star">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="leadName" 
+            name="visitor_name" 
+            class="form-input" 
+            placeholder="Enter your full name" 
+            required 
+            minlength="2"
+            maxlength="80"
+            autocomplete="name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leadMobile">
+            Mobile Number (WhatsApp) <span class="required-star">*</span>
+          </label>
+          <div class="mobile-input-container">
+            <span class="country-code-badge">+91</span>
+            <input 
+              type="tel" 
+              id="leadMobile" 
+              name="mobile_number" 
+              class="form-input" 
+              placeholder="10-digit mobile number" 
+              required 
+              pattern="[6-9][0-9]{9}" 
+              maxlength="10" 
+              inputmode="numeric"
+              autocomplete="tel"
+              oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leadService">
+            Service / Work Required <span class="required-star">*</span>
+          </label>
+          <select id="leadService" name="service_requested" class="form-select" required>
+            <option value="" disabled ${!preselectedServiceName ? 'selected' : ''}>-- Select Required Service --</option>
+            ${SERVICES.map(s => `
+              <option value="${s.name}" ${preselectedServiceName === s.name ? 'selected' : ''}>
+                ${s.name} (${s.categoryName})
+              </option>
+            `).join('')}
+            <option value="Other / General Enquiry" ${preselectedServiceName === 'Other / General Enquiry' ? 'selected' : ''}>
+              Other / General Enquiry
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leadEmail">
+            Email Address <span style="font-size: 0.78rem; font-weight: normal; color: var(--color-text-muted);">(Optional)</span>
+          </label>
+          <input 
+            type="email" 
+            id="leadEmail" 
+            name="email" 
+            class="form-input" 
+            placeholder="name@example.com (optional)" 
+            maxlength="100"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leadMessage">
+            Additional Details / Notes <span style="font-size: 0.78rem; font-weight: normal; color: var(--color-text-muted);">(Optional)</span>
+          </label>
+          <textarea 
+            id="leadMessage" 
+            name="message" 
+            class="form-textarea" 
+            rows="3" 
+            placeholder="Briefly describe your vehicle, timeline, or requirement..."
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <div class="consent-checkbox-wrapper">
+          <input type="checkbox" id="leadConsent" name="consent" required />
+          <label for="leadConsent">
+            I agree that DASTAVEZ MITRA may use the information provided to contact me regarding my enquiry in accordance with the <a href="#/privacy">Privacy Policy</a>.
+          </label>
+        </div>
+
+        <button type="submit" class="btn-lead-submit" id="leadSubmitBtn">
+          ${getIconHtml('send')}
+          <span>Submit Enquiry</span>
+        </button>
+      </form>
+    </div>
+  `;
+}
+
+// Render Service Card with Separate WhatsApp & Call Buttons
 function renderServiceCard(service) {
   const waUrl = getWhatsappLink(service.whatsappMessage);
+  const callUrl = getCallLink();
+
   return `
     <article class="service-card" data-category="${service.category}" id="card-${service.slug}">
       <div class="card-top">
@@ -159,10 +285,17 @@ function renderServiceCard(service) {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           Required Documents
         </button>
-        <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" aria-label="Contact now on WhatsApp for ${service.name}">
-          ${getIconHtml('whatsapp')}
-          CONTACT NOW
-        </a>
+        
+        <div class="card-action-row">
+          <a href="tel:+919540403071" class="btn-card-call" aria-label="Call directly for ${service.name}">
+            ${getIconHtml('phone')}
+            Call Now
+          </a>
+          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" aria-label="WhatsApp for ${service.name}">
+            ${getIconHtml('whatsapp')}
+            WhatsApp
+          </a>
+        </div>
       </div>
     </article>
   `;
@@ -193,26 +326,26 @@ function renderHomeView() {
           <div class="hero-cta-group">
             <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
               ${getIconHtml('whatsapp')}
-              CONTACT NOW
+              WHATSAPP: 9871592002
             </a>
-            <a href="#/services" class="btn-secondary">
-              VIEW ALL SERVICES
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700;">
+              ${getIconHtml('phone')}
+              CALL: 9540403071
             </a>
           </div>
 
           <div class="hero-highlights">
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Direct Contact: <strong>${BRAND_INFO.contactNumbersDisplay}</strong></span>
+              <span>WhatsApp: <strong>9871592002</strong></span>
             </div>
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Document Guidance</span>
+              <span>Calling: <strong>9540403071</strong></span>
             </div>
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Gurugram Services</span>
+              <span>Gurugram Only</span>
             </div>
           </div>
         </div>
@@ -236,23 +369,26 @@ function renderHomeView() {
               <span>💳 International Driving Licence</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
-            <a href="#/services/learner-licence" class="preview-service-item">
-              <span>🪪 Learner Licence Application</span>
+            <a href="#/services/marriage-registration" class="preview-service-item">
+              <span>💍 Marriage Registration (शादी दस्तावेज़)</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
-            <a href="#/services/marriage-registration" class="preview-service-item">
-              <span>💍 Marriage Registration Assistance</span>
+            <a href="#/services/gazette-name-change" class="preview-service-item">
+              <span>📑 Gazette Notification / Name Change</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
           </div>
 
           <div class="preview-wa-direct">
-            <p>Need urgent documentation help?</p>
-            <p style="font-size: 0.85rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.5rem;">📞 ${BRAND_INFO.contactNumbersDisplay}</p>
-            <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="preview-phone-btn">
-              ${getIconHtml('whatsapp')}
-              WhatsApp ${BRAND_INFO.whatsappNumber}
-            </a>
+            <p>Direct Phone & WhatsApp Support</p>
+            <div style="display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.5rem;">
+              <a href="tel:+919540403071" class="btn-card-call" style="flex: 1; padding: 0.6rem; justify-content: center;">
+                📞 Call 9540403071
+              </a>
+              <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="flex: 1; padding: 0.6rem; justify-content: center;">
+                💬 WhatsApp 9871592002
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -270,7 +406,7 @@ function renderHomeView() {
               ${BRAND_INFO.serviceLocationNotice}
             </span>
           </div>
-          <p class="section-subtitle">Select your service below to view Required Documents or connect directly on WhatsApp.</p>
+          <p class="section-subtitle">Select your service below to view Required Documents, Call us, or message on WhatsApp.</p>
         </div>
 
         <div class="filter-controls-wrapper">
@@ -282,7 +418,7 @@ function renderHomeView() {
               type="text" 
               id="serviceSearchInput" 
               class="search-input" 
-              placeholder="Search services (e.g. Vehicle NOC, International DL, Marriage, Gazette, Learner)..."
+              placeholder="Search services (e.g. Vehicle NOC, Marriage, DL, Duplicate RC)..."
               value="${currentSearchQuery}"
               oninput="handleSearchChange(this.value)"
             />
@@ -310,6 +446,13 @@ function renderHomeView() {
       </div>
     </section>
 
+    <!-- Lead Capture Section on Homepage -->
+    <section class="lead-section" id="enquiry-section">
+      <div class="container">
+        ${renderLeadFormComponent('', '/')}
+      </div>
+    </section>
+
     <!-- How It Works Section -->
     <section class="section how-it-works-section" id="how-it-works">
       <div class="container">
@@ -334,8 +477,8 @@ function renderHomeView() {
 
           <div class="step-card">
             <div class="step-badge">3</div>
-            <h3 class="step-title">Contact DASTAVEZ MITRA</h3>
-            <p class="step-desc">Click "CONTACT NOW" to open a pre-filled WhatsApp conversation with our helpline at 9871592002 | 9540403071.</p>
+            <h3 class="step-title">Call or WhatsApp</h3>
+            <p class="step-desc">Connect on WhatsApp at 9871592002 or call Helpline 9540403071 for immediate guidance.</p>
           </div>
 
           <div class="step-card">
@@ -347,89 +490,23 @@ function renderHomeView() {
       </div>
     </section>
 
-    <!-- Why Choose Us -->
-    <section class="section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">Why Choose Us</span>
-          <h2 class="section-title">Why DASTAVEZ MITRA</h2>
-          <p class="section-subtitle">Dedicated assistance designed to make documentation simple, fast, and accessible.</p>
-        </div>
-
-        <div class="why-grid">
-          <div class="why-card">
-            <div class="why-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="why-content">
-              <h4>Documentation Assistance</h4>
-              <p>Specialized assistance across vehicle, personal, and commercial documentation requirements in Gurugram.</p>
-            </div>
-          </div>
-
-          <div class="why-card">
-            <div class="why-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="why-content">
-              <h4>Easy WhatsApp & Call Contact</h4>
-              <p>Instant 1-click WhatsApp messaging at 9871592002 and call helpline at 9871592002 | 9540403071.</p>
-            </div>
-          </div>
-
-          <div class="why-card">
-            <div class="why-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="why-content">
-              <h4>Service-Specific Guidance</h4>
-              <p>Structured guidelines for forms, affidavits, and filing workflows for your specific case.</p>
-            </div>
-          </div>
-
-          <div class="why-card">
-            <div class="why-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="why-content">
-              <h4>Convenient Process</h4>
-              <p>Save time and avoid hassle with step-by-step guidance right on your phone.</p>
-            </div>
-          </div>
-
-          <div class="why-card">
-            <div class="why-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="why-content">
-              <h4>Multiple Documentation Services</h4>
-              <p>From RTO/RTA, DL, and NOC to marriages, affidavits, agreements, and power of attorney.</p>
-            </div>
-          </div>
-
-          <div class="why-card">
-            <div class="why-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="why-content">
-              <h4>Court & Legal Presence</h4>
-              <p>Located at District & Sessions Court, Gurugram for prompt guidance and assistance.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick WhatsApp Action Banner -->
+    <!-- Quick Action Banner -->
     <section class="container" style="margin-bottom: 4rem;">
       <div style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; border-radius: var(--radius-xl); padding: 2.5rem 1.5rem; text-align: center; box-shadow: var(--shadow-lg);">
         <h2 style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Have a Question Regarding Any Document?</h2>
-        <p style="font-size: 1rem; opacity: 0.9; margin-bottom: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">Message DASTAVEZ MITRA on WhatsApp directly for quick consultation and document verification.</p>
-        <p style="font-size: 0.95rem; opacity: 0.95; margin-bottom: 1.5rem; font-weight: 600;">Helpline: ${BRAND_INFO.contactNumbersDisplay} • Gurugram Only</p>
-        <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.05rem; padding: 0.9rem 2rem;">
-          ${getIconHtml('whatsapp')}
-          CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
-        </a>
+        <p style="font-size: 1rem; opacity: 0.9; margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+          Contact DASTAVEZ MITRA directly for quick consultation and document verification in Gurugram.
+        </p>
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+          <a href="tel:+919540403071" class="btn-secondary" style="font-size: 1rem; padding: 0.85rem 1.5rem; font-weight: 700;">
+            ${getIconHtml('phone')}
+            CALL: 9540403071
+          </a>
+          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1rem; padding: 0.85rem 1.5rem;">
+            ${getIconHtml('whatsapp')}
+            WHATSAPP: 9871592002
+          </a>
+        </div>
       </div>
     </section>
   `;
@@ -551,23 +628,46 @@ function renderServiceDetailView(slug) {
           </ul>
         </div>
 
-        <!-- Important Note / Disclaimer -->
-        <div style="background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 2rem;">
-          <p style="font-size: 0.85rem; color: var(--color-warning-text); line-height: 1.5;">
-            <strong>Important Note:</strong> ${service.notes || 'Requirements, processing timelines, and fee structures may vary as per government/authority rules and individual case facts.'}
-          </p>
-        </div>
-
-        <!-- WhatsApp CTA -->
-        <div style="text-align: center; padding-top: 1rem; border-top: 1px solid var(--color-border);">
-          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 1rem;">
-            ${getIconHtml('whatsapp')}
-            CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
+        <!-- Action Buttons -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 2rem;">
+          <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.9rem;">
+            ${getIconHtml('phone')}
+            CALL: 9540403071
           </a>
-          <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.5rem;">Helpline: ${BRAND_INFO.contactNumbersDisplay}</p>
-          <p class="disclaimer-micro" style="margin-top: 0.35rem;">Pre-filled message: "${service.whatsappMessage}"</p>
+          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="justify-content: center; padding: 0.9rem;">
+            ${getIconHtml('whatsapp')}
+            WHATSAPP: 9871592002
+          </a>
         </div>
       </article>
+
+      <!-- Embedded Lead Form for this specific service -->
+      <div style="margin-top: 2.5rem;">
+        ${renderLeadFormComponent(service.name, `/services/${service.slug}`)}
+      </div>
+    </div>
+  `;
+}
+
+// Render Dedicated Enquiry Page
+function renderEnquiryView() {
+  return `
+    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+      <div class="section-header">
+        <span class="section-tag">Online Assistance</span>
+        <h1 class="section-title">Request Service Assistance</h1>
+        <div>
+          <span class="location-notice-badge">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
+        <p class="section-subtitle">Submit your requirement online or contact our Gurugram desk directly.</p>
+      </div>
+
+      <div style="max-width: 680px; margin: 0 auto;">
+        ${renderLeadFormComponent('', '/enquiry')}
+      </div>
     </div>
   `;
 }
@@ -596,10 +696,14 @@ function renderDocumentsView() {
                 ${getIconHtml(s.icon)}
                 <span>${s.name}</span>
               </div>
-              <a href="${getWhatsappLink(s.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.5rem 1rem;">
-                ${getIconHtml('whatsapp')}
-                Ask on WhatsApp
-              </a>
+              <div style="display: flex; gap: 0.4rem;">
+                <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.5rem 0.75rem;">
+                  ${getIconHtml('phone')} Call
+                </a>
+                <a href="${getWhatsappLink(s.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.5rem 0.75rem;">
+                  ${getIconHtml('whatsapp')} WhatsApp
+                </a>
+              </div>
             </div>
             <p style="font-size: 0.92rem; color: var(--color-text-muted); margin-bottom: 0.75rem;">
               ${s.shortDescription}
@@ -643,8 +747,8 @@ function renderHowItWorksView() {
 
         <div class="step-card">
           <div class="step-badge">3</div>
-          <h3 class="step-title">Contact DASTAVEZ MITRA</h3>
-          <p class="step-desc">Connect directly on WhatsApp at 9871592002 or Helpline 9871592002 | 9540403071 with our pre-filled service inquiry button.</p>
+          <h3 class="step-title">Call or WhatsApp</h3>
+          <p class="step-desc">Reach out via WhatsApp at 9871592002 or Call Helpline 9540403071 for immediate consultation.</p>
         </div>
 
         <div class="step-card">
@@ -655,20 +759,14 @@ function renderHowItWorksView() {
       </div>
 
       <div style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 2.5rem; max-width: 800px; margin: 0 auto; box-shadow: var(--shadow-md);">
-        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem;">Why Customers Prefer WhatsApp Assistance</h3>
-        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; color: var(--color-text-muted); font-size: 0.95rem;">
-          <li style="display: flex; gap: 0.5rem; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Direct one-on-one communication without filling complicated multi-page forms.</li>
-          <li style="display: flex; gap: 0.5rem; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Easily share document photos/scans for quick pre-checking.</li>
-          <li style="display: flex; gap: 0.5rem; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Receive instant guidance on missing fields or signatures.</li>
-          <li style="display: flex; gap: 0.5rem; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Stay updated on your paperwork progress directly on WhatsApp.</li>
-        </ul>
-
-        <div style="margin-top: 2rem; text-align: center;">
-          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
-            ${getIconHtml('whatsapp')}
-            CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
+        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem;">Direct Contact Channels</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+          <a href="tel:+919540403071" class="btn-card-call" style="padding: 1rem; justify-content: center; font-size: 1rem;">
+            ${getIconHtml('phone')} Call: 9540403071
           </a>
-          <p style="font-size: 0.9rem; color: var(--color-text-muted); margin-top: 0.75rem;">Direct Helpline: <strong>${BRAND_INFO.contactNumbersDisplay}</strong></p>
+          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 1rem; justify-content: center; font-size: 1rem;">
+            ${getIconHtml('whatsapp')} WhatsApp: 9871592002
+          </a>
         </div>
       </div>
     </div>
@@ -697,44 +795,17 @@ function renderAboutView() {
           <strong>DASTAVEZ MITRA</strong> is an independent documentation and paperwork assistance service operating in Gurugram. Navigating paperwork for vehicle transfers, Form 28 NOC, duplicate RC, driving licences, affidavits, marriage registrations, power of attorney, agreements, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
         </p>
 
-        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Our Core Focus Areas in Gurugram</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-          <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <strong style="color: var(--color-primary);">🚗 Vehicle & RTO Services</strong>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">Vehicle NOC Form 28, duplicate RC, HP Cancel, International DL, Learner DL.</p>
-          </div>
-          <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <strong style="color: var(--color-primary);">💍 Marriage Documentation</strong>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">Marriage registration, Same-Day assistance, Arya Samaj marriage.</p>
-          </div>
-          <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <strong style="color: var(--color-primary);">📜 Affidavits & Agreements</strong>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">Declarations, rent agreements, live-in agreements, drafting.</p>
-          </div>
-          <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <strong style="color: var(--color-primary);">📑 Power of Attorney & Wills</strong>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">GPA, SPA, legal heir certificates, and testamentary drafting.</p>
-          </div>
-        </div>
-
         <div style="border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
-          <h4 style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">Office Location & Connect With Us</h4>
+          <h4 style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">Office Location & Direct Helplines</h4>
           <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">
             📍 <strong>Office Address:</strong> ${BRAND_INFO.officeAddress}
           </p>
-          <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">
-            Have a question or need paperwork guidance in Gurugram? Reach out on WhatsApp or call our helpline.
-          </p>
-          <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;">
+            <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700;">
+              ${getIconHtml('phone')} Call: 9540403071
+            </a>
             <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
-              ${getIconHtml('whatsapp')}
-              WhatsApp: ${BRAND_INFO.whatsappNumber}
-            </a>
-            <a href="tel:+919540403071" class="btn-secondary">
-              📞 Call: ${BRAND_INFO.contactNumbersDisplay}
-            </a>
-            <a href="${BRAND_INFO.instagramUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="border-color: #e1306c; color: #e1306c;">
-              Instagram ${BRAND_INFO.instagramHandle}
+              ${getIconHtml('whatsapp')} WhatsApp: 9871592002
             </a>
           </div>
         </div>
@@ -758,25 +829,29 @@ function renderContactView() {
         <p class="contact-hero-subtitle">
           We are directly reachable via WhatsApp and Phone for all documentation queries, document checklist inquiries, and service assistance in Gurugram.
         </p>
-        <p style="font-size: 1.15rem; font-weight: 700; color: #fef08a; margin-bottom: 1.5rem;">
-          📞 Helpline: ${BRAND_INFO.contactNumbersDisplay}
-        </p>
-        <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.1rem; padding: 1rem 2.25rem;">
-          ${getIconHtml('whatsapp')}
-          CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
-        </a>
+        
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
+          <a href="tel:+919540403071" class="btn-secondary" style="font-size: 1.05rem; padding: 0.9rem 1.8rem; font-weight: 700;">
+            ${getIconHtml('phone')}
+            CALL: 9540403071
+          </a>
+          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.05rem; padding: 0.9rem 1.8rem;">
+            ${getIconHtml('whatsapp')}
+            WHATSAPP: 9871592002
+          </a>
+        </div>
       </div>
 
-      <div class="contact-channels-grid">
+      <div class="contact-channels-grid" style="margin-bottom: 3rem;">
         <!-- WhatsApp Card -->
         <div class="channel-card featured">
           <div class="channel-icon-circle wa-circle">
             ${getIconHtml('whatsapp')}
           </div>
           <div>
-            <h3 class="channel-title">WhatsApp Contact</h3>
-            <p class="channel-handle">${BRAND_INFO.whatsappDisplayNumber}</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Primary contact channel for instant replies & document verification in Gurugram.</p>
+            <h3 class="channel-title">WhatsApp Support</h3>
+            <p class="channel-handle">9871592002</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct chat for quick document checks & checklist queries.</p>
           </div>
           <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-wa">
             ${getIconHtml('whatsapp')}
@@ -787,27 +862,23 @@ function renderContactView() {
         <!-- Phone / Calling Helpline Card -->
         <div class="channel-card">
           <div class="channel-icon-circle" style="background: #e0f2fe; color: #0077b6;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            ${getIconHtml('phone')}
           </div>
           <div>
-            <h3 class="channel-title">Direct Calling Numbers</h3>
-            <p class="channel-handle">${BRAND_INFO.contactNumbersDisplay}</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct calling helpline for consultations and service queries in Gurugram.</p>
+            <h3 class="channel-title">Calling Helpline</h3>
+            <p class="channel-handle">9540403071</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct voice call for inquiries and consultation in Gurugram.</p>
           </div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <a href="tel:+919871592002" class="btn-secondary" style="flex: 1; min-width: 120px; justify-content: center; font-size: 0.85rem; padding: 0.6rem;">
-              Call 9871592002
-            </a>
-            <a href="tel:+919540403071" class="btn-secondary" style="flex: 1; min-width: 120px; justify-content: center; font-size: 0.85rem; padding: 0.6rem;">
-              Call 9540403071
-            </a>
-          </div>
+          <a href="tel:+919540403071" class="btn-secondary" style="justify-content: center; font-weight: 700;">
+            ${getIconHtml('phone')}
+            Call 9540403071
+          </a>
         </div>
 
         <!-- Office Desk Card -->
         <div class="channel-card">
           <div class="channel-icon-circle" style="background: #fef3c7; color: #92400e;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${getIconHtml('map-pin')}
           </div>
           <div>
             <h3 class="channel-title">Court Office Desk</h3>
@@ -821,46 +892,56 @@ function renderContactView() {
           </a>
         </div>
       </div>
+
+      <!-- Online Lead Form on Contact Page -->
+      <div style="max-width: 680px; margin: 0 auto;">
+        ${renderLeadFormComponent('', '/contact')}
+      </div>
     </div>
   `;
 }
 
-// Render Comprehensive Legal & Terms View
-function renderLegalView(type) {
-  const isPrivacy = type === 'privacy';
-  const title = isPrivacy ? 'Privacy Policy' : 'Terms & Conditions';
+// Render Privacy Policy View
+function renderLegalPrivacyView() {
+  return `
+    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 850px;">
+      <h1 style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1.5rem;">Privacy Policy</h1>
+      
+      <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">1. Information We Collect</h3>
+        <p style="margin-bottom: 1.25rem;">
+          When you submit an enquiry through our lead form or connect with us via WhatsApp/Phone, we collect basic contact information: your Full Name, Mobile Number, requested documentation service, optional email address, and message details. We do not ask for or collect sensitive numbers (such as Aadhaar numbers, PAN card numbers, OTPs, or bank account details) on the initial enquiry form.
+        </p>
 
-  if (isPrivacy) {
-    return `
-      <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 850px;">
-        <h1 style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1.5rem;">Privacy Policy</h1>
-        
-        <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
-          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">1. Information We Receive</h3>
-          <p style="margin-bottom: 1.25rem;">
-            Information and documents shared over WhatsApp, phone, email, or in-person communication channels are used solely for assisting with the specific documentation requirement requested by the user. We do not sell, rent, or distribute user personal details or paperwork to third-party commercial marketing entities.
-          </p>
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">2. How Enquiry Information is Used</h3>
+        <p style="margin-bottom: 1.25rem;">
+          The information you provide is used exclusively by DASTAVEZ MITRA to contact you regarding your service enquiry, clarify document requirements, and provide procedural assistance. We do not sell, rent, or trade your contact details with third-party commercial marketing companies.
+        </p>
 
-          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">2. Purpose of Collection</h3>
-          <p style="margin-bottom: 1.25rem;">
-            Personal identity proofs, vehicle details, address proofs, and photos are reviewed strictly for preparing draft applications, affidavits, agreements, or statutory authority submission files as requested by the customer.
-          </p>
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">3. Confidentiality & Storage</h3>
+        <p style="margin-bottom: 1.25rem;">
+          Enquiries are stored securely on our protected servers and are accessible only to authorized DASTAVEZ MITRA staff. Lead data is NEVER published or exposed publicly. We apply industry-standard technical safeguards, authentication controls, and encryption measures.
+        </p>
 
-          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">3. Data Security & Confidentiality</h3>
-          <p style="margin-bottom: 1.25rem;">
-            We maintain reasonable confidentiality standards and administrative precautions to safeguard documents transmitted for drafting and procedural verification.
-          </p>
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">4. Consent & User Rights</h3>
+        <p style="margin-bottom: 1.25rem;">
+          By submitting an enquiry form on our website, you provide explicit consent to be contacted by DASTAVEZ MITRA via WhatsApp, Phone Call, or Email regarding your documentation request. If you wish to update or delete your enquiry records, you may contact us directly.
+        </p>
 
-          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">4. Contact for Inquiries</h3>
-          <p>
-            For any clarifications regarding documentation services or data privacy policies, contact DASTAVEZ MITRA directly via WhatsApp / Call at <strong>${BRAND_INFO.contactNumbersDisplay}</strong>.
-          </p>
-        </div>
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">5. Contact Details</h3>
+        <p>
+          For any privacy-related queries, please contact DASTAVEZ MITRA at:<br/>
+          • WhatsApp: <strong>9871592002</strong><br/>
+          • Helpline Call: <strong>9540403071</strong><br/>
+          • Office: ${BRAND_INFO.officeAddress}
+        </p>
       </div>
-    `;
-  }
+    </div>
+  `;
+}
 
-  // Robust, professionally drafted Terms & Conditions covering all 18 clauses
+// Render Terms & Conditions View (18 Clauses)
+function renderLegalTermsView() {
   return `
     <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 900px;">
       <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
@@ -957,14 +1038,220 @@ function renderLegalView(type) {
 
         <div class="terms-clause-card">
           <h3>18. Contact & Clarifications</h3>
-          <p>For any queries, clarifications regarding document checklists, or service scope, customers may contact DASTAVEZ MITRA directly via WhatsApp / Call at <strong>${BRAND_INFO.contactNumbersDisplay}</strong> or visit our office desk at <strong>${BRAND_INFO.officeAddress}</strong>.</p>
+          <p>For any queries, clarifications regarding document checklists, or service scope, customers may contact DASTAVEZ MITRA directly via WhatsApp at <strong>9871592002</strong>, Call at <strong>9540403071</strong>, or visit our office desk at <strong>${BRAND_INFO.officeAddress}</strong>.</p>
         </div>
       </div>
     </div>
   `;
 }
 
-// Filter services based on category and search query
+// ==========================================
+// Admin CRM Dashboard View
+// ==========================================
+function renderAdminView() {
+  if (!adminToken) {
+    return `
+      <div class="admin-view-wrapper">
+        <div class="container">
+          <div class="admin-login-card">
+            <div class="logo-badge" style="margin: 0 auto 1rem; width: 44px; height: 44px; font-size: 1.2rem;">DM</div>
+            <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-bottom: 0.5rem;">Admin CRM Portal</h2>
+            <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 1.5rem;">Authenticate to access customer enquiries and lead pipeline.</p>
+
+            <div id="adminLoginAlert"></div>
+
+            <form onsubmit="handleAdminLogin(event)" style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+              <div class="form-group">
+                <label class="form-label" for="adminPassword">Admin Password</label>
+                <input 
+                  type="password" 
+                  id="adminPassword" 
+                  class="form-input" 
+                  placeholder="Enter admin password" 
+                  required 
+                  autocomplete="current-password"
+                />
+              </div>
+
+              <button type="submit" class="btn-lead-submit" id="adminLoginBtn" style="margin-top: 0.5rem;">
+                <span>Unlock CRM Dashboard</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Authenticated CRM Dashboard
+  const stats = adminStatsData || { total: 0, today: 0, new: 0, contacted: 0, followup: 0, converted: 0, closed: 0 };
+  const filteredLeads = getFilteredAdminLeads();
+
+  return `
+    <div class="admin-view-wrapper">
+      <div class="container" style="max-width: 1100px;">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <span class="section-tag" style="background: #e0f2fe; color: #0284c7;">Internal CRM</span>
+            <h1 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--color-primary); margin-top: 0.25rem;">
+              Enquiry Lead Management
+            </h1>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted);">
+              Storage: <span style="font-weight: 700; color: #16a34a;">${stats.storageMode || 'Active'}</span>
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-secondary" onclick="fetchAdminData()" style="padding: 0.55rem 0.9rem; font-size: 0.85rem;">
+              🔄 Refresh
+            </button>
+            <button class="btn-secondary" onclick="exportLeadsCsv()" style="padding: 0.55rem 0.9rem; font-size: 0.85rem;">
+              📥 Export CSV
+            </button>
+            <button class="btn-secondary" onclick="handleAdminLogout()" style="padding: 0.55rem 0.9rem; font-size: 0.85rem; color: #dc2626; border-color: #fca5a5;">
+              🚪 Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Top Metrics Cards -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card stat-today">
+            <span class="stat-label">Today's Leads</span>
+            <span class="stat-val">${stats.today || 0}</span>
+          </div>
+          <div class="admin-stat-card stat-new">
+            <span class="stat-label">New Leads</span>
+            <span class="stat-val">${stats.new || 0}</span>
+          </div>
+          <div class="admin-stat-card stat-contacted">
+            <span class="stat-label">Contacted</span>
+            <span class="stat-val">${stats.contacted || 0}</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="stat-label">Follow-up</span>
+            <span class="stat-val">${stats.followup || 0}</span>
+          </div>
+          <div class="admin-stat-card stat-converted">
+            <span class="stat-label">Converted</span>
+            <span class="stat-val">${stats.converted || 0}</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="stat-label">Total Leads</span>
+            <span class="stat-val">${stats.total || 0}</span>
+          </div>
+        </div>
+
+        <!-- Filter and Search Bar -->
+        <div class="admin-controls-card">
+          <input 
+            type="text" 
+            class="admin-search-input" 
+            placeholder="Search by visitor name, mobile number, or notes..." 
+            value="${adminSearchTerm}"
+            oninput="handleAdminSearch(this.value)"
+          />
+
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <select class="admin-select" onchange="handleAdminStatusFilter(this.value)">
+              <option value="all" ${adminFilterStatus === 'all' ? 'selected' : ''}>All Statuses</option>
+              <option value="New" ${adminFilterStatus === 'New' ? 'selected' : ''}>New</option>
+              <option value="Contacted" ${adminFilterStatus === 'Contacted' ? 'selected' : ''}>Contacted</option>
+              <option value="Follow-up" ${adminFilterStatus === 'Follow-up' ? 'selected' : ''}>Follow-up</option>
+              <option value="Converted" ${adminFilterStatus === 'Converted' ? 'selected' : ''}>Converted</option>
+              <option value="Closed" ${adminFilterStatus === 'Closed' ? 'selected' : ''}>Closed</option>
+            </select>
+
+            <select class="admin-select" onchange="handleAdminServiceFilter(this.value)">
+              <option value="all" ${adminFilterService === 'all' ? 'selected' : ''}>All Services</option>
+              ${SERVICES.map(s => `<option value="${s.name}" ${adminFilterService === s.name ? 'selected' : ''}>${s.name}</option>`).join('')}
+              <option value="Other / General Enquiry" ${adminFilterService === 'Other / General Enquiry' ? 'selected' : ''}>Other / General Enquiry</option>
+            </select>
+
+            <select class="admin-select" onchange="handleAdminSort(this.value)">
+              <option value="newest" ${adminSortOrder === 'newest' ? 'selected' : ''}>Newest First</option>
+              <option value="oldest" ${adminSortOrder === 'oldest' ? 'selected' : ''}>Oldest First</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Leads Table / Mobile Cards -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Visitor Name</th>
+                <th>Mobile Number</th>
+                <th>Service Requested</th>
+                <th>Status</th>
+                <th>Source</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredLeads.length > 0 ? filteredLeads.map(lead => {
+                const dateStr = new Date(lead.created_at).toLocaleString('en-IN', {
+                  day: '2-digit', month: 'short', year: 'numeric',
+                  hour: '2-digit', minute: '2-digit', hour12: true
+                });
+                const statusClass = (lead.lead_status || 'New').toLowerCase().replace(' ', '-');
+
+                return `
+                  <tr>
+                    <td style="font-size: 0.82rem; color: var(--color-text-muted); white-space: nowrap;">
+                      ${dateStr}
+                    </td>
+                    <td>
+                      <strong style="color: var(--color-primary);">${lead.visitor_name}</strong>
+                      ${lead.email ? `<div style="font-size: 0.78rem; color: var(--color-text-muted);">${lead.email}</div>` : ''}
+                    </td>
+                    <td>
+                      <div style="font-weight: 700; font-family: monospace; font-size: 0.95rem;">
+                        ${lead.mobile_number}
+                      </div>
+                    </td>
+                    <td>
+                      <span style="font-size: 0.85rem; font-weight: 600;">${lead.service_requested}</span>
+                    </td>
+                    <td>
+                      <span class="status-badge status-${statusClass}">${lead.lead_status || 'New'}</span>
+                    </td>
+                    <td style="font-size: 0.78rem; color: var(--color-text-muted);">
+                      ${lead.source_page || '/'}
+                    </td>
+                    <td>
+                      <div class="lead-quick-actions">
+                        <a href="tel:+91${lead.mobile_number}" class="btn-lead-action btn-action-call" title="Call directly">
+                          ${getIconHtml('phone')} Call
+                        </a>
+                        <a href="https://wa.me/91${lead.mobile_number}?text=${encodeURIComponent(`Hello ${lead.visitor_name}, this is DASTAVEZ MITRA regarding your enquiry for ${lead.service_requested}.`)}" target="_blank" rel="noopener noreferrer" class="btn-lead-action btn-action-wa" title="Open WhatsApp">
+                          ${getIconHtml('whatsapp')} WhatsApp
+                        </a>
+                        <button class="btn-lead-action btn-action-edit" onclick="openLeadDetailModal('${lead.id}')">
+                          Manage
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('') : `
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--color-text-muted);">
+                    No enquiries found matching your filters.
+                  </td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Global Filter Handlers for Service Search
 function filterServices() {
   return SERVICES.filter(service => {
     const matchesCategory = currentCategory === 'all' || service.category === currentCategory;
@@ -980,7 +1267,6 @@ function filterServices() {
   });
 }
 
-// Global Filter Handlers
 window.handleCategoryChange = function(categoryId) {
   currentCategory = categoryId;
   const grid = document.getElementById('servicesGrid');
@@ -993,7 +1279,6 @@ window.handleCategoryChange = function(categoryId) {
       </div>
     `;
   }
-  // Update chips UI
   document.querySelectorAll('.category-chip').forEach(chip => {
     chip.classList.toggle('active', chip.getAttribute('onclick') && chip.getAttribute('onclick').includes(`'${categoryId}'`));
   });
@@ -1021,7 +1306,353 @@ window.resetFilters = function() {
   window.handleCategoryChange('all');
 };
 
-// Modal Handler
+// ==========================================
+// Lead Submission Handler
+// ==========================================
+window.handleLeadSubmit = async function(event, sourcePage = '/') {
+  event.preventDefault();
+  if (isSubmittingLead) return;
+
+  const form = event.target;
+  const alertBox = form.closest('.lead-card-box')?.querySelector('#leadFormAlert') || document.getElementById('leadFormAlert');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  const name = form.visitor_name?.value?.trim();
+  const mobile = form.mobile_number?.value?.trim();
+  const service = form.service_requested?.value;
+  const email = form.email?.value?.trim();
+  const message = form.message?.value?.trim();
+  const consent = form.consent?.checked;
+  const website_hp = form.website_hp?.value;
+
+  if (!name || name.length < 2) {
+    if (alertBox) alertBox.innerHTML = '<div class="form-alert-error">Please enter your full name (minimum 2 characters).</div>';
+    return;
+  }
+
+  if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
+    if (alertBox) alertBox.innerHTML = '<div class="form-alert-error">Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9).</div>';
+    return;
+  }
+
+  if (!service) {
+    if (alertBox) alertBox.innerHTML = '<div class="form-alert-error">Please select the service or work required.</div>';
+    return;
+  }
+
+  if (!consent) {
+    if (alertBox) alertBox.innerHTML = '<div class="form-alert-error">Please check the consent box to proceed.</div>';
+    return;
+  }
+
+  isSubmittingLead = true;
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>Submitting...</span>`;
+  }
+
+  try {
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitor_name: name,
+        mobile_number: mobile,
+        service_requested: service,
+        email,
+        message,
+        consent_status: true,
+        source_page: sourcePage || window.location.hash || '/',
+        website_hp
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      const container = form.closest('.lead-card-box');
+      if (container) {
+        container.innerHTML = `
+          <div class="lead-success-card">
+            <div class="success-icon-circle">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3 class="lead-success-title">Enquiry Received Successfully!</h3>
+            <p class="lead-success-msg">
+              Thank you, <strong>${name}</strong>. Your enquiry for <strong>${service}</strong> has been received. DASTAVEZ MITRA will contact you shortly on <strong>${mobile}</strong>.
+            </p>
+            <div class="success-actions-grid">
+              <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.85rem; justify-content: center; font-size: 0.95rem;">
+                ${getIconHtml('phone')} Call: 9540403071
+              </a>
+              <a href="${getWhatsappLink(`Hello DASTAVEZ MITRA, I have submitted an enquiry for ${service} (Name: ${name}).`)}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.85rem; justify-content: center; font-size: 0.95rem;">
+                ${getIconHtml('whatsapp')} WhatsApp: 9871592002
+              </a>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      if (alertBox) {
+        alertBox.innerHTML = `<div class="form-alert-error">${data.error || 'Something went wrong. Please try again or contact us directly on WhatsApp.'}</div>`;
+      }
+    }
+  } catch (err) {
+    if (alertBox) {
+      alertBox.innerHTML = '<div class="form-alert-error">Something went wrong. Please try again or contact us directly on WhatsApp at 9871592002.</div>';
+    }
+  } finally {
+    isSubmittingLead = false;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `${getIconHtml('send')} <span>Submit Enquiry</span>`;
+    }
+  }
+};
+
+// ==========================================
+// Admin Authentication & CRM Handlers
+// ==========================================
+window.handleAdminLogin = async function(e) {
+  e.preventDefault();
+  const password = document.getElementById('adminPassword')?.value;
+  const alertBox = document.getElementById('adminLoginAlert');
+  const submitBtn = document.getElementById('adminLoginBtn');
+
+  if (!password) return;
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>Verifying...</span>';
+  }
+
+  try {
+    const res = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success && data.token) {
+      adminToken = data.token;
+      sessionStorage.setItem('dm_admin_token', adminToken);
+      await fetchAdminData();
+      router();
+    } else {
+      if (alertBox) {
+        alertBox.innerHTML = `<div class="form-alert-error">${data.error || 'Invalid admin password.'}</div>`;
+      }
+    }
+  } catch (err) {
+    if (alertBox) {
+      alertBox.innerHTML = '<div class="form-alert-error">Unable to connect to server. Please try again.</div>';
+    }
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>Unlock CRM Dashboard</span>';
+    }
+  }
+};
+
+window.handleAdminLogout = function() {
+  adminToken = null;
+  sessionStorage.removeItem('dm_admin_token');
+  adminLeadsData = [];
+  adminStatsData = null;
+  router();
+};
+
+async function fetchAdminData() {
+  if (!adminToken) return;
+
+  try {
+    const [leadsRes, statsRes] = await Promise.all([
+      fetch('/api/leads', { headers: { 'Authorization': `Bearer ${adminToken}` } }),
+      fetch('/api/stats', { headers: { 'Authorization': `Bearer ${adminToken}` } })
+    ]);
+
+    if (leadsRes.status === 401 || statsRes.status === 401) {
+      window.handleAdminLogout();
+      return;
+    }
+
+    const leadsJson = await leadsRes.json();
+    const statsJson = await statsRes.json();
+
+    if (leadsJson.success) adminLeadsData = leadsJson.leads || [];
+    if (statsJson.success) adminStatsData = statsJson.stats || null;
+
+    if (window.location.hash === '#/admin') {
+      const app = document.getElementById('app-root');
+      if (app) app.innerHTML = renderAdminView();
+    }
+  } catch (err) {
+    console.error('Error fetching admin CRM data:', err);
+  }
+}
+
+function getFilteredAdminLeads() {
+  return adminLeadsData.filter(lead => {
+    const matchesStatus = adminFilterStatus === 'all' || (lead.lead_status || 'New').toLowerCase() === adminFilterStatus.toLowerCase();
+    const matchesService = adminFilterService === 'all' || lead.service_requested === adminFilterService;
+    const q = adminSearchTerm.toLowerCase().trim();
+    const matchesSearch = !q ||
+      lead.visitor_name.toLowerCase().includes(q) ||
+      lead.mobile_number.includes(q) ||
+      lead.service_requested.toLowerCase().includes(q) ||
+      (lead.notes && lead.notes.toLowerCase().includes(q));
+
+    return matchesStatus && matchesService && matchesSearch;
+  }).sort((a, b) => {
+    if (adminSortOrder === 'oldest') {
+      return new Date(a.created_at) - new Date(b.created_at);
+    }
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+}
+
+window.handleAdminSearch = function(val) {
+  adminSearchTerm = val;
+  const app = document.getElementById('app-root');
+  if (app && window.location.hash === '#/admin') app.innerHTML = renderAdminView();
+};
+
+window.handleAdminStatusFilter = function(val) {
+  adminFilterStatus = val;
+  const app = document.getElementById('app-root');
+  if (app && window.location.hash === '#/admin') app.innerHTML = renderAdminView();
+};
+
+window.handleAdminServiceFilter = function(val) {
+  adminFilterService = val;
+  const app = document.getElementById('app-root');
+  if (app && window.location.hash === '#/admin') app.innerHTML = renderAdminView();
+};
+
+window.handleAdminSort = function(val) {
+  adminSortOrder = val;
+  const app = document.getElementById('app-root');
+  if (app && window.location.hash === '#/admin') app.innerHTML = renderAdminView();
+};
+
+// Lead Detail / Status Management Modal
+window.openLeadDetailModal = function(leadId) {
+  const lead = adminLeadsData.find(l => l.id === leadId);
+  if (!lead) return;
+
+  const modalOverlay = document.getElementById('serviceModal');
+  const modalBody = document.getElementById('modalDynamicContent');
+  if (!modalOverlay || !modalBody) return;
+
+  const dateStr = new Date(lead.created_at).toLocaleString('en-IN');
+
+  modalBody.innerHTML = `
+    <div style="text-align: left;">
+      <span class="status-badge status-${(lead.lead_status || 'New').toLowerCase()}">${lead.lead_status || 'New'}</span>
+      <h2 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-top: 0.5rem;">
+        ${lead.visitor_name}
+      </h2>
+      <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">
+        Received on: <strong>${dateStr}</strong> • Source: <code>${lead.source_page || '/'}</code>
+      </p>
+
+      <div style="background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.92rem;">
+        <div>📞 <strong>Mobile:</strong> <a href="tel:+91${lead.mobile_number}" style="color: var(--color-accent); font-weight: 700;">${lead.mobile_number}</a></div>
+        ${lead.email ? `<div style="margin-top: 0.35rem;">✉️ <strong>Email:</strong> ${lead.email}</div>` : ''}
+        <div style="margin-top: 0.35rem;">📑 <strong>Service Requested:</strong> ${lead.service_requested}</div>
+        ${lead.message ? `<div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed #cbd5e1;">💬 <strong>Message:</strong> ${lead.message}</div>` : ''}
+      </div>
+
+      <form onsubmit="handleLeadUpdate(event, '${lead.id}')" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="editLeadStatus">Update Pipeline Status</label>
+          <select id="editLeadStatus" name="lead_status" class="form-select">
+            <option value="New" ${lead.lead_status === 'New' ? 'selected' : ''}>New</option>
+            <option value="Contacted" ${lead.lead_status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+            <option value="Follow-up" ${lead.lead_status === 'Follow-up' ? 'selected' : ''}>Follow-up</option>
+            <option value="Converted" ${lead.lead_status === 'Converted' ? 'selected' : ''}>Converted</option>
+            <option value="Closed" ${lead.lead_status === 'Closed' ? 'selected' : ''}>Closed</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="editLeadNotes">Internal Staff Notes</label>
+          <textarea id="editLeadNotes" name="notes" class="form-textarea" rows="3" placeholder="Add internal notes about conversation, rate discussed, appointment date...">${lead.notes || ''}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          <button type="submit" class="btn-lead-submit" style="flex: 1; padding: 0.75rem;">
+            Save Lead Updates
+          </button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.handleLeadUpdate = async function(e, leadId) {
+  e.preventDefault();
+  const form = e.target;
+  const status = form.lead_status.value;
+  const notes = form.notes.value;
+
+  try {
+    const res = await fetch('/api/update-lead', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({ id: leadId, lead_status: status, notes })
+    });
+
+    if (res.ok) {
+      window.closeServiceModal();
+      await fetchAdminData();
+    } else {
+      alert('Failed to update lead.');
+    }
+  } catch (err) {
+    alert('Error updating lead.');
+  }
+};
+
+window.exportLeadsCsv = function() {
+  const leads = getFilteredAdminLeads();
+  if (leads.length === 0) {
+    alert('No leads to export.');
+    return;
+  }
+
+  const headers = ['ID', 'Date', 'Visitor Name', 'Mobile Number', 'Email', 'Service', 'Status', 'Source', 'Notes'];
+  const rows = leads.map(l => [
+    l.id,
+    `"${new Date(l.created_at).toISOString()}"`,
+    `"${(l.visitor_name || '').replace(/"/g, '""')}"`,
+    `"${l.mobile_number}"`,
+    `"${(l.email || '').replace(/"/g, '""')}"`,
+    `"${(l.service_requested || '').replace(/"/g, '""')}"`,
+    `"${l.lead_status || 'New'}"`,
+    `"${(l.source_page || '').replace(/"/g, '""')}"`,
+    `"${(l.notes || '').replace(/"/g, '""')}"`
+  ]);
+
+  const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', `dastavez_mitra_leads_${new Date().toISOString().slice(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Modal Handlers
 window.openServiceDetail = function(slug) {
   const service = getServiceBySlug(slug);
   if (!service) return;
@@ -1073,13 +1704,13 @@ window.openServiceDetail = function(slug) {
       </p>
     </div>
 
-    <div class="modal-footer-cta" style="padding: 0;">
-      <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-modal-wa">
-        ${getIconHtml('whatsapp')}
-        CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; padding-top: 0.5rem;">
+      <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.85rem;">
+        ${getIconHtml('phone')} Call 9540403071
       </a>
-      <p style="font-size: 0.82rem; color: var(--color-text-muted); text-align: center; margin-top: 0.25rem;">Helpline: ${BRAND_INFO.contactNumbersDisplay}</p>
-      <p class="disclaimer-micro">Pre-filled message: "${service.whatsappMessage}"</p>
+      <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="justify-content: center; padding: 0.85rem;">
+        ${getIconHtml('whatsapp')} WhatsApp Us
+      </a>
     </div>
   `;
 
@@ -1095,6 +1726,14 @@ window.closeServiceModal = function() {
   }
 };
 
+window.closeLeadModal = function() {
+  const modalOverlay = document.getElementById('leadModal');
+  if (modalOverlay) {
+    modalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+};
+
 // Router Dispatcher
 function router() {
   const hash = window.location.hash.slice(1) || '/';
@@ -1104,6 +1743,7 @@ function router() {
   // Close mobile drawer on route change
   window.toggleMobileMenu(false);
   window.closeServiceModal();
+  window.closeLeadModal();
 
   // Highlight Nav Links
   document.querySelectorAll('.nav-link, .drawer-links a').forEach(link => {
@@ -1123,6 +1763,8 @@ function router() {
   } else if (hash.startsWith('/services/')) {
     const slug = hash.replace('/services/', '');
     appContainer.innerHTML = renderServiceDetailView(slug);
+  } else if (hash === '/enquiry') {
+    appContainer.innerHTML = renderEnquiryView();
   } else if (hash === '/documents') {
     appContainer.innerHTML = renderDocumentsView();
   } else if (hash === '/how-it-works') {
@@ -1132,9 +1774,14 @@ function router() {
   } else if (hash === '/contact') {
     appContainer.innerHTML = renderContactView();
   } else if (hash === '/privacy') {
-    appContainer.innerHTML = renderLegalView('privacy');
+    appContainer.innerHTML = renderLegalPrivacyView();
   } else if (hash === '/terms') {
-    appContainer.innerHTML = renderLegalView('terms');
+    appContainer.innerHTML = renderLegalTermsView();
+  } else if (hash === '/admin') {
+    if (adminToken && adminLeadsData.length === 0) {
+      fetchAdminData();
+    }
+    appContainer.innerHTML = renderAdminView();
   } else {
     appContainer.innerHTML = renderHomeView();
   }
@@ -1157,21 +1804,30 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', router);
   router();
 
-  // Close modal when clicking on backdrop
-  const modal = document.getElementById('serviceModal');
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        window.closeServiceModal();
-      }
-    });
-  }
+  // Close modals when clicking backdrop
+  ['serviceModal', 'leadModal'].forEach(id => {
+    const modal = document.getElementById(id);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          window.closeServiceModal();
+          window.closeLeadModal();
+        }
+      });
+    }
+  });
 
   // Escape key closes modal or drawer
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       window.closeServiceModal();
+      window.closeLeadModal();
       window.toggleMobileMenu(false);
     }
   });
+
+  // Preload admin stats if token present
+  if (adminToken) {
+    fetchAdminData();
+  }
 });

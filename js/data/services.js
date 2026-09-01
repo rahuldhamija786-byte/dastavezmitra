@@ -9,10 +9,14 @@ export const BRAND_INFO = {
   tagline: "Documentation & Assistance Services",
   headline: "Documentation Ka Kaam? DASTAVEZ MITRA Se Sampark Kijiye.",
   subheading: "RTO, Vehicle Documentation, Marriage Registration, Affidavit, Agreement aur anya documentation services ke liye assistance.",
-  contactNumbersDisplay: "9871592002 | 9540403071",
+  
+  // Dedicated Separate Contact Numbers
   whatsappNumber: "9871592002",
-  secondContactNumber: "9540403071",
-  whatsappDisplayNumber: "9871592002 | 9540403071",
+  callingNumber: "9540403071",
+  whatsappDisplay: "WhatsApp: 9871592002",
+  callingDisplay: "Call: 9540403071",
+  contactNumbersDisplay: "WhatsApp: 9871592002 | Call: 9540403071",
+  
   whatsappUrlPrefix: "https://wa.me/919871592002",
   serviceLocationNotice: "Services currently available in Gurugram only.",
   officeAddress: "Seat No. 4, R C Khatana Lane, Hall No. 8, District and Sessions Court, Gurugram",
@@ -568,12 +572,22 @@ export const SERVICES = [
 
 /**
  * Helper to generate a pre-filled WhatsApp link
+ * STRICT RULE: Only connects to 9871592002
  * @param {string} customMessage - Optional custom message
  * @returns {string} - WhatsApp URL
  */
 export function getWhatsappLink(customMessage) {
   const message = customMessage || BRAND_INFO.defaultWhatsappMessage;
   return `${BRAND_INFO.whatsappUrlPrefix}?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * Helper to generate a direct phone call link
+ * STRICT RULE: Only connects to 9540403071
+ * @returns {string} - tel URI
+ */
+export function getCallLink() {
+  return `tel:+91${BRAND_INFO.callingNumber}`;
 }
 
 /**

@@ -1,0 +1,22 @@
+{
+  "name": "dastavezmitra",
+  "version": "1.2.0",
+  "description": "DASTAVEZ MITRA - Documentation & Assistance Services in Gurugram",
+  "main": "api/leads.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js",
+    "test": "node test_site.js"
+  },
+  "keywords": [
+    "documentation",
+    "rto",
+    "gurugram",
+    "affidavits",
+    "marriage-registration",
+    "licence"
+  ],
+  "author": "DASTAVEZ MITRA",
+  "license": "ISC"
+}
