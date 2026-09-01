@@ -27,7 +27,8 @@ function getIconHtml(iconName) {
     'file-check': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 18 17 13"/></svg>',
     'check-circle': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
     'layers': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
-    'whatsapp': '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'
+    'whatsapp': '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
+    'map-pin': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
   };
 
   return iconMap[iconName] || iconMap['file-text'];
@@ -98,7 +99,7 @@ function renderHomeView() {
           <div class="hero-highlights">
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Direct WhatsApp Contact: <strong>${BRAND_INFO.whatsappNumber}</strong></span>
+              <span>Direct Contact: <strong>${BRAND_INFO.contactNumbersDisplay}</strong></span>
             </div>
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -106,7 +107,7 @@ function renderHomeView() {
             </div>
             <div class="highlight-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Convenient Process</span>
+              <span>Gurugram Services</span>
             </div>
           </div>
         </div>
@@ -126,22 +127,23 @@ function renderHomeView() {
               <span>🚗 RC Transfer & Vehicle Paperwork</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
+            <a href="#/services/international-driving-licence" class="preview-service-item">
+              <span>💳 International Driving Licence</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <a href="#/services/vehicle-noc-form-28" class="preview-service-item">
+              <span>📄 Vehicle NOC – Form 28</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
             <a href="#/services/marriage-registration" class="preview-service-item">
               <span>💍 Marriage Registration Assistance</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-            <a href="#/services/affidavit" class="preview-service-item">
-              <span>📜 Affidavit & Agreement Drafting</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-            <a href="#/services/traffic-challan" class="preview-service-item">
-              <span>🚦 Traffic Challan Assistance</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
           </div>
 
           <div class="preview-wa-direct">
             <p>Need urgent documentation help?</p>
+            <p style="font-size: 0.85rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.5rem;">📞 ${BRAND_INFO.contactNumbersDisplay}</p>
             <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="preview-phone-btn">
               ${getIconHtml('whatsapp')}
               WhatsApp ${BRAND_INFO.whatsappNumber}
@@ -157,6 +159,12 @@ function renderHomeView() {
         <div class="section-header">
           <span class="section-tag">Explore Services</span>
           <h2 class="section-title">All Documentation & Assistance Services</h2>
+          <div>
+            <span class="location-notice-badge">
+              ${getIconHtml('map-pin')}
+              ${BRAND_INFO.serviceLocationNotice}
+            </span>
+          </div>
           <p class="section-subtitle">Select your service below to view required documents or connect directly on WhatsApp.</p>
         </div>
 
@@ -169,7 +177,7 @@ function renderHomeView() {
               type="text" 
               id="serviceSearchInput" 
               class="search-input" 
-              placeholder="Search services (e.g. RC Transfer, Marriage, Affidavit, Challan, DL...)"
+              placeholder="Search services (e.g. International Driving Licence, RC Transfer, NOC, Learner Licence...)"
               value="${currentSearchQuery}"
               oninput="handleSearchChange(this.value)"
             />
@@ -203,14 +211,14 @@ function renderHomeView() {
         <div class="section-header">
           <span class="section-tag">Simple & Transparent</span>
           <h2 class="section-title">How DASTAVEZ MITRA Works</h2>
-          <p class="section-subtitle">4 easy steps to get your documentation paperwork assisted smoothly.</p>
+          <p class="section-subtitle">4 easy steps to get your documentation paperwork assisted smoothly in Gurugram.</p>
         </div>
 
         <div class="steps-grid">
           <div class="step-card">
             <div class="step-badge">1</div>
             <h3 class="step-title">Choose Your Service</h3>
-            <p class="step-desc">Browse through our 20+ documentation service categories and select the paperwork you need help with.</p>
+            <p class="step-desc">Browse through our documentation service categories and select the paperwork you need help with.</p>
           </div>
 
           <div class="step-card">
@@ -222,7 +230,7 @@ function renderHomeView() {
           <div class="step-card">
             <div class="step-badge">3</div>
             <h3 class="step-title">Contact DASTAVEZ MITRA</h3>
-            <p class="step-desc">Click "CONTACT NOW" to open a pre-filled WhatsApp conversation directly with our team.</p>
+            <p class="step-desc">Click "CONTACT NOW" to open a pre-filled WhatsApp conversation with our helpline at 9871592002 | 9540403071.</p>
           </div>
 
           <div class="step-card">
@@ -250,7 +258,7 @@ function renderHomeView() {
             </div>
             <div class="why-content">
               <h4>Documentation Assistance</h4>
-              <p>Specialized assistance across vehicle, personal, and commercial documentation requirements.</p>
+              <p>Specialized assistance across vehicle, personal, and commercial documentation requirements in Gurugram.</p>
             </div>
           </div>
 
@@ -259,8 +267,8 @@ function renderHomeView() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div class="why-content">
-              <h4>Easy WhatsApp Contact</h4>
-              <p>Instant 1-click WhatsApp messaging at 9871592002 with pre-filled service details.</p>
+              <h4>Easy WhatsApp & Call Contact</h4>
+              <p>Instant 1-click WhatsApp messaging at 9871592002 and call helpline at 9871592002 | 9540403071.</p>
             </div>
           </div>
 
@@ -290,7 +298,7 @@ function renderHomeView() {
             </div>
             <div class="why-content">
               <h4>Multiple Documentation Services</h4>
-              <p>From RTO/RTA and marriages to affidavits, agreements, and power of attorney — all in one place.</p>
+              <p>From RTO/RTA, DL, and NOC to marriages, affidavits, agreements, and power of attorney.</p>
             </div>
           </div>
 
@@ -311,7 +319,8 @@ function renderHomeView() {
     <section class="container" style="margin-bottom: 4rem;">
       <div style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; border-radius: var(--radius-xl); padding: 2.5rem 1.5rem; text-align: center; box-shadow: var(--shadow-lg);">
         <h2 style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Have a Question Regarding Any Document?</h2>
-        <p style="font-size: 1rem; opacity: 0.9; margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">Message DASTAVEZ MITRA on WhatsApp directly for quick consultation and document verification.</p>
+        <p style="font-size: 1rem; opacity: 0.9; margin-bottom: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">Message DASTAVEZ MITRA on WhatsApp directly for quick consultation and document verification.</p>
+        <p style="font-size: 0.95rem; opacity: 0.95; margin-bottom: 1.5rem; font-weight: 600;">Helpline: ${BRAND_INFO.contactNumbersDisplay} • Gurugram Only</p>
         <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.05rem; padding: 0.9rem 2rem;">
           ${getIconHtml('whatsapp')}
           CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
@@ -330,7 +339,13 @@ function renderServicesView() {
       <div class="section-header">
         <span class="section-tag">Full Catalog</span>
         <h1 class="section-title">All Documentation Services</h1>
-        <p class="section-subtitle">Explore all 20 available documentation categories or search for your required paperwork.</p>
+        <div>
+          <span class="location-notice-badge">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
+        <p class="section-subtitle">Explore our documentation categories or search for your required paperwork.</p>
       </div>
 
       <div class="filter-controls-wrapper">
@@ -342,7 +357,7 @@ function renderServicesView() {
             type="text" 
             id="serviceSearchInput" 
             class="search-input" 
-            placeholder="Filter services by keyword..."
+            placeholder="Filter services by keyword (e.g. International DL, Form 28, Learner, Duplicate RC)..."
             value="${currentSearchQuery}"
             oninput="handleSearchChange(this.value)"
           />
@@ -396,6 +411,9 @@ function renderServiceDetailView(slug) {
       <article style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-lg);">
         <div class="detail-badge-row">
           <span class="card-category-tag">${service.categoryName}</span>
+          <span class="location-notice-badge" style="margin: 0; font-size: 0.78rem; padding: 0.2rem 0.6rem;">
+            ${getIconHtml('map-pin')} Gurugram Only
+          </span>
         </div>
         <h1 class="detail-title">${service.name}</h1>
         <p class="detail-intro">${service.shortDescription}</p>
@@ -420,13 +438,13 @@ function renderServiceDetailView(slug) {
               ${service.documents.map(doc => `
                 <li class="docs-checklist-item">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>${doc}</span>
+                  <span><strong>${doc}</strong></span>
                 </li>
               `).join('')}
             </ul>
           ` : `
             <p class="docs-alert-desc">
-              Exact document requirements vary depending on your specific case and jurisdiction. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
+              Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
             </p>
           `}
         </div>
@@ -460,7 +478,8 @@ function renderServiceDetailView(slug) {
             ${getIconHtml('whatsapp')}
             CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
           </a>
-          <p class="disclaimer-micro" style="margin-top: 0.75rem;">Pre-filled message: "${service.whatsappMessage}"</p>
+          <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.5rem;">Helpline: ${BRAND_INFO.contactNumbersDisplay}</p>
+          <p class="disclaimer-micro" style="margin-top: 0.35rem;">Pre-filled message: "${service.whatsappMessage}"</p>
         </div>
       </article>
     </div>
@@ -474,6 +493,12 @@ function renderDocumentsView() {
       <div class="section-header">
         <span class="section-tag">Checklists & Guidance</span>
         <h1 class="section-title">Required Documents Explorer</h1>
+        <div>
+          <span class="location-notice-badge">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
         <p class="section-subtitle">Find document guidelines for your specific service and inquire directly with our team.</p>
       </div>
 
@@ -493,9 +518,23 @@ function renderDocumentsView() {
             <p style="font-size: 0.92rem; color: var(--color-text-muted); margin-bottom: 0.75rem;">
               ${s.shortDescription}
             </p>
-            <div style="background: #f8fafc; border-radius: var(--radius-md); padding: 0.85rem; border: 1px solid var(--color-border); font-size: 0.88rem; color: var(--color-text-main);">
-              <strong>Document Guidance:</strong> Exact document requirements depend on jurisdiction and case specifications. Connect on WhatsApp (<strong>${BRAND_INFO.whatsappNumber}</strong>) with your details to receive the tailored document checklist.
-            </div>
+            ${s.documents && s.documents.length > 0 ? `
+              <div style="background: #eff6ff; border-radius: var(--radius-md); padding: 1rem; border: 1.5px dashed #93c5fd; margin-bottom: 0.5rem;">
+                <p style="font-weight: 700; color: var(--color-accent); font-size: 0.9rem; margin-bottom: 0.5rem;">Required Documents Checklist:</p>
+                <ul class="docs-checklist" style="margin-top: 0;">
+                  ${s.documents.map(doc => `
+                    <li class="docs-checklist-item">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>${doc}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : `
+              <div style="background: #f8fafc; border-radius: var(--radius-md); padding: 0.85rem; border: 1px solid var(--color-border); font-size: 0.88rem; color: var(--color-text-main);">
+                <strong>Document Guidance:</strong> Exact document requirements depend on jurisdiction and case specifications in Gurugram. Connect on WhatsApp (<strong>${BRAND_INFO.whatsappNumber}</strong>) or call <strong>${BRAND_INFO.contactNumbersDisplay}</strong> to receive the tailored document checklist.
+              </div>
+            `}
           </div>
         `).join('')}
       </div>
@@ -510,14 +549,20 @@ function renderHowItWorksView() {
       <div class="section-header">
         <span class="section-tag">Process Overview</span>
         <h1 class="section-title">How DASTAVEZ MITRA Works</h1>
-        <p class="section-subtitle">A seamless 4-step documentation assistance experience designed for convenience.</p>
+        <div>
+          <span class="location-notice-badge">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
+        <p class="section-subtitle">A seamless 4-step documentation assistance experience designed for convenience in Gurugram.</p>
       </div>
 
       <div class="steps-grid" style="margin-bottom: 4rem;">
         <div class="step-card">
           <div class="step-badge">1</div>
           <h3 class="step-title">Choose Your Service</h3>
-          <p class="step-desc">Identify the paperwork you need assistance with from our catalog of 20+ documentation services.</p>
+          <p class="step-desc">Identify the paperwork you need assistance with from our catalog of documentation services.</p>
         </div>
 
         <div class="step-card">
@@ -529,7 +574,7 @@ function renderHowItWorksView() {
         <div class="step-card">
           <div class="step-badge">3</div>
           <h3 class="step-title">Contact DASTAVEZ MITRA</h3>
-          <p class="step-desc">Connect directly on WhatsApp at 9871592002 with our pre-filled service inquiry button.</p>
+          <p class="step-desc">Connect directly on WhatsApp at 9871592002 or Helpline 9871592002 | 9540403071 with our pre-filled service inquiry button.</p>
         </div>
 
         <div class="step-card">
@@ -553,6 +598,7 @@ function renderHowItWorksView() {
             ${getIconHtml('whatsapp')}
             CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
           </a>
+          <p style="font-size: 0.9rem; color: var(--color-text-muted); margin-top: 0.75rem;">Direct Helpline: <strong>${BRAND_INFO.contactNumbersDisplay}</strong></p>
         </div>
       </div>
     </div>
@@ -566,20 +612,26 @@ function renderAboutView() {
       <div class="section-header">
         <span class="section-tag">About Our Service</span>
         <h1 class="section-title">About DASTAVEZ MITRA</h1>
-        <p class="section-subtitle">Your reliable partner for documentation and paperwork assistance.</p>
+        <div>
+          <span class="location-notice-badge">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
+        <p class="section-subtitle">Your reliable partner for documentation and paperwork assistance in Gurugram.</p>
       </div>
 
       <div style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 2.5rem; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
         <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Who We Are</h3>
         <p style="font-size: 1rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
-          <strong>DASTAVEZ MITRA</strong> is an independent documentation and assistance service. Navigating paperwork for vehicle transfers, affidavits, marriage registrations, power of attorney, agreements, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
+          <strong>DASTAVEZ MITRA</strong> is an independent documentation and assistance service operating in Gurugram. Navigating paperwork for vehicle transfers, Form 28 NOC, duplicate RC, driving licences, affidavits, marriage registrations, power of attorney, agreements, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
         </p>
 
-        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Our Core Focus Areas</h3>
+        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Our Core Focus Areas in Gurugram</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
           <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
             <strong style="color: var(--color-primary);">🚗 Vehicle & RTO Services</strong>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">RC transfers, duplicate RC, NOC, and challan assistance.</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">RC transfers, duplicate RC, Vehicle NOC Form 28, HP Cancel, International DL.</p>
           </div>
           <div style="background: var(--color-bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
             <strong style="color: var(--color-primary);">💍 Marriage Documentation</strong>
@@ -598,12 +650,15 @@ function renderAboutView() {
         <div style="border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
           <h4 style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">Connect With Us</h4>
           <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">
-            Have a question or need paperwork guidance? Reach out on WhatsApp or follow us on Instagram.
+            Have a question or need paperwork guidance in Gurugram? Reach out on WhatsApp or call our helpline.
           </p>
           <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
             <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
               ${getIconHtml('whatsapp')}
               WhatsApp: ${BRAND_INFO.whatsappNumber}
+            </a>
+            <a href="tel:+919540403071" class="btn-secondary">
+              📞 Call: ${BRAND_INFO.contactNumbersDisplay}
             </a>
             <a href="${BRAND_INFO.instagramUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="border-color: #e1306c; color: #e1306c;">
               Instagram ${BRAND_INFO.instagramHandle}
@@ -620,9 +675,18 @@ function renderContactView() {
   return `
     <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
       <div class="contact-hero-banner">
+        <div>
+          <span class="location-notice-badge" style="background: rgba(255, 255, 255, 0.18); color: white; border-color: rgba(255, 255, 255, 0.35); margin-bottom: 0.75rem;">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
         <h1 class="contact-hero-title">Contact DASTAVEZ MITRA</h1>
         <p class="contact-hero-subtitle">
-          We are directly reachable via WhatsApp for all documentation queries, document checklist inquiries, and service assistance.
+          We are directly reachable via WhatsApp and Phone for all documentation queries, document checklist inquiries, and service assistance in Gurugram.
+        </p>
+        <p style="font-size: 1.15rem; font-weight: 700; color: #fef08a; margin-bottom: 1.5rem;">
+          📞 Helpline: ${BRAND_INFO.contactNumbersDisplay}
         </p>
         <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.1rem; padding: 1rem 2.25rem;">
           ${getIconHtml('whatsapp')}
@@ -639,12 +703,32 @@ function renderContactView() {
           <div>
             <h3 class="channel-title">WhatsApp Contact</h3>
             <p class="channel-handle">${BRAND_INFO.whatsappDisplayNumber}</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Primary contact channel for instant replies & document verification.</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Primary contact channel for instant replies & document verification in Gurugram.</p>
           </div>
           <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-wa">
             ${getIconHtml('whatsapp')}
             Chat on WhatsApp
           </a>
+        </div>
+
+        <!-- Phone / Calling Helpline Card -->
+        <div class="channel-card">
+          <div class="channel-icon-circle" style="background: #e0f2fe; color: #0077b6;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div>
+            <h3 class="channel-title">Direct Calling Numbers</h3>
+            <p class="channel-handle">${BRAND_INFO.contactNumbersDisplay}</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct calling helpline for consultations and service queries in Gurugram.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="tel:+919871592002" class="btn-secondary" style="flex: 1; min-width: 120px; justify-content: center; font-size: 0.85rem; padding: 0.6rem;">
+              Call 9871592002
+            </a>
+            <a href="tel:+919540403071" class="btn-secondary" style="flex: 1; min-width: 120px; justify-content: center; font-size: 0.85rem; padding: 0.6rem;">
+              Call 9540403071
+            </a>
+          </div>
         </div>
 
         <!-- Instagram Card -->
@@ -659,21 +743,6 @@ function renderContactView() {
           </div>
           <a href="${BRAND_INFO.instagramUrl}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-ig">
             Follow on Instagram
-          </a>
-        </div>
-
-        <!-- Facebook Card -->
-        <div class="channel-card">
-          <div class="channel-icon-circle fb-circle">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </div>
-          <div>
-            <h3 class="channel-title">Facebook</h3>
-            <p class="channel-handle">${BRAND_INFO.facebookName}</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Connect with our official Facebook community page.</p>
-          </div>
-          <a href="${BRAND_INFO.facebookUrl}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-fb">
-            Visit Facebook Page
           </a>
         </div>
       </div>
@@ -691,6 +760,11 @@ function renderLegalView(type) {
       <h1 style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1.5rem;">${title}</h1>
       
       <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Service Location Notice</h3>
+        <p style="margin-bottom: 1.25rem; font-weight: 600; color: #92400e; background: #fef3c7; padding: 0.5rem 0.75rem; border-radius: 6px;">
+          📍 ${BRAND_INFO.serviceLocationNotice}
+        </p>
+
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">General Disclaimer</h3>
         <p style="margin-bottom: 1.25rem;">
           ${BRAND_INFO.disclaimer}
@@ -700,12 +774,12 @@ function renderLegalView(type) {
         <p style="margin-bottom: 1.25rem;">
           ${isPrivacy ? 
             'Information and documents shared over WhatsApp or communication channels are used solely for assisting with the specific documentation requirement requested by the user. We do not sell or distribute user contact details.' : 
-            'DASTAVEZ MITRA provides documentation assistance, form drafting, and procedural guidance. Acceptance, rejection, approval timelines, and fees are governed by the relevant governmental authorities, registrar offices, and transport departments.'}
+            'DASTAVEZ MITRA provides documentation assistance, form drafting, and procedural guidance in Gurugram. Acceptance, rejection, approval timelines, and fees are governed by the relevant governmental authorities, registrar offices, and transport departments.'}
         </p>
 
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Contact for Inquiries</h3>
         <p>
-          For any clarifications regarding documentation services or policies, contact DASTAVEZ MITRA directly via WhatsApp at <strong>${BRAND_INFO.whatsappNumber}</strong> or Instagram <strong>${BRAND_INFO.instagramHandle}</strong>.
+          For any clarifications regarding documentation services or policies, contact DASTAVEZ MITRA directly via WhatsApp / Call at <strong>${BRAND_INFO.contactNumbersDisplay}</strong> or Instagram <strong>${BRAND_INFO.instagramHandle}</strong>.
         </p>
       </div>
     </div>
@@ -721,7 +795,8 @@ function filterServices() {
       service.name.toLowerCase().includes(query) || 
       service.shortDescription.toLowerCase().includes(query) ||
       service.categoryName.toLowerCase().includes(query) ||
-      service.slug.toLowerCase().includes(query);
+      service.slug.toLowerCase().includes(query) ||
+      (service.documents && service.documents.some(doc => doc.toLowerCase().includes(query)));
 
     return matchesCategory && matchesSearch;
   });
@@ -742,7 +817,7 @@ window.handleCategoryChange = function(categoryId) {
   }
   // Update chips UI
   document.querySelectorAll('.category-chip').forEach(chip => {
-    chip.classList.toggle('active', chip.getAttribute('onclick').includes(`'${categoryId}'`));
+    chip.classList.toggle('active', chip.getAttribute('onclick') && chip.getAttribute('onclick').includes(`'${categoryId}'`));
   });
 };
 
@@ -782,6 +857,9 @@ window.openServiceDetail = function(slug) {
   modalBody.innerHTML = `
     <div class="detail-badge-row">
       <span class="card-category-tag">${service.categoryName}</span>
+      <span class="location-notice-badge" style="margin: 0; font-size: 0.78rem; padding: 0.2rem 0.6rem;">
+        ${getIconHtml('map-pin')} Gurugram Only
+      </span>
     </div>
     <h2 class="detail-title">${service.name}</h2>
     <p class="detail-intro">${service.shortDescription}</p>
@@ -804,13 +882,13 @@ window.openServiceDetail = function(slug) {
           ${service.documents.map(doc => `
             <li class="docs-checklist-item">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>${doc}</span>
+              <span><strong>${doc}</strong></span>
             </li>
           `).join('')}
         </ul>
       ` : `
         <p class="docs-alert-desc">
-          Exact document requirements vary depending on your specific case and jurisdiction. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
+          Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> on WhatsApp for the customized checklist and immediate guidance.
         </p>
       `}
     </div>
@@ -841,6 +919,7 @@ window.openServiceDetail = function(slug) {
         ${getIconHtml('whatsapp')}
         CONTACT NOW ON WHATSAPP: ${BRAND_INFO.whatsappNumber}
       </a>
+      <p style="font-size: 0.82rem; color: var(--color-text-muted); text-align: center; margin-top: 0.25rem;">Helpline: ${BRAND_INFO.contactNumbersDisplay}</p>
       <p class="disclaimer-micro">Pre-filled message: "${service.whatsappMessage}"</p>
     </div>
   `;

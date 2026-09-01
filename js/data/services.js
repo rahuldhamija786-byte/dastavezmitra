@@ -1,8 +1,7 @@
 /**
  * DASTAVEZ MITRA - Centralized Services Data Store
- * All 20 services configured with editable fields.
+ * All services configured with editable fields.
  * To add, modify, or remove services, update this data array.
- * Note: `documents` array is intentionally left empty for exact user-provided checklists.
  */
 
 export const BRAND_INFO = {
@@ -10,9 +9,12 @@ export const BRAND_INFO = {
   tagline: "Documentation & Assistance Services",
   headline: "Documentation Ka Kaam? DASTAVEZ MITRA Se Sampark Kijiye.",
   subheading: "RTO, Vehicle Documentation, Marriage Registration, Affidavit, Agreement aur anya documentation services ke liye assistance.",
+  contactNumbersDisplay: "9871592002 | 9540403071",
   whatsappNumber: "9871592002",
-  whatsappDisplayNumber: "+91 98715 92002",
+  secondContactNumber: "9540403071",
+  whatsappDisplayNumber: "9871592002 | 9540403071",
   whatsappUrlPrefix: "https://wa.me/919871592002",
+  serviceLocationNotice: "Services currently available in Gurugram only.",
   instagramHandle: "@dastavezmitra",
   instagramUrl: "https://instagram.com/dastavezmitra",
   facebookName: "DASTAVEZ MITRA",
@@ -111,6 +113,145 @@ export const SERVICES = [
     estimatedTime: "",
     whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance regarding a Traffic Challan.",
     notes: "Challan disposal timelines and options depend on the issuing traffic police wing and court portal."
+  },
+  {
+    id: "noc-vehicle-work",
+    slug: "vehicle-noc-form-28",
+    name: "Vehicle NOC – Form 28",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "file-check",
+    shortDescription: "Assistance with Form 28 No Objection Certificate (NOC) documentation for inter-state and inter-RTO vehicle re-registration.",
+    whoNeedsThis: "Vehicle owners relocating or selling their vehicle across state or RTO jurisdictions requiring Form 28 NOC.",
+    documents: [
+      "Form 28 – 3 Copies",
+      "Chassis Number Sketch with Pencil – 3 Copies",
+      "Insurance Copy",
+      "Pollution Certificate Copy",
+      "Affidavit",
+      "Seller Address Proof",
+      "Purchaser Address Proof",
+      "NCRB",
+      "Picture of Both Parties with Vehicle"
+    ],
+    process: [
+      "Reach out via WhatsApp with origin and destination RTO details.",
+      "Prepare Form 28 – 3 copies along with Chassis Number Sketch with Pencil – 3 Copies.",
+      "Verify NCRB clearance, insurance, pollution, and affidavit documentation.",
+      "Submit application at RTO for NOC issuance."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Vehicle NOC – Form 28.",
+    notes: "Chassis Number Sketch with Pencil – 3 Copies and Form 28 – 3 Copies are mandatory for NOC processing."
+  },
+  {
+    id: "international-driving-licence",
+    slug: "international-driving-licence",
+    name: "International Driving Licence",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "credit-card",
+    shortDescription: "Complete documentation assistance for acquiring an International Driving Permit / Licence (IDP/IDL).",
+    whoNeedsThis: "Indian driving licence holders planning to travel, visit, or drive vehicles abroad internationally.",
+    documents: [
+      "Driving Licence (DL) Copy",
+      "Visa Copy",
+      "Passport Copy",
+      "Ticket Copy",
+      "Address Proof",
+      "Mobile Number"
+    ],
+    process: [
+      "Connect with DASTAVEZ MITRA on WhatsApp for International Driving Licence assistance.",
+      "Verify your valid Indian DL, passport, and visa copy.",
+      "Compile ticket copy, address proof, and contact details for application filing.",
+      "Track International Driving Licence processing and issuance."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with International Driving Licence.",
+    notes: "Valid Indian Driving Licence, valid passport, and visa copy are required for processing."
+  },
+  {
+    id: "learner-licence",
+    slug: "learner-licence",
+    name: "Learner Licence",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "credit-card",
+    shortDescription: "Documentation support and application guidance for obtaining a Learner's Licence (LL).",
+    whoNeedsThis: "New drivers applying for a Learner's Licence or needing assistance with Sarathi portal documentation.",
+    documents: [
+      "1 Passport Size Photograph",
+      "DOB Proof",
+      "2 Address Proofs",
+      "Blood Group",
+      "Mobile Number",
+      "Signature on Plain Paper"
+    ],
+    process: [
+      "Share your Learner Licence requirement on WhatsApp.",
+      "Verify DOB proof, 2 address proofs, photo, and signature format.",
+      "Complete application drafting and slot booking guidance on the portal.",
+      "Appear for the online/RTO learner test with verified documentation."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Learner Licence.",
+    notes: "Ensure address proofs and DOB proof match exactly with official identification records."
+  },
+  {
+    id: "duplicate-rc",
+    slug: "duplicate-rc",
+    name: "Duplicate RC",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "copy",
+    shortDescription: "Documentation assistance for obtaining a duplicate Registration Certificate in case of loss, damage, or theft.",
+    whoNeedsThis: "Vehicle owners whose original RC is misplaced, lost, damaged, or stolen.",
+    documents: [
+      "Form 26",
+      "FIR Copy",
+      "Insurance Copy",
+      "Pollution Certificate Copy",
+      "Address Proof",
+      "NCRB"
+    ],
+    process: [
+      "Contact DASTAVEZ MITRA on WhatsApp with your vehicle details.",
+      "Prepare Form 26 and arrange FIR / NCRB clearance report.",
+      "Compile vehicle insurance, pollution certificate, and address proof.",
+      "Guidance on RTO application submission for duplicate RC issuance."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance for Duplicate RC.",
+    notes: "Form 26 and FIR/NCRB copy are essential prerequisites for duplicate RC processing."
+  },
+  {
+    id: "hp-cancellation-hypothecation",
+    slug: "hp-cancel",
+    name: "HP Cancel",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "check-circle",
+    shortDescription: "Documentation support for removing bank hypothecation/loan entry (HP Cancel) from vehicle RC.",
+    whoNeedsThis: "Vehicle owners who have cleared their auto loan and need hypothecation removed from their registration certificate.",
+    documents: [
+      "Form 35 – 2 Copies",
+      "Bank NOC Letter",
+      "Original RC",
+      "Affidavit",
+      "Insurance Copy",
+      "Pollution Certificate Copy",
+      "Address Proof"
+    ],
+    process: [
+      "Connect on WhatsApp with bank NOC letter and Form 35 – 2 Copies.",
+      "Verify bank seal, signature, and validity period on loan closure NOC.",
+      "Prepare affidavit and RTO application file for HP cancellation.",
+      "Submit at RTO for updated clean RC issuance."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with HP Cancel.",
+    notes: "Bank NOC letter is valid for a limited period; ensure timely submission along with Form 35 (2 copies)."
   },
   {
     id: "marriage-registration",
@@ -333,86 +474,6 @@ export const SERVICES = [
     notes: "An SPA is automatically restricted to the specific task mentioned and terminates upon its completion."
   },
   {
-    id: "driving-licence-work",
-    slug: "driving-licence",
-    name: "Driving Licence Related Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "credit-card",
-    shortDescription: "Documentation support for Learner's Licence, Permanent DL renewal, address update, and category endorsement.",
-    whoNeedsThis: "Drivers seeking guidance on Sarathi portal filings, DL renewal, duplicate licence, or international driving permit docs.",
-    documents: [],
-    process: [
-      "Share your DL inquiry or renewal requirement on WhatsApp.",
-      "Receive guidance on Sarathi portal documentation and slot booking.",
-      "Prepare medical certificate Form 1-A / address proof as applicable.",
-      "Track application and test appointment steps."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Driving Licence Related Work.",
-    notes: "DL services follow Parivahan Sarathi guidelines and state-specific slot availability."
-  },
-  {
-    id: "duplicate-rc",
-    slug: "duplicate-rc",
-    name: "Duplicate RC",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "copy",
-    shortDescription: "Documentation assistance for obtaining a duplicate Registration Certificate in case of loss, damage, or theft.",
-    whoNeedsThis: "Vehicle owners whose original RC is misplaced, torn, or stolen.",
-    documents: [],
-    process: [
-      "Contact DASTAVEZ MITRA on WhatsApp with your vehicle details.",
-      "Get guidance on police lost report filing and RTO Form 26 preparation.",
-      "Compile chassis imprint and vehicle insurance/pollution documents.",
-      "Guidance on RTO application submission."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance for Duplicate RC.",
-    notes: "Police NCR (Non-Cognizable Report) is usually required in case of lost original RC."
-  },
-  {
-    id: "noc-vehicle-work",
-    slug: "noc-vehicle-work",
-    name: "NOC Related Vehicle Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "file-check",
-    shortDescription: "Assistance with No Objection Certificate (NOC) documentation for inter-state and inter-RTO vehicle re-registration.",
-    whoNeedsThis: "Vehicle owners relocating to another state/district or selling their vehicle across state boundaries.",
-    documents: [],
-    process: [
-      "Reach out via WhatsApp with origin and destination RTO details.",
-      "Receive checklist of RTO Form 28, crime report verification, and tax clearance docs.",
-      "Prepare application file with guided documentation.",
-      "Submit and follow up for NOC issuance."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with Vehicle NOC Work.",
-    notes: "NOC validity and tax refund procedures vary between states."
-  },
-  {
-    id: "hp-cancellation-hypothecation",
-    slug: "hp-cancellation",
-    name: "HP Cancellation / Hypothecation Related Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "check-circle",
-    shortDescription: "Documentation support for removing or endorsing bank hypothecation/loan entry from vehicle RC.",
-    whoNeedsThis: "Vehicle owners who have cleared their auto loan and need the bank's name removed from their registration certificate.",
-    documents: [],
-    process: [
-      "Connect on WhatsApp with bank NOC and Form 35 details.",
-      "Verify bank seal, signature, and validity period on loan closure documents.",
-      "Prepare RTO application for hypothecation removal (HPT/HPA).",
-      "Guidance on fee payment and updated clean RC issuance."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with HP Cancellation / Hypothecation Work.",
-    notes: "Bank NOCs usually carry a specified validity window within which the RTO application must be submitted."
-  },
-  {
     id: "other-documentation-services",
     slug: "other-documentation-services",
     name: "Other Documentation Services",
@@ -445,12 +506,31 @@ export function getWhatsappLink(customMessage) {
 }
 
 /**
- * Helper to find a service by slug or id
+ * Helper to find a service by slug or id (including legacy slug aliases)
  * @param {string} slugOrId
  * @returns {object|null}
  */
 export function getServiceBySlug(slugOrId) {
   if (!slugOrId) return null;
   const normalized = slugOrId.toLowerCase().trim();
-  return SERVICES.find(s => s.slug.toLowerCase() === normalized || s.id.toLowerCase() === normalized) || null;
+  
+  // Direct match
+  const directMatch = SERVICES.find(s => 
+    s.slug.toLowerCase() === normalized || 
+    s.id.toLowerCase() === normalized
+  );
+  if (directMatch) return directMatch;
+
+  // Legacy alias matches
+  if (normalized === 'driving-licence' || normalized === 'driving-licence-work') {
+    return SERVICES.find(s => s.slug === 'learner-licence') || null;
+  }
+  if (normalized === 'noc-vehicle-work') {
+    return SERVICES.find(s => s.slug === 'vehicle-noc-form-28') || null;
+  }
+  if (normalized === 'hp-cancellation') {
+    return SERVICES.find(s => s.slug === 'hp-cancel') || null;
+  }
+
+  return null;
 }
