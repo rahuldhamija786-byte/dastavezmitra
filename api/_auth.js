@@ -130,3 +130,13 @@ export function authenticateAdmin(req) {
 
   return null;
 }
+
+/**
+ * Sanitize text input to prevent XSS and injection
+ */
+export function sanitizeInput(str) {
+  if (!str || typeof str !== 'string') return '';
+  return str
+    .replace(/[<>]/g, '')
+    .trim();
+}

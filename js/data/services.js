@@ -1,7 +1,6 @@
 /**
  * DASTAVEZ MITRA - Centralized Services Data Store
- * All services configured with editable fields and priority sorting.
- * Services with confirmed Required Documents appear first.
+ * All services configured with editable fields, priority sorting, and AI features.
  */
 
 export const BRAND_INFO = {
@@ -10,12 +9,13 @@ export const BRAND_INFO = {
   headline: "Documentation Ka Kaam? DASTAVEZ MITRA Se Sampark Kijiye.",
   subheading: "RTO, Vehicle Documentation, Marriage Registration, Affidavit, Agreement aur anya documentation services ke liye assistance.",
   
-  // Dedicated Separate Contact Numbers
+  // Dedicated Separate Contact Numbers (STRICT: Only these numbers)
   whatsappNumber: "9871592002",
   callingNumber: "9540403071",
   whatsappDisplay: "WhatsApp: 9871592002",
   callingDisplay: "Call: 9540403071",
   contactNumbersDisplay: "WhatsApp: 9871592002 | Call: 9540403071",
+  callingHoursNotice: "Call Support: 9:00 AM – 7:00 PM (Outside call hours, please message on WhatsApp)",
   
   whatsappUrlPrefix: "https://wa.me/919871592002",
   serviceLocationNotice: "Services currently available in Gurugram only.",
@@ -40,8 +40,154 @@ export const SERVICE_CATEGORIES = [
 
 export const SERVICES = [
   // ==========================================
-  // PRIORITY SERVICES (With Confirmed Required Documents)
+  // 1. VEHICLE & RTO SERVICES
   // ==========================================
+  {
+    id: "rc-transfer",
+    slug: "rc-transfer",
+    name: "RC Transfer",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "car",
+    shortDescription: "Complete assistance for transferring vehicle registration certificate ownership between seller and buyer.",
+    whoNeedsThis: "Individuals buying or selling pre-owned cars, two-wheelers, or commercial vehicles requiring official RC ownership transfer in Gurugram/Haryana.",
+    hasConfirmedDocs: true,
+    documents: [
+      "Original RC",
+      "Seller's Aadhaar Card",
+      "Seller's PAN Card",
+      "Buyer's Aadhaar Card",
+      "Buyer's PAN Card",
+      "Joint photograph of Seller and Buyer with the vehicle",
+      "Insurance",
+      "Pollution Certificate (PUC)",
+      "NCRB",
+      "Seller Affidavit",
+      "Buyer Affidavit",
+      "Seller & Buyer Forms"
+    ],
+    process: [
+      "Connect on WhatsApp with vehicle registration and transfer details.",
+      "Verify seller and buyer identity documents, affidavits, and joint vehicle photo.",
+      "Compile Form 29/30, NCRB clearance, valid insurance, and PUC.",
+      "Guidance on RTO application filing and ownership transfer tracking."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about RC Transfer.",
+    notes: "Both Seller Affidavit and Buyer Affidavit along with joint photograph with vehicle are required for RC transfer."
+  },
+  {
+    id: "rto",
+    slug: "rto",
+    name: "RTO",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "truck",
+    shortDescription: "Comprehensive assistance for Road Tax, Fitness Certificate, Commercial to Private Conversion, and RTO Challans.",
+    whoNeedsThis: "Private and commercial vehicle owners needing assistance with state road tax payment, fitness renewals, permit updates, conversion, and RTO challan resolution.",
+    hasConfirmedDocs: true,
+    subServices: [
+      {
+        id: "rto-road-tax",
+        name: "Road Tax Payment",
+        description: "Assistance with calculating, generating challans, and paying pending or annual/one-time road tax for private and commercial vehicles.",
+        actionText: "Pay Road Tax"
+      },
+      {
+        id: "rto-fitness-certificate",
+        name: "Fitness Certificate Payment / Processing",
+        description: "Complete documentation compilation, fee payment, and inspection guidance for commercial and transport vehicle fitness certificate renewal.",
+        actionText: "Process Fitness"
+      },
+      {
+        id: "rto-conversion",
+        name: "Commercial Vehicle → Private Vehicle Conversion",
+        description: "Procedural assistance and documentation for converting yellow-plate commercial/transport vehicles to white-plate private registration.",
+        actionText: "Convert Vehicle"
+      },
+      {
+        id: "rto-challan-assistance",
+        name: "RTO Challan Payment / Assistance",
+        description: "Verification and assistance for settling RTO departmental challans, including road-protection, overloading, and permit-related challans.",
+        actionText: "Resolve RTO Challan"
+      }
+    ],
+    documents: [
+      "Vehicle RC Copy",
+      "Current Insurance Policy",
+      "Pollution Certificate (PUC)",
+      "Owner's Aadhaar Card & PAN",
+      "Previous Tax / Fitness Receipts (if applicable)",
+      "Permit & Surrender Papers (for conversion)"
+    ],
+    process: [
+      "Select your required RTO sub-service and connect via WhatsApp/Call.",
+      "Share vehicle RC details and current document status for assessment.",
+      "Receive detailed fee calculation, statutory requirement checklist, and draft forms.",
+      "Step-by-step assistance through the authorized RTO / Parivahan portal workflow."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about RTO services.",
+    notes: "RTO procedures and fee structures are governed by Haryana Transport Department regulations."
+  },
+  {
+    id: "traffic-challan-assistance",
+    slug: "traffic-challan",
+    name: "Traffic Challan Assistance",
+    category: "vehicle-rto",
+    categoryName: "Vehicle & RTO",
+    icon: "alert-circle",
+    shortDescription: "Guidance on checking pending e-challans, virtual court challans, compoundable notices, and court resolution assistance.",
+    whoNeedsThis: "Vehicle owners with pending traffic camera challans, on-spot notices, or Virtual Court cases requiring documentation guidance.",
+    hasConfirmedDocs: true,
+    categorizedDocuments: [
+      {
+        groupTitle: "GENERAL VEHICLE DOCUMENTS",
+        items: [
+          "RC",
+          "Insurance",
+          "Pollution Certificate (PUC)",
+          "Driver's Driving Licence",
+          "Driver's Aadhaar Card",
+          "Owner's Aadhaar Card"
+        ]
+      },
+      {
+        groupTitle: "FOR COMMERCIAL VEHICLES",
+        items: [
+          "Road Tax",
+          "Fitness Certificate"
+        ]
+      },
+      {
+        groupTitle: "IF VEHICLE IS REGISTERED IN A COMPANY'S NAME",
+        items: [
+          "Company GST Certificate",
+          "Authority Letter on the company's official letterhead",
+          "Aadhaar Card of the authorized person"
+        ]
+      }
+    ],
+    documents: [
+      "RC",
+      "Insurance",
+      "Pollution Certificate (PUC)",
+      "Driver's Driving Licence",
+      "Driver's Aadhaar Card",
+      "Owner's Aadhaar Card",
+      "Commercial: Road Tax & Fitness Certificate",
+      "Company Vehicle: GST Certificate, Authority Letter & Auth Person Aadhaar"
+    ],
+    process: [
+      "Share your vehicle registration number or challan number on WhatsApp.",
+      "We check status across Parivahan, Traffic Police, and Virtual Court portals.",
+      "Verify vehicle documents, commercial fitness/tax, or company authority letter.",
+      "Receive guidance on online settlement or traffic court appearance in Gurugram."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Traffic Challan Assistance.",
+    notes: "Challan settlement options depend on whether the challan is pending at the traffic department or transferred to the Virtual/Regular Court."
+  },
   {
     id: "noc-vehicle-work",
     slug: "vehicle-noc-form-28",
@@ -186,6 +332,38 @@ export const SERVICES = [
     whatsappMessage: "Hello DASTAVEZ MITRA, I want information about HP Cancel.",
     notes: "Bank NOC letter is valid for a limited period; ensure timely submission along with Form 35 (2 copies)."
   },
+
+  // ==========================================
+  // 2. MARRIAGE DOCUMENTATION
+  // ==========================================
+  {
+    id: "quick-marriage-assistance",
+    slug: "quick-marriage-assistance",
+    name: "Quick Marriage Assistance",
+    category: "marriage",
+    categoryName: "Marriage Documentation",
+    icon: "zap",
+    shortDescription: "End-to-end documentation guidance for expedited marriage solemnization, Arya Samaj wedding paperwork, and government registration.",
+    whoNeedsThis: "Couples looking for quick, hassle-free documentation support for marriage solemnization rituals and legal registration without false guarantees.",
+    hasConfirmedDocs: true,
+    ageRequirementHindi: "विवाह हेतु लड़के की आयु 21 वर्ष तथा लड़की की आयु 18 वर्ष होना अनिवार्य है।",
+    documents: [
+      "Boy's Aadhaar Card",
+      "Girl's Aadhaar Card",
+      "Boy's Birth Proof (10th/Matriculation Marksheet OR Birth Certificate)",
+      "Girl's Birth Proof (10th/Matriculation Marksheet OR Birth Certificate)",
+      "Aadhaar Cards of 2 Witnesses"
+    ],
+    process: [
+      "Connect via WhatsApp to verify age proofs, Aadhaar, and witness availability.",
+      "Draft mandatory affidavits, mutual consent declarations, and paperwork dossier.",
+      "Guidance for marriage solemnization / Vedic rites documentation.",
+      "Follow-up guidance for Sub-Divisional Magistrate (SDM) / Registrar official registration."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Quick Marriage Assistance.",
+    notes: "विवाह हेतु लड़के की आयु 21 वर्ष तथा लड़की की आयु 18 वर्ष होना अनिवार्य है। Registration timelines depend on registrar appointment slots and document verification."
+  },
   {
     id: "marriage-registration",
     slug: "marriage-registration",
@@ -193,10 +371,11 @@ export const SERVICES = [
     category: "marriage",
     categoryName: "Marriage Documentation",
     icon: "heart",
-    shortDescription: "Documentation and appointment assistance for legal marriage registration certificate.",
-    whoNeedsThis: "Newly married couples or couples needing a formal marriage registration certificate for passport, visa, or official records.",
+    shortDescription: "Documentation and appointment assistance for obtaining an official Government Marriage Registration Certificate.",
+    whoNeedsThis: "Couples needing a formal marriage registration certificate for passport, visa, joint banking, or official records.",
     hasConfirmedDocs: true,
     hindiHeading: "शादी रजिस्टर करने हेतु आवश्यक दस्तावेज़",
+    ageRequirementHindi: "विवाह हेतु लड़के की आयु 21 वर्ष तथा लड़की की आयु 18 वर्ष होना अनिवार्य है।",
     documents: [
       "पति-पत्नी के आधार कार्ड",
       "दोनों के दसवीं की मार्कशीट / जन्म प्रमाण पत्र",
@@ -217,7 +396,213 @@ export const SERVICES = [
     ],
     estimatedTime: "",
     whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Marriage Registration.",
-    notes: "Marriage registration requirements depend on jurisdiction and the governing act (Hindu Marriage Act, Special Marriage Act, etc.)."
+    notes: "Marriage registration requirements depend on jurisdiction and governing acts (Hindu Marriage Act, Special Marriage Act, etc.)."
+  },
+  {
+    id: "live-in-relationship-agreement",
+    slug: "live-in-agreement",
+    name: "Live-In Relationship Agreement",
+    category: "affidavit-agreements",
+    categoryName: "Affidavits & Agreements",
+    icon: "users",
+    shortDescription: "Drafting mutual cohabitation and live-in relationship agreements detailing mutual consent, terms, and understanding.",
+    whoNeedsThis: "Adult couples living together seeking a clear written mutual declaration and understanding of terms and responsibilities.",
+    hasConfirmedDocs: true,
+    ageRequirementHindi: "दोनों पक्षों की आयु 18 वर्ष या उससे अधिक होना आवश्यक है।",
+    documents: [
+      "Boy's Aadhaar Card",
+      "Girl's Aadhaar Card",
+      "Boy's Birth Proof (10th/Matriculation Marksheet OR Birth Certificate)",
+      "Girl's Birth Proof (10th/Matriculation Marksheet OR Birth Certificate)"
+    ],
+    process: [
+      "Reach out on WhatsApp with your mutual details and agreed terms.",
+      "Verify that both parties are 18+ years of age with valid birth and identity proofs.",
+      "Receive customized draft agreement structured with mutually agreed terms.",
+      "Execute the agreement on appropriate stamp paper with notarization guidance."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Live-In Relationship Agreement.",
+    notes: "दोनों पक्षों की आयु 18 वर्ष या उससे अधिक होना आवश्यक है। Agreements are drafted based on voluntary mutual consent."
+  },
+
+  // ==========================================
+  // 3. AFFIDAVITS & AGREEMENTS (WITH EMBEDDED AI DRAFTING)
+  // ==========================================
+  {
+    id: "affidavit",
+    slug: "affidavit",
+    name: "Affidavit",
+    category: "affidavit-agreements",
+    categoryName: "Affidavits & Agreements",
+    icon: "file-text",
+    shortDescription: "Preparation and drafting of all types of affidavits with an embedded interactive AI drafting assistant.",
+    whoNeedsThis: "Anyone needing an official sworn statement or declaration for passport, name change, address discrepancy, date of birth, property, court, or government submission.",
+    hasConfirmedDocs: true,
+    hasAiDrafting: true,
+    aiDraftingType: "affidavit",
+    aiDraftingButtonText: "अपना Affidavit Draft करें",
+    documents: [
+      "Deponent's Aadhaar Card / Identity Proof",
+      "Address Proof",
+      "Relevant Supporting Documents (Marksheet, Marriage Certificate, Property papers, etc. depending on purpose)",
+      "Photographs (where mandated by authority)"
+    ],
+    process: [
+      "Use our embedded AI assistant 'अपना Affidavit Draft करें' or send requirement via WhatsApp.",
+      "Provide purpose, deponent details, submitting authority, and relevant facts.",
+      "Review your preliminary generated draft on-screen.",
+      "Connect with DASTAVEZ MITRA desk for final verification, e-stamp printing, and notarization."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Affidavit preparation.",
+    notes: "नोटरी के लिए आपकी व्यक्तिगत उपस्थिति अनिवार्य होगी। Stamp duty values vary by purpose and state regulations."
+  },
+  {
+    id: "agreement-drafting",
+    slug: "agreement",
+    name: "Agreement Drafting",
+    category: "affidavit-agreements",
+    categoryName: "Affidavits & Agreements",
+    icon: "clipboard",
+    shortDescription: "Custom commercial and legal agreement drafting with our multi-party embedded AI questionnaire.",
+    whoNeedsThis: "Landlords, tenants, vehicle owners, partners, vendors, and businesses needing tailored contracts with comprehensive legal clauses.",
+    hasConfirmedDocs: true,
+    hasAiDrafting: true,
+    aiDraftingType: "agreement",
+    aiDraftingButtonText: "अपना Agreement Draft करें",
+    documents: [
+      "Aadhaar & PAN Cards of All Parties (First Party, Second Party, etc.)",
+      "Asset / Property / Vehicle Details & Registration Proof",
+      "Commercial Terms (Rent, Consideration, Deposit, Duration, Start/End Dates)",
+      "2 Witnesses' Identity Proofs"
+    ],
+    process: [
+      "Launch 'अपना Agreement Draft करें' inside this section to answer interactive tailored questions.",
+      "Specify agreement type (Rent, Partnership, Vehicle Sale/Rental, Service, Commercial, etc.) and all parties.",
+      "Input key terms: consideration, responsibilities, default, dispute, notice, and termination clauses.",
+      "Confirm summary and generate preliminary draft for final verification by DASTAVEZ MITRA."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Agreement Drafting.",
+    notes: "Stamp duty and registration requirements vary depending on agreement type, tenure, and consideration amount."
+  },
+
+  // ==========================================
+  // 4. POWER OF ATTORNEY & WILLS (WITH EMBEDDED AI DRAFTING)
+  // ==========================================
+  {
+    id: "will-testament-documentation",
+    slug: "will-testament-documentation",
+    name: "Will / Testament Documentation",
+    category: "power-of-attorney",
+    categoryName: "Power of Attorney & Wills",
+    icon: "feather",
+    shortDescription: "Comprehensive testamentary succession drafting with our structured asset-by-asset AI assistant.",
+    whoNeedsThis: "Individuals wishing to document precise distribution of movable and immovable assets among beneficiaries with conditional succession.",
+    hasConfirmedDocs: true,
+    hasAiDrafting: true,
+    aiDraftingType: "will",
+    aiDraftingButtonText: "अपनी Will Draft करें",
+    documents: [
+      "Testator's Aadhaar Card & Residential Address Proof",
+      "Immovable Property Details (Registry, Allotment Letter, Share/Interest)",
+      "Movable Asset Details (Bank Accounts, FDs, Lockers, Vehicles, Shares, Investments)",
+      "Beneficiary Identity Details & Relationship Proof",
+      "Aadhaar Cards of 2 Independent Witnesses",
+      "Doctor's Fitness Certificate (Recommended for elderly testators)"
+    ],
+    process: [
+      "Click 'अपनी Will Draft करें' for a guided step-by-step interview.",
+      "Step 1: Input Testator details and identification particulars.",
+      "Step 2: Add individual Immovable & Movable assets one by one.",
+      "Step 3 & 4: Assign beneficiaries, shares, life interests, and special conditions.",
+      "Step 5: Review complete asset-by-asset confirmation and generate preliminary draft."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Will / Testament Documentation.",
+    notes: "Will drafting requires careful legal verification. Registration provides official record security."
+  },
+  {
+    id: "gpa-spa",
+    slug: "gpa-spa",
+    name: "GPA / SPA",
+    category: "power-of-attorney",
+    categoryName: "Power of Attorney & Wills",
+    icon: "award",
+    shortDescription: "Drafting General Power of Attorney (GPA) and Special Power of Attorney (SPA) with embedded AI drafting assistant.",
+    whoNeedsThis: "Property owners, NRIs, elderly individuals, or principals authorizing trusted representatives for general affairs or specific transactions.",
+    hasConfirmedDocs: true,
+    hasAiDrafting: true,
+    aiDraftingType: "gpa-spa",
+    aiDraftingButtonText: "अपना GPA / SPA Draft करें",
+    documents: [
+      "Aadhaar Card of Principal (Maker / Executant)",
+      "Aadhaar Card of Attorney Holder (Representative)",
+      "PAN Cards of Both Parties",
+      "Property Papers / Matter / Vehicle Documents (subject of authorization)",
+      "2 Witnesses' Aadhaar Cards & Photographs"
+    ],
+    process: [
+      "Launch 'अपना GPA / SPA Draft करें' to specify whether GPA or SPA is required.",
+      "Define scope of powers, matter/property details, duration, and limitations.",
+      "Generate preliminary draft with defined authority clauses.",
+      "Guidance on notary execution or Sub-Registrar registration assistance where available."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about GPA / SPA.",
+    notes: "Notary GPA/SPA can be provided. Notary के लिए आपकी व्यक्तिगत उपस्थिति आवश्यक होगी। Registration availability depends on the applicable Tehsil/Sub-Registrar authority."
+  },
+
+  // ==========================================
+  // 5. IDENTITY & CERTIFICATES
+  // ==========================================
+  {
+    id: "legal-heir-certificate",
+    slug: "legal-heir-certificate",
+    name: "Legal Heir Certificate",
+    category: "identity-certificates",
+    categoryName: "Certificates & Gazette",
+    icon: "user-check",
+    shortDescription: "End-to-End Legal Heir Certificate assistance for claiming deceased person's property, bank accounts, and benefits.",
+    whoNeedsThis: "Surviving family members (spouse, children, parents) needing official survivor certification for inheritance, bank claims, or property mutation.",
+    hasConfirmedDocs: true,
+    personalAppearanceNotice: "Affidavit के execution/notarization के लिए संबंधित व्यक्ति की व्यक्तिगत उपस्थिति आवश्यक होगी।",
+    categorizedDocuments: [
+      {
+        groupTitle: "DECEASED PERSON DOCUMENTS",
+        items: [
+          "Death Certificate",
+          "Aadhaar Card",
+          "Passport Size Photograph"
+        ]
+      },
+      {
+        groupTitle: "LEGAL HEIRS DOCUMENTS (Spouse, Children, etc.)",
+        items: [
+          "Aadhaar Card of All Legal Heirs",
+          "Passport Size Photograph of All Legal Heirs",
+          "Affidavit (DASTAVEZ MITRA assists with preparation)"
+        ]
+      }
+    ],
+    documents: [
+      "Deceased Person: Death Certificate, Aadhaar Card, Passport Size Photo",
+      "Legal Heirs: Aadhaar Cards, Photos & Affidavits of all first-line legal heirs",
+      "Family Tree / Ration Card / Parivar Pehchan Patra"
+    ],
+    processTitle: "End-to-End Legal Heir Certificate Assistance Process",
+    process: [
+      "Affidavits prepared and verified for all legal heirs.",
+      "Legal Heir Certificate application file compiled with supporting records.",
+      "Assistance for required Municipal Corporation verification / report.",
+      "Assistance for required Patwari verification / report.",
+      "Assistance for required Tehsildar verification / report.",
+      "After required reports, assistance for issuance of Legal Heir Certificate through the Tehsildar."
+    ],
+    estimatedTime: "",
+    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Legal Heir Certificate.",
+    notes: "Affidavit के execution/notarization के लिए संबंधित व्यक्ति की व्यक्तिगत उपस्थिति आवश्यक होगी। Final issuance remains subject to verification by the competent Revenue/Tehsildar authority."
   },
   {
     id: "gazette-name-change",
@@ -272,309 +657,37 @@ export const SERVICES = [
   },
 
   // ==========================================
-  // OTHER SERVICES (Retaining existing info)
+  // 6. FALLBACK / ANY OTHER DOCUMENTS
   // ==========================================
   {
-    id: "rc-transfer",
-    slug: "rc-transfer",
-    name: "RC Transfer",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "car",
-    shortDescription: "Complete assistance for transferring vehicle registration certificate ownership between parties.",
-    whoNeedsThis: "Individuals buying or selling pre-owned cars, two-wheelers, commercial vehicles, or transferring vehicle ownership within family.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Select RC Transfer & connect with DASTAVEZ MITRA on WhatsApp.",
-      "Receive guidance on the required forms and vehicle verification documents.",
-      "Prepare and compile the application file with guidance.",
-      "Submit and track transfer progress."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about RC Transfer.",
-    notes: "Requirements and procedures may vary based on whether the vehicle is within the same RTO jurisdiction or inter-state."
-  },
-  {
-    id: "vehicle-documentation-rto",
-    slug: "rto-work",
-    name: "Vehicle Documentation / RTO Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "shield-check",
-    shortDescription: "End-to-end documentation assistance for all general RTO and vehicle-related paperwork.",
-    whoNeedsThis: "Vehicle owners needing help navigating various RTO documentation procedures, fitness renewal, or updates.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Reach out on WhatsApp specifying your vehicle documentation requirement.",
-      "Get clear instructions on the specific forms and paperwork needed.",
-      "Review your document readiness before final submission.",
-      "Follow guided steps to complete your RTO task smoothly."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Vehicle Documentation / RTO Work.",
-    notes: "Guidelines vary depending on vehicle type (private or commercial) and local RTO regulations."
-  },
-  {
-    id: "rta-work",
-    slug: "rta-work",
-    name: "RTA Work",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "truck",
-    shortDescription: "Assistance with regional transport authority filings, permits, endorsements, and renewals.",
-    whoNeedsThis: "Commercial vehicle owners, transport operators, and individuals with RTA specific filings.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Contact us via WhatsApp with your RTA requirements.",
-      "Receive checklist of required documentation for your specific RTA authority.",
-      "Draft and organize application papers correctly.",
-      "Proceed with authorized submission steps."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about RTA Work.",
-    notes: "RTA rules and requirements are determined by state transport departments."
-  },
-  {
-    id: "traffic-challan-assistance",
-    slug: "traffic-challan",
-    name: "Traffic Challan Assistance",
-    category: "vehicle-rto",
-    categoryName: "Vehicle & RTO",
-    icon: "alert-circle",
-    shortDescription: "Guidance on checking pending e-challans, virtual court challans, and resolution assistance.",
-    whoNeedsThis: "Vehicle owners who have received camera/e-challans or notice challans and need help understanding resolution procedures.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Share your vehicle details / challan number via WhatsApp.",
-      "We help verify challan status and appropriate resolution channel.",
-      "Receive guidance on online portal settlement or virtual court procedures.",
-      "Obtain payment confirmation / closure guidance."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Traffic Challan Assistance.",
-    notes: "Challan disposal timelines and options depend on the issuing traffic police wing and court portal."
-  },
-  {
-    id: "same-day-marriage-assistance",
-    slug: "same-day-marriage",
-    name: "Same Day Marriage Assistance",
-    category: "marriage",
-    categoryName: "Marriage Documentation",
-    icon: "zap",
-    shortDescription: "Step-by-step documentation guidance for urgent marriage registration and certification.",
-    whoNeedsThis: "Couples needing fast-track documentation for urgent travel, visa deadlines, or official verification.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "WhatsApp DASTAVEZ MITRA with your urgent requirements.",
-      "Receive immediate guidance on necessary affidavits and identity documents.",
-      "Verify document completeness prior to appointment slot booking.",
-      "Follow expedited documentation workflow."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Same Day Marriage Assistance.",
-    notes: "Scheduling and availability depend on the registrar office slots and complete document readiness."
-  },
-  {
-    id: "arya-samaj-marriage",
-    slug: "arya-samaj-marriage",
-    name: "Arya Samaj Marriage",
-    category: "marriage",
-    categoryName: "Marriage Documentation",
-    icon: "sun",
-    shortDescription: "Documentation support for solemnizing and recording Arya Samaj wedding rites followed by registration.",
-    whoNeedsThis: "Couples looking for guidance on documentation requirements for Arya Samaj wedding rituals and subsequent government registration.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Connect via WhatsApp for age, identity, and ritual document checklist.",
-      "Verify all required affidavits, witness identity documents, and photos.",
-      "Guidance on mandir rites documentation and issuance of marriage certificate.",
-      "Guidance on subsequent SDM/Registrar legal registration."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Arya Samaj Marriage.",
-    notes: "Both parties must fulfill age and identity criteria according to applicable norms."
-  },
-  {
-    id: "live-in-relationship-agreement",
-    slug: "live-in-agreement",
-    name: "Live-In Relationship Agreement",
-    category: "affidavit-agreements",
-    categoryName: "Affidavits & Agreements",
-    icon: "users",
-    shortDescription: "Drafting mutual cohabitation and live-in relationship agreements detailing mutual terms.",
-    whoNeedsThis: "Couples living together seeking a clear written mutual declaration and understanding of terms and responsibilities.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Reach out on WhatsApp with your key preferences and terms.",
-      "Receive draft agreement structured with customized mutual clauses.",
-      "Review the draft and finalize terms.",
-      "Execute the agreement on appropriate stamp paper with notarization guidance."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Live-In Relationship Agreement.",
-    notes: "Agreements are drafted based on mutual consent of both consenting adults."
-  },
-  {
-    id: "affidavit",
-    slug: "affidavit",
-    name: "Affidavit",
-    category: "affidavit-agreements",
-    categoryName: "Affidavits & Agreements",
-    icon: "file-text",
-    shortDescription: "Preparation and drafting of all types of general, name discrepancy, address, and declaration affidavits.",
-    whoNeedsThis: "Anyone needing an official sworn statement or declaration for passport, college admission, duplicate docs, or bank purposes.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Send details of the affidavit purpose and specific requirement on WhatsApp.",
-      "We prepare a precise draft tailored to the receiving authority's specifications.",
-      "Guidance on appropriate denomination stamp paper.",
-      "Assistance with attestation and completion."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Affidavit.",
-    notes: "Stamp duty values vary by state and affidavit purpose."
-  },
-  {
-    id: "agreement-drafting",
-    slug: "agreement",
-    name: "Agreement Drafting",
-    category: "affidavit-agreements",
-    categoryName: "Affidavits & Agreements",
-    icon: "clipboard",
-    shortDescription: "Custom drafting for rent agreements, service contracts, sale agreements, and general commercial agreements.",
-    whoNeedsThis: "Landlords, tenants, freelancers, vendors, and individuals needing structured agreements with clearly stated clauses.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Share your contract details and specific requirements on WhatsApp.",
-      "Get a customized, clearly drafted agreement template.",
-      "Review and suggest revisions to suit both parties.",
-      "Guidance on execution, stamp duty, and witness verification."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Agreement Drafting.",
-    notes: "Stamp duty and registration requirements vary depending on agreement tenure and asset value."
-  },
-  {
-    id: "will-testament-documentation",
-    slug: "will-testament-documentation",
-    name: "Will / Testament Documentation",
-    category: "power-of-attorney",
-    categoryName: "Power of Attorney & Wills",
-    icon: "feather",
-    shortDescription: "Assistance in drafting clear testamentary documents and wills for estate and asset succession.",
-    whoNeedsThis: "Individuals wanting to clearly document their wishes regarding asset distribution and estate succession among heirs.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Discuss your asset allocation overview on WhatsApp.",
-      "Draft a comprehensive, clear will with detailed asset schedules.",
-      "Review clauses for executor designation and witness requirements.",
-      "Guidance on execution, registration (if desired), and safekeeping."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Will / Testament Documentation.",
-    notes: "Registration of a will is optional but provides an added layer of authenticity."
-  },
-  {
-    id: "legal-heir-certificate",
-    slug: "legal-heir-certificate",
-    name: "Legal Heir Certificate",
-    category: "identity-certificates",
-    categoryName: "Certificates & Gazette",
-    icon: "user-check",
-    shortDescription: "Documentation support for claiming legal heirship / survivor certificate for asset transfers and claims.",
-    whoNeedsThis: "Surviving family members needing official documentation to claim deceased person's bank balances, PF, insurance, or property.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Connect via WhatsApp with details of the deceased and surviving family members.",
-      "Receive checklist for death certificate, family tree, and no-objection declarations.",
-      "Prepare application form and accompanying affidavits.",
-      "Follow submission guidelines at the local Revenue / Tehsildar office."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Legal Heir Certificate.",
-    notes: "Procedures may differ between rural (Panchayat/Tehsil) and urban (SDM/Revenue) administrative bodies."
-  },
-  {
-    id: "gpa-power-of-attorney",
-    slug: "gpa-power-of-attorney",
-    name: "GPA / General Power of Attorney",
-    category: "power-of-attorney",
-    categoryName: "Power of Attorney & Wills",
-    icon: "award",
-    shortDescription: "Drafting General Power of Attorney documents authorizing trusted persons to handle broad affairs.",
-    whoNeedsThis: "NRIs, elderly persons, or busy individuals granting broad authorization to a family member or representative.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Specify scope of powers and details of principal and attorney on WhatsApp.",
-      "Receive a structured GPA draft clearly delineating authorized actions.",
-      "Review and verify all party details and identity proofs.",
-      "Guidance on execution, stamp duty payment, and sub-registrar registration."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about GPA / General Power of Attorney.",
-    notes: "GPA involving immovable property generally mandates compulsory registration under state stamp laws."
-  },
-  {
-    id: "spa-power-of-attorney",
-    slug: "spa-power-of-attorney",
-    name: "SPA / Special Power of Attorney",
-    category: "power-of-attorney",
-    categoryName: "Power of Attorney & Wills",
-    icon: "target",
-    shortDescription: "Drafting specific, purpose-limited Power of Attorney documents for defined transactions or tasks.",
-    whoNeedsThis: "Persons needing to authorize someone for a specific single task such as property registration, bank matter, or vehicle sale.",
-    hasConfirmedDocs: false,
-    documents: [],
-    process: [
-      "Define the specific purpose and transaction on WhatsApp.",
-      "We prepare a tightly scoped SPA document avoiding ambiguities.",
-      "Final review of specific power clauses.",
-      "Guidance on stamping, notarization, or registration as needed."
-    ],
-    estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about SPA / Special Power of Attorney.",
-    notes: "An SPA is automatically restricted to the specific task mentioned and terminates upon its completion."
-  },
-  {
-    id: "other-documentation-services",
-    slug: "other-documentation-services",
-    name: "Other Documentation Services",
+    id: "any-other-documents",
+    slug: "any-other-documents",
+    name: "Any Other Documents",
     category: "other",
     categoryName: "Other Services",
     icon: "layers",
-    shortDescription: "Assistance with custom paperwork, miscellaneous certificates, declarations, and general documentation needs.",
-    whoNeedsThis: "Anyone with custom documentation needs not explicitly listed in the standard categories.",
+    shortDescription: "Custom documentation support for any specific deed, declaration, certificate, or paperwork not listed above.",
+    whoNeedsThis: "Anyone needing specialized documentation assistance, custom declarations, or tailored paperwork in Gurugram.",
     hasConfirmedDocs: false,
+    isFallbackService: true,
+    fallbackPromptHeading: "कोई अन्य Specific Document यहाँ Mention नहीं है?",
+    fallbackPromptText: "आप हमें अपना matter/message भेज सकते हैं। WhatsApp या Call के माध्यम से हम आपकी सहायता के लिए उपलब्ध हैं।",
     documents: [],
     process: [
-      "Describe your specific documentation requirement on WhatsApp.",
-      "We review the requirements and outline the standard document checklist.",
-      "Receive step-by-step assistance tailored to your unique case.",
-      "Proceed with prepared and verified documentation."
+      "Send details of your specific document or legal paperwork requirement.",
+      "Connect with our Gurugram desk via WhatsApp (9871592002) or Call (9540403071).",
+      "Receive personalized checklist, drafting guidance, and procedure timeline.",
+      "Proceed with prepared documentation and verification assistance."
     ],
     estimatedTime: "",
-    whatsappMessage: "Hello DASTAVEZ MITRA, I want information about Other Documentation Services.",
-    notes: "Tell us what paperwork or certificate you need assistance with, and we will guide you."
+    whatsappMessage: "Hello DASTAVEZ MITRA, I need assistance with a custom document / paperwork not listed on the website.",
+    notes: "Call support available 9 AM – 7 PM (9540403071). Outside call hours, WhatsApp message support is available 24/7 (9871592002)."
   }
 ];
 
 /**
  * Helper to generate a pre-filled WhatsApp link
  * STRICT RULE: Only connects to 9871592002
- * @param {string} customMessage - Optional custom message
- * @returns {string} - WhatsApp URL
  */
 export function getWhatsappLink(customMessage) {
   const message = customMessage || BRAND_INFO.defaultWhatsappMessage;
@@ -584,7 +697,6 @@ export function getWhatsappLink(customMessage) {
 /**
  * Helper to generate a direct phone call link
  * STRICT RULE: Only connects to 9540403071
- * @returns {string} - tel URI
  */
 export function getCallLink() {
   return `tel:+91${BRAND_INFO.callingNumber}`;
@@ -592,8 +704,6 @@ export function getCallLink() {
 
 /**
  * Helper to find a service by slug or id (including legacy slug aliases)
- * @param {string} slugOrId
- * @returns {object|null}
  */
 export function getServiceBySlug(slugOrId) {
   if (!slugOrId) return null;
@@ -616,8 +726,17 @@ export function getServiceBySlug(slugOrId) {
   if (normalized === 'hp-cancellation') {
     return SERVICES.find(s => s.slug === 'hp-cancel') || null;
   }
-  if (normalized === 'gazette-name-change' || normalized === 'gazette') {
-    return SERVICES.find(s => s.slug === 'gazette-name-change') || null;
+  if (normalized === 'rta-work' || normalized === 'vehicle-documentation-rto') {
+    return SERVICES.find(s => s.slug === 'rto') || null;
+  }
+  if (normalized === 'same-day-marriage' || normalized === 'same-day-marriage-assistance' || normalized === 'arya-samaj-marriage') {
+    return SERVICES.find(s => s.slug === 'quick-marriage-assistance') || null;
+  }
+  if (normalized === 'gpa-power-of-attorney' || normalized === 'spa-power-of-attorney' || normalized === 'gpa' || normalized === 'spa') {
+    return SERVICES.find(s => s.slug === 'gpa-spa') || null;
+  }
+  if (normalized === 'other-documentation-services') {
+    return SERVICES.find(s => s.slug === 'any-other-documents') || null;
   }
 
   return null;

@@ -72,7 +72,7 @@
         <ul class="nav-menu">
           <li><a href="#/" class="nav-link active">Home</a></li>
           <li><a href="#/services" class="nav-link">Services</a></li>
-          <li><a href="#/legal-assistant" class="nav-link" style="color: #0284c7; font-weight: 700;">🤖 AI Legal Assistant</a></li>
+          <li><a href="#/legal-mitra" class="nav-link" style="color: #0284c7; font-weight: 700;">⚖️ Legal Mitra</a></li>
           <li><a href="#/enquiry" class="nav-link">Enquire Online</a></li>
           <li><a href="#/how-it-works" class="nav-link">How It Works</a></li>
           <li><a href="#/documents" class="nav-link">Documents</a></li>
@@ -115,8 +115,8 @@
 
       <ul class="drawer-links">
         <li><a href="#/" onclick="toggleMobileMenu(false)">🏠 Home</a></li>
-        <li><a href="#/services" onclick="toggleMobileMenu(false)">📁 Services (20+)</a></li>
-        <li><a href="#/legal-assistant" onclick="toggleMobileMenu(false)">🤖 AI Legal Assistant</a></li>
+        <li><a href="#/services" onclick="toggleMobileMenu(false)">📁 Services</a></li>
+        <li><a href="#/legal-mitra" onclick="toggleMobileMenu(false)">⚖️ Legal Mitra</a></li>
         <li><a href="#/enquiry" onclick="toggleMobileMenu(false)">📝 Enquire Online</a></li>
         <li><a href="#/how-it-works" onclick="toggleMobileMenu(false)">⚡ How It Works</a></li>
         <li><a href="#/documents" onclick="toggleMobileMenu(false)">📑 Required Documents</a></li>
@@ -128,7 +128,7 @@
     <div class="drawer-footer">
       <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">
         <div>💬 WhatsApp: <strong>9871592002</strong></div>
-        <div style="margin-top: 2px;">📞 Call: <strong>9540403071</strong></div>
+        <div style="margin-top: 2px;">📞 Call: <strong>9540403071</strong> (9 AM–7 PM)</div>
       </div>
       <p style="font-size: 0.78rem; color: #92400e; background: #fef3c7; padding: 0.25rem 0.5rem; border-radius: 4px; margin-bottom: 0.75rem; font-weight: 600;">📍 Services in Gurugram only</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
@@ -173,37 +173,37 @@
     </div>
   </div>
 
-  <!-- Floating AI Legal Assistant Widget Launcher -->
-  <button class="floating-ai-widget-launcher" id="aiChatLauncherBtn" onclick="toggleFloatingAiWidget()" aria-label="Open AI Legal Information Assistant">
-    <span style="font-size: 1.15rem;">🤖</span>
-    <span>Ask Legal AI</span>
+  <!-- Floating Legal Mitra Assistant Widget Launcher -->
+  <button class="floating-ai-widget-launcher" id="aiChatLauncherBtn" onclick="toggleFloatingAiWidget()" aria-label="Open Legal Mitra Information Assistant">
+    <span style="font-size: 1.15rem;">⚖️</span>
+    <span>Ask Legal Mitra</span>
   </button>
 
-  <!-- Floating AI Assistant Popup Drawer -->
+  <!-- Floating Legal Mitra Assistant Popup Drawer -->
   <div class="floating-ai-drawer" id="floatingAiDrawer" aria-hidden="true">
     <div class="ai-chat-header" style="padding: 0.85rem 1rem;">
       <div class="ai-chat-header-info">
-        <div class="ai-bot-avatar" style="width: 34px; height: 34px; font-size: 0.95rem;">🤖</div>
+        <div class="ai-bot-avatar" style="width: 34px; height: 34px; font-size: 0.95rem;">⚖️</div>
         <div>
-          <h4 class="ai-bot-title" style="font-size: 0.95rem;">Dastavez Legal Info Assistant</h4>
-          <p class="ai-bot-subtitle" style="font-size: 0.72rem;">General Legal Information Assistant</p>
+          <h4 class="ai-bot-title" style="font-size: 0.95rem;">Legal Mitra</h4>
+          <p class="ai-bot-subtitle" style="font-size: 0.72rem;">Legal Information Assistant</p>
         </div>
       </div>
       <button onclick="toggleFloatingAiWidget(false)" style="background: transparent; border: none; color: white; font-size: 1.4rem; cursor: pointer; line-height: 1;">&times;</button>
     </div>
     <div class="ai-chat-disclaimer-bar" style="font-size: 0.72rem; padding: 0.35rem 0.65rem;">
-      General legal info only • Not legal advice
+      General legal info only • Not legal advice • WhatsApp: 9871592002
     </div>
     <div class="ai-chat-messages" id="floatingChatMessages"></div>
     <div class="chat-quick-prompts" style="padding: 0.4rem 0.65rem;">
       <button class="prompt-chip" onclick="sendFloatingQuery('Unpaid salary by employer')">💼 Unpaid Salary</button>
-      <button class="prompt-chip" onclick="sendFloatingQuery('Cheque bounce Section 138')">💳 Cheque Bounce</button>
-      <button class="prompt-chip" onclick="sendFloatingQuery('Traffic challan procedure')">🚗 Traffic Challan</button>
-      <button class="prompt-chip" onclick="sendFloatingQuery('BNS vs IPC differences')">⚖️ BNS vs IPC</button>
+      <button class="prompt-chip" onclick="sendFloatingQuery('Cheque bounce Section 138 procedure')">💳 Cheque Bounce</button>
+      <button class="prompt-chip" onclick="sendFloatingQuery('Traffic challan virtual court procedure')">🚗 Traffic Challan</button>
+      <button class="prompt-chip" onclick="sendFloatingQuery('BNS 2023 vs IPC 1860 applicability')">⚖️ BNS vs IPC</button>
     </div>
     <form class="ai-chat-input-area" onsubmit="handleFloatingChatSubmit(event)" style="padding: 0.55rem 0.75rem;">
-      <input type="text" id="floatingChatInput" class="ai-chat-input" placeholder="Ask a legal query..." maxlength="500" autocomplete="off" />
-      <button type="submit" class="btn-ai-send" style="width: 36px; height: 36px;" aria-label="Send query">
+      <input type="text" id="floatingChatInput" class="ai-chat-input" placeholder="Ask a legal query to Legal Mitra..." maxlength="500" autocomplete="off" />
+      <button type="submit" class="btn-ai-send" id="floatingChatSendBtn" style="width: 36px; height: 36px;" aria-label="Send query">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </form>

@@ -5,7 +5,7 @@ let currentCategory = 'all';
 let currentSearchQuery = '';
 let isSubmittingLead = false;
 
-// Admin Session State (Stored in sessionStorage for security)
+// Admin Session State
 let adminToken = sessionStorage.getItem('dm_admin_token') || null;
 let adminLeadsData = [];
 let adminStatsData = null;
@@ -14,11 +14,11 @@ let adminFilterService = 'all';
 let adminSearchTerm = '';
 let adminSortOrder = 'newest';
 
-// AI Chat Assistant State
+// Legal Mitra AI Chat State
 let aiChatMessages = [
   {
     role: 'assistant',
-    text: `Namaste! Main **Dastavez Legal Info Assistant** hoon.\n\nMain aapko general legal information simple language mein samjhane mein madad kar sakta hoon.\n\nAap apna legal prashn simple shabdo mein pooch sakte hain (Jaise: *Employer ne salary nahi di, Cheque bounce ho gaya, Traffic challan aaya hai, BNS vs IPC, FIR procedure, ya Marriage registration*).`
+    text: `Namaste! Main **Legal Mitra** (Legal Information Assistant) hoon.\n\nMain aapko Indian legal concepts aur documentation procedures simple language mein samjhane mein madad karta hoon.\n\nAap apna legal prashn pooch sakte hain (Jaise: *Unpaid salary, Cheque bounce Section 138, Traffic challan, BNS 2023 vs IPC 1860, Property agreement, Will distribution, ya Marriage registration*).`
   }
 ];
 let isAiTyping = false;
@@ -30,9 +30,8 @@ function isCallingHoursActive() {
     const istHours = new Date(istString).getHours();
     return istHours >= 9 && istHours < 19;
   } catch (err) {
-    const utcHours = new Date().getUTCHours();
-    const utcMinutes = new Date().getUTCMinutes();
-    const istHours = Math.floor(((utcHours * 60 + utcMinutes + 330) % 1440) / 60);
+    const totalMinutes = new Date().getUTCHours() * 60 + new Date().getUTCMinutes() + 330;
+    const istHours = Math.floor(((totalMinutes % 1440) + 1440) % 1440 / 60);
     return istHours >= 9 && istHours < 19;
   }
 }
@@ -54,7 +53,6 @@ function getIconHtml(iconName) {
     'feather': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>',
     'user-check': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>',
     'award': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>',
-    'target': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
     'credit-card': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
     'copy': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
     'file-check': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 18 17 13"/></svg>',
@@ -63,7 +61,8 @@ function getIconHtml(iconName) {
     'whatsapp': '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
     'phone': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
     'map-pin': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-    'send': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'
+    'send': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+    'sparkles': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>'
   };
 
   return iconMap[iconName] || iconMap['file-text'];
@@ -71,28 +70,110 @@ function getIconHtml(iconName) {
 
 // Render Document Details for Service View / Modal / Hub
 function renderServiceDocuments(service) {
-  if (service.slug === 'marriage-registration' || service.hindiHeading) {
-    return `
-      <div class="docs-alert-box">
-        <div class="docs-hindi-header">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          <span>${service.hindiHeading || 'शादी रजिस्टर करने हेतु आवश्यक दस्तावेज़'}</span>
-        </div>
-        <ul class="docs-numbered-list">
-          ${service.documents.map((doc, idx) => `
-            <li class="docs-numbered-item">
-              <span class="docs-num-pill">${idx + 1}</span>
-              <span><strong>${doc}</strong></span>
-            </li>
-          `).join('')}
-        </ul>
+  let output = '';
+
+  // 1. Statutory Hindi Notice (Age Requirement)
+  if (service.ageRequirementHindi) {
+    output += `
+      <div class="statutory-hindi-notice">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>${service.ageRequirementHindi}</span>
       </div>
     `;
   }
 
+  // 2. Personal Appearance / Notary Notice
+  if (service.personalAppearanceNotice) {
+    output += `
+      <div class="statutory-hindi-notice" style="background: #f0fdf4; border-color: #86efac; color: #166534;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        <span>${service.personalAppearanceNotice}</span>
+      </div>
+    `;
+  }
+
+  // 3. RTO Sub-Services
+  if (service.subServices && service.subServices.length > 0) {
+    output += `
+      <div class="docs-alert-box" style="background: #f8fafc;">
+        <div class="docs-alert-title" style="color: var(--color-primary); font-size: 1.05rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Available RTO Services & Sub-Services
+        </div>
+        <div class="rto-subservices-grid">
+          ${service.subServices.map(sub => `
+            <div class="rto-subservice-card">
+              <div>
+                <h4 class="rto-subservice-title">${sub.name}</h4>
+                <p class="rto-subservice-desc">${sub.description}</p>
+              </div>
+              <a href="${getWhatsappLink(`Hello DASTAVEZ MITRA, I need assistance for RTO: ${sub.name}.`)}" target="_blank" rel="noopener noreferrer" class="btn-subservice-action">
+                <span>Inquire on WhatsApp</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Categorized Documents (Traffic Challan & Legal Heir)
+  if (service.categorizedDocuments && service.categorizedDocuments.length > 0) {
+    output += `
+      <div class="docs-alert-box">
+        <div class="docs-alert-title" style="margin-bottom: 1rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Required Documents Checklist
+        </div>
+        ${service.categorizedDocuments.map(cat => `
+          <div class="categorized-doc-group">
+            <div class="categorized-doc-group-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+              ${cat.groupTitle}
+            </div>
+            <ul class="docs-checklist" style="margin-top: 0.35rem;">
+              ${cat.items.map(item => `
+                <li class="docs-checklist-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" style="margin-top: 3px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>${item}</strong></span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    return output;
+  }
+
+  // 5. Fallback Service Custom Box
+  if (service.isFallbackService) {
+    output += `
+      <div class="docs-alert-box" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-color: #cbd5e1;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: var(--color-primary); margin-bottom: 0.5rem;">
+          ${service.fallbackPromptHeading || 'कोई अन्य Specific Document यहाँ Mention नहीं है?'}
+        </h3>
+        <p style="font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1.25rem;">
+          ${service.fallbackPromptText || 'आप हमें अपना matter/message भेज सकते हैं। WhatsApp या Call के माध्यम से हम आपकी सहायता के लिए उपलब्ध हैं।'}
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; font-size: 0.9rem;">
+            ${getIconHtml('phone')} Call: 9540403071
+          </a>
+          <a href="${getWhatsappLink(service.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 0.9rem;">
+            ${getIconHtml('whatsapp')} WhatsApp: 9871592002
+          </a>
+        </div>
+      </div>
+    `;
+    return output;
+  }
+
+  // 6. Gazette Sections
   if (service.gazetteSections) {
     const { under18, above18 } = service.gazetteSections;
-    return `
+    output += `
       <div class="docs-alert-box" style="background: #f0f7ff; border-style: solid;">
         <div class="docs-alert-title" style="font-size: 1.05rem; margin-bottom: 0.85rem;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -134,14 +215,37 @@ function renderServiceDocuments(service) {
         </div>
       </div>
     `;
+    return output;
   }
 
+  // 7. Hindi Heading List (Marriage Registration)
+  if (service.hindiHeading) {
+    output += `
+      <div class="docs-alert-box">
+        <div class="docs-hindi-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>${service.hindiHeading}</span>
+        </div>
+        <ul class="docs-numbered-list">
+          ${service.documents.map((doc, idx) => `
+            <li class="docs-numbered-item">
+              <span class="docs-num-pill">${idx + 1}</span>
+              <span><strong>${doc}</strong></span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+    return output;
+  }
+
+  // 8. Standard Checklist
   if (service.documents && service.documents.length > 0) {
-    return `
+    output += `
       <div class="docs-alert-box">
         <div class="docs-alert-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Required Documents
+          Required Documents Checklist
         </div>
         <ul class="docs-checklist">
           ${service.documents.map(doc => `
@@ -153,17 +257,27 @@ function renderServiceDocuments(service) {
         </ul>
       </div>
     `;
+    return output;
   }
 
+  return output;
+}
+
+// Render Embedded AI Drafting Trigger Box inside Service View
+function renderAiDraftingTrigger(service) {
+  if (!service.hasAiDrafting) return '';
+
   return `
-    <div class="docs-alert-box">
-      <div class="docs-alert-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Required Documents
-      </div>
-      <p class="docs-alert-desc">
-        Exact document requirements vary depending on your specific case and jurisdiction in Gurugram. Contact <strong>DASTAVEZ MITRA</strong> for customized checklist guidance.
-      </p>
+    <div class="embedded-draft-trigger-box">
+      <h4>
+        ${getIconHtml('sparkles')}
+        <span>AI Drafting Assistant</span>
+      </h4>
+      <p>Fill in our interactive dynamic questionnaire to instantly generate a preliminary draft of your ${service.name}.</p>
+      <button class="btn-ai-draft-launcher" onclick="launchAiDrafting('${service.aiDraftingType}')">
+        ${getIconHtml('sparkles')}
+        <span>${service.aiDraftingButtonText || 'अपना Document Draft करें'}</span>
+      </button>
     </div>
   `;
 }
@@ -285,7 +399,7 @@ function renderLeadFormComponent(preselectedServiceName = '', sourcePage = '/') 
   `;
 }
 
-// Render Service Card
+// Render Service Card for Catalog & Home
 function renderServiceCard(service) {
   const waUrl = getWhatsappLink(service.whatsappMessage);
 
@@ -302,15 +416,15 @@ function renderServiceCard(service) {
         <p class="card-desc">${service.shortDescription}</p>
       </div>
       <div class="card-actions">
-        <button class="btn-card-docs" onclick="openServiceDetail('${service.slug}')" aria-label="View Required Documents for ${service.name}">
+        <button class="btn-card-docs" onclick="openServiceDetail('${service.slug}')" aria-label="View Details & Documents for ${service.name}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Required Documents
+          ${service.hasAiDrafting ? 'View & AI Draft' : 'Required Documents'}
         </button>
         
         <div class="card-action-row">
           <a href="tel:+919540403071" class="btn-card-call" aria-label="Call directly for ${service.name}">
             ${getIconHtml('phone')}
-            Call Now
+            Call
           </a>
           <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" aria-label="WhatsApp for ${service.name}">
             ${getIconHtml('whatsapp')}
@@ -350,150 +464,131 @@ function renderHomeView() {
               ${getIconHtml('whatsapp')}
               WHATSAPP: 9871592002
             </a>
-            <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700;">
+            <a href="tel:+919540403071" class="btn-secondary">
               ${getIconHtml('phone')}
-              CALL: 9540403071
-            </a>
-            <a href="#/legal-assistant" class="btn-secondary" style="border-color: #0284c7; color: #0284c7; font-weight: 700;">
-              🤖 AI LEGAL ASSISTANT
+              CALL: 9540403071 ${callingHoursActive ? '(9 AM–7 PM)' : '(Available 9 AM)'}
             </a>
           </div>
 
           <div class="hero-highlights">
-            <div class="highlight-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>WhatsApp: <strong>9871592002</strong></span>
+            <div class="highlight-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Instant Checklist Guidance</span>
             </div>
-            <div class="highlight-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Calling: <strong>9540403071</strong> (9 AM–7 PM)</span>
+            <div class="highlight-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Gurugram Court Assistance</span>
             </div>
-            <div class="highlight-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Gurugram Only</span>
+            <div class="highlight-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Embedded AI Drafting</span>
             </div>
           </div>
         </div>
 
-        <!-- Hero Card Preview -->
-        <div class="hero-card-preview">
-          <div class="preview-header">
-            <div>
-              <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary);">AI Legal Info Assistant</h3>
-              <p style="font-size: 0.8rem; color: var(--color-text-muted);">Ask general legal questions in simple Hindi/English</p>
+        <div class="hero-card-side">
+          <div class="hero-summary-card">
+            <div class="summary-card-header">
+              <div class="summary-badge">⚡ Quick Assistance</div>
+              <span class="location-notice-badge" style="margin: 0; font-size: 0.78rem;">
+                ${getIconHtml('map-pin')} Gurugram Only
+              </span>
             </div>
-            <span class="preview-status"><span class="status-dot"></span> Online</span>
-          </div>
 
-          <div class="preview-service-list">
-            <a href="#/legal-assistant" class="preview-service-item">
-              <span>💼 Unpaid Salary / Labour Law</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-            <a href="#/legal-assistant" class="preview-service-item">
-              <span>💳 Cheque Bounce / Section 138</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-            <a href="#/legal-assistant" class="preview-service-item">
-              <span>⚖️ BNS, 2023 vs Legacy IPC</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-            <a href="#/legal-assistant" class="preview-service-item">
-              <span>🚗 Traffic Challan & RTO Help</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-          </div>
-
-          <div class="preview-wa-direct">
-            <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-bottom: 0.4rem;">
-              ${callingHoursActive ? '🟢 Call Support Available: 9:00 AM – 7:00 PM' : '🌙 WhatsApp Available 24/7 (Call: 9 AM–7 PM)'}
+            <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--color-primary); margin-bottom: 0.5rem;">
+              Need Paperwork Assistance?
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">
+              Select your required service from our catalog or chat with <strong>Legal Mitra</strong> for general legal information.
             </p>
-            <div style="display: flex; gap: 0.4rem; justify-content: center;">
-              <a href="tel:+919540403071" class="btn-card-call" style="flex: 1; padding: 0.6rem; justify-content: center;">
-                📞 Call 9540403071
+
+            <div class="quick-feature-list">
+              <a href="#/services/rc-transfer" class="quick-feature-item">
+                <span class="quick-feature-icon">${getIconHtml('car')}</span>
+                <span>RC Transfer Assistance</span>
               </a>
-              <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="flex: 1; padding: 0.6rem; justify-content: center;">
-                💬 WhatsApp 9871592002
+              <a href="#/services/rto" class="quick-feature-item">
+                <span class="quick-feature-icon">${getIconHtml('truck')}</span>
+                <span>RTO Tax, Fitness & Challans</span>
               </a>
+              <a href="#/services/affidavit" class="quick-feature-item">
+                <span class="quick-feature-icon">${getIconHtml('file-text')}</span>
+                <span>Affidavit & AI Drafting</span>
+              </a>
+              <a href="#/legal-mitra" class="quick-feature-item" style="border-color: #7dd3fc; background: #f0f9ff;">
+                <span class="quick-feature-icon">⚖️</span>
+                <span style="font-weight: 700; color: #0284c7;">Ask Legal Mitra AI</span>
+              </a>
+            </div>
+
+            <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--color-text-muted);">
+              <span>Direct Support Desk:</span>
+              <strong style="color: var(--color-primary);">Court Hall 8, Gurugram</strong>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Services Grid Section -->
-    <section class="section" id="services-section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">Explore Services</span>
-          <h2 class="section-title">All Documentation & Assistance Services</h2>
-          <div>
-            <span class="location-notice-badge">
-              ${getIconHtml('map-pin')}
-              ${BRAND_INFO.serviceLocationNotice}
-            </span>
-          </div>
-          <p class="section-subtitle">Select your service below to view Required Documents, Call us, or message on WhatsApp.</p>
+    <!-- Services Catalog Section -->
+    <section class="container" style="padding-top: 1rem; padding-bottom: 4rem;">
+      <div class="section-header">
+        <span class="section-tag">Explore Paperwork</span>
+        <h2 class="section-title">Our Documentation Services</h2>
+        <div>
+          <span class="location-notice-badge">
+            ${getIconHtml('map-pin')}
+            ${BRAND_INFO.serviceLocationNotice}
+          </span>
+        </div>
+        <p class="section-subtitle">Browse through our documentation assistance services or search for specific paperwork.</p>
+      </div>
+
+      <div class="filter-controls-wrapper">
+        <div class="search-box-container">
+          <span class="search-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </span>
+          <input 
+            type="text" 
+            id="serviceSearchInput" 
+            class="search-input" 
+            placeholder="Search services (e.g. RC Transfer, RTO, Challan, Marriage, Affidavit, Will, GPA)..." 
+            value="${currentSearchQuery}"
+            oninput="handleSearchChange(this.value)"
+          />
         </div>
 
-        <div class="filter-controls-wrapper">
-          <div class="search-box-container">
-            <span class="search-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </span>
-            <input 
-              type="text" 
-              id="serviceSearchInput" 
-              class="search-input" 
-              placeholder="Search services (e.g. Vehicle NOC, Marriage, DL, Duplicate RC)..."
-              value="${currentSearchQuery}"
-              oninput="handleSearchChange(this.value)"
-            />
-          </div>
-
-          <div class="category-chips">
-            ${SERVICE_CATEGORIES.map(cat => `
-              <button 
-                class="category-chip ${currentCategory === cat.id ? 'active' : ''}" 
-                onclick="handleCategoryChange('${cat.id}')">
-                ${cat.label}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <div class="services-grid" id="servicesGrid">
-          ${filtered.length > 0 ? filtered.map(renderServiceCard).join('') : `
-            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: var(--radius-lg); border: 1px dashed var(--color-border);">
-              <p style="font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem;">No services match your search query: "<strong>${currentSearchQuery}</strong>"</p>
-              <button class="btn-secondary" onclick="resetFilters()">Clear Filters</button>
-            </div>
-          `}
+        <div class="category-chips">
+          ${SERVICE_CATEGORIES.map(cat => `
+            <button 
+              class="category-chip ${currentCategory === cat.id ? 'active' : ''}" 
+              onclick="handleCategoryChange('${cat.id}')">
+              ${cat.label}
+            </button>
+          `).join('')}
         </div>
       </div>
-    </section>
 
-    <!-- Lead Capture Section on Homepage -->
-    <section class="lead-section" id="enquiry-section">
-      <div class="container">
-        ${renderLeadFormComponent('', '/')}
+      <div class="services-grid" id="servicesGrid">
+        ${filtered.map(renderServiceCard).join('')}
       </div>
     </section>
 
     <!-- How It Works Section -->
-    <section class="section how-it-works-section" id="how-it-works">
+    <section class="how-it-works-section">
       <div class="container">
         <div class="section-header">
           <span class="section-tag">Simple & Transparent</span>
           <h2 class="section-title">How DASTAVEZ MITRA Works</h2>
-          <p class="section-subtitle">4 easy steps to get your documentation paperwork assisted smoothly in Gurugram.</p>
+          <p class="section-subtitle">Get your paperwork sorted smoothly in 4 simple steps.</p>
         </div>
 
         <div class="steps-grid">
           <div class="step-card">
             <div class="step-badge">1</div>
-            <h3 class="step-title">Choose Your Service</h3>
-            <p class="step-desc">Browse through our documentation service categories and select the paperwork you need help with.</p>
+            <h3 class="step-title">Choose Service / AI Draft</h3>
+            <p class="step-desc">Select your required paperwork or use our embedded AI drafting assistant to generate a preliminary draft.</p>
           </div>
 
           <div class="step-card">
@@ -505,13 +600,13 @@ function renderHomeView() {
           <div class="step-card">
             <div class="step-badge">3</div>
             <h3 class="step-title">Call or WhatsApp</h3>
-            <p class="step-desc">Connect on WhatsApp at 9871592002 or call Helpline 9540403071 (9 AM–7 PM) for immediate guidance.</p>
+            <p class="step-desc">Connect on WhatsApp at 9871592002 or call Helpline 9540403071 (9 AM–7 PM) for immediate consultation.</p>
           </div>
 
           <div class="step-card">
             <div class="step-badge">4</div>
             <h3 class="step-title">Get Assistance</h3>
-            <p class="step-desc">Receive clear guidance, form preparation help, and step-by-step assistance until completion.</p>
+            <p class="step-desc">Receive clear guidance, form preparation help, and step-by-step assistance until completion in Gurugram.</p>
           </div>
         </div>
       </div>
@@ -539,7 +634,7 @@ function renderHomeView() {
   `;
 }
 
-// Render Dedicated AI Legal Assistant Page View
+// Render Dedicated Legal Mitra Assistant Page View
 function renderLegalAssistantView() {
   const callingHoursActive = isCallingHoursActive();
 
@@ -550,10 +645,10 @@ function renderLegalAssistantView() {
           <!-- Header -->
           <div class="ai-chat-header">
             <div class="ai-chat-header-info">
-              <div class="ai-bot-avatar">🤖</div>
+              <div class="ai-bot-avatar">⚖️</div>
               <div>
-                <h2 class="ai-bot-title">Dastavez Legal Info Assistant</h2>
-                <p class="ai-bot-subtitle">General Legal Information Assistant</p>
+                <h2 class="ai-bot-title">Legal Mitra</h2>
+                <p class="ai-bot-subtitle">Legal Information Assistant</p>
               </div>
             </div>
 
@@ -564,7 +659,7 @@ function renderLegalAssistantView() {
 
           <!-- Disclaimer Bar -->
           <div class="ai-chat-disclaimer-bar">
-            <strong>Disclaimer:</strong> Dastavez Legal Info Assistant provides general legal information for educational purposes only. It is not a substitute for individual legal advice or legal representation.
+            <strong>Disclaimer:</strong> Legal Mitra provides general legal information for educational purposes only. It is not a substitute for individual legal advice or representation.
           </div>
 
           <!-- Messages Area -->
@@ -574,12 +669,12 @@ function renderLegalAssistantView() {
 
           <!-- Quick Suggestions -->
           <div class="chat-quick-prompts">
-            <button class="prompt-chip" onclick="sendMainQuery('My employer has not paid my salary.')">💼 Unpaid Salary</button>
-            <button class="prompt-chip" onclick="sendMainQuery('Someone gave me a cheque and it bounced. What to do?')">💳 Cheque Bounce</button>
-            <button class="prompt-chip" onclick="sendMainQuery('I received a traffic challan. How to resolve?')">🚗 Traffic Challan</button>
-            <button class="prompt-chip" onclick="sendMainQuery('What is BNS 2023 vs IPC 1860?')">⚖️ BNS vs IPC</button>
-            <button class="prompt-chip" onclick="sendMainQuery('What documents are required for marriage registration in Gurugram?')">💍 Marriage Docs</button>
-            <button class="prompt-chip" onclick="sendMainQuery('What is an FIR and how is bail obtained?')">📑 FIR & Bail</button>
+            <button class="prompt-chip" onclick="sendMainQuery('My employer has not paid my salary. What can I do?')">💼 Unpaid Salary</button>
+            <button class="prompt-chip" onclick="sendMainQuery('Cheque bounce Section 138 notice procedure and timeline')">💳 Cheque Bounce</button>
+            <button class="prompt-chip" onclick="sendMainQuery('What is Bharatiya Nyaya Sanhita (BNS) vs IPC applicability?')">⚖️ BNS vs IPC</button>
+            <button class="prompt-chip" onclick="sendMainQuery('Traffic challan received. How to resolve in Virtual Court?')">🚗 Traffic Challan</button>
+            <button class="prompt-chip" onclick="sendMainQuery('What documents are required for marriage registration in Gurugram?')">💍 Marriage Registration</button>
+            <button class="prompt-chip" onclick="sendMainQuery('What is the procedure for Legal Heir Certificate?')">📑 Legal Heir Certificate</button>
           </div>
 
           <!-- Input Area -->
@@ -588,7 +683,7 @@ function renderLegalAssistantView() {
               type="text" 
               id="mainChatInput" 
               class="ai-chat-input" 
-              placeholder="Type your legal query in simple Hindi, Hinglish or English..." 
+              placeholder="Ask a legal query in simple Hindi, Hinglish or English..." 
               maxlength="500" 
               autocomplete="off"
             />
@@ -630,7 +725,7 @@ function renderMessagesHtml(messages) {
       <div class="chat-bubble bot">
         <div>${formatMessageText(m.text)}</div>
         <div class="chat-cta-box">
-          <div class="chat-cta-prompt">क्या आप अपनी समस्या के बारे में expert opinion लेना चाहते हैं?</div>
+          <div class="chat-cta-prompt">क्या आप अपनी समस्या या डॉक्यूमेंट के बारे में expert assistance चाहते हैं?</div>
           <div class="chat-cta-actions">
             ${callingHoursActive ? `
               <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
@@ -638,10 +733,10 @@ function renderMessagesHtml(messages) {
               </a>
             ` : `
               <span style="font-size: 0.76rem; color: var(--color-text-muted); align-self: center;">
-                Call hours: 9 AM–7 PM (9540403071)
+                Call: 9 AM–7 PM (9540403071)
               </span>
             `}
-            <a href="${getWhatsappLink('Hello DASTAVEZ MITRA, I was using the AI Legal Assistant and want expert assistance.')}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
+            <a href="${getWhatsappLink('Hello DASTAVEZ MITRA, I was consulting Legal Mitra and want assistance with my paperwork.')}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
               ${getIconHtml('whatsapp')} WhatsApp: 9871592002
             </a>
           </div>
@@ -651,10 +746,8 @@ function renderMessagesHtml(messages) {
   }).join('');
 }
 
-// ==========================================
-// AI Chat Execution Engine
-// ==========================================
-async function executeChatQuery(queryText, renderTarget) {
+// Execute Legal Mitra Chat Query
+async function executeChatQuery(queryText) {
   if (!queryText || !queryText.trim() || isAiTyping) return;
 
   const cleanQuery = queryText.trim();
@@ -676,13 +769,13 @@ async function executeChatQuery(queryText, renderTarget) {
     } else {
       aiChatMessages.push({
         role: 'assistant',
-        text: data.error || 'Aapke query ko process karne mein takleef hui. Kripya hamare helpline par direct WhatsApp ya call karein.'
+        text: data.error || 'Aapke query ko process karne mein takleef hui. Kripya hamare helpline par WhatsApp (9871592002) ya call (9540403071) karein.'
       });
     }
   } catch (err) {
     aiChatMessages.push({
       role: 'assistant',
-      text: 'Server se connect nahi ho paya. Kripya seedhe WhatsApp (9871592002) ya Call (9540403071) par sampark karein.'
+      text: 'Aapke prashn ke sambandh mein immediate assistance ke liye hamare helpline par sampark karein:\n\n• 💬 **WhatsApp (24/7):** 9871592002\n• 📞 **Call (9 AM–7 PM):** 9540403071\n\n*DASTAVEZ MITRA desk par direct consultation prapt karein.*'
     });
   } finally {
     isAiTyping = false;
@@ -693,7 +786,7 @@ async function executeChatQuery(queryText, renderTarget) {
 function updateChatUIs() {
   const mainMessages = document.getElementById('mainChatMessages');
   if (mainMessages) {
-    mainMessages.innerHTML = renderMessagesHtml(aiChatMessages) + (isAiTyping ? '<div class="chat-bubble bot" style="opacity: 0.7;"><em>Dastavez Legal Assistant is typing...</em></div>' : '');
+    mainMessages.innerHTML = renderMessagesHtml(aiChatMessages) + (isAiTyping ? '<div class="chat-bubble bot" style="opacity: 0.7;"><em>Legal Mitra is thinking...</em></div>' : '');
     mainMessages.scrollTop = mainMessages.scrollHeight;
   }
 
@@ -745,6 +838,938 @@ window.toggleFloatingAiWidget = function(forceState) {
   }
 };
 
+// ==========================================
+// Embedded AI Drafting Feature Implementation
+// ==========================================
+window.launchAiDrafting = function(draftType) {
+  const modalOverlay = document.getElementById('serviceModal');
+  const modalBody = document.getElementById('modalDynamicContent');
+  if (!modalOverlay || !modalBody) return;
+
+  if (draftType === 'affidavit') {
+    modalBody.innerHTML = renderAffidavitDraftingWizard();
+  } else if (draftType === 'agreement') {
+    modalBody.innerHTML = renderAgreementDraftingWizard();
+  } else if (draftType === 'will') {
+    modalBody.innerHTML = renderWillDraftingWizard();
+  } else if (draftType === 'gpa-spa') {
+    modalBody.innerHTML = renderGpaSpaDraftingWizard();
+  }
+
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+// 1. Affidavit AI Drafting Wizard
+function renderAffidavitDraftingWizard() {
+  return `
+    <div class="draft-wizard-container">
+      <div class="draft-wizard-header">
+        <h3 class="draft-wizard-title">
+          ${getIconHtml('sparkles')}
+          <span>अपना Affidavit Draft करें</span>
+        </h3>
+        <p class="draft-wizard-desc">Interactive AI Questionnaire for Affidavit Preparation</p>
+      </div>
+
+      <form id="affidavitDraftForm" onsubmit="handleAffidavitDraftSubmit(event)">
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">1. Affidavit Purpose & Submitting Authority</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="affPurpose">Affidavit Purpose / Matter *</label>
+              <select id="affPurpose" class="draft-select" required onchange="handleAffPurposeChange(this.value)">
+                <option value="Name Discrepancy / Name Change">Name Discrepancy / Spelling Correction</option>
+                <option value="Address Proof / Residence Declaration">Address Proof / Residence Declaration</option>
+                <option value="Date of Birth (DOB) Declaration">Date of Birth (DOB) Declaration</option>
+                <option value="Relationship / Family Member Declaration">Relationship / Family Declaration</option>
+                <option value="Education / Gap Year / College Admission">Education / Gap Year / Admission</option>
+                <option value="Vehicle NOC / Sale / Duplicate RC Declaration">Vehicle / RTO Declaration</option>
+                <option value="Loss of Document / Certificate">Loss of Document / Certificate</option>
+                <option value="Court / Police / Government Submission">Government / Court Submission</option>
+                <option value="Other Custom Purpose">Other Custom Purpose</option>
+              </select>
+            </div>
+            <div>
+              <label class="draft-label" for="affAuthority">Submitting To (Authority / Dept) *</label>
+              <input type="text" id="affAuthority" class="draft-input" placeholder="e.g. Passport Office / RTO / Bank / Court" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">2. Deponent Particulars (व्यक्ति की Details)</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="affName">Deponent Full Name *</label>
+              <input type="text" id="affName" class="draft-input" placeholder="Full name as per Aadhaar" required minlength="2" />
+            </div>
+            <div>
+              <label class="draft-label" for="affRelative">Father's / Husband's Name *</label>
+              <input type="text" id="affRelative" class="draft-input" placeholder="Father or Husband name" required />
+            </div>
+            <div>
+              <label class="draft-label" for="affAge">Age (Years) *</label>
+              <input type="number" id="affAge" class="draft-input" placeholder="e.g. 32" min="18" max="100" required />
+            </div>
+            <div>
+              <label class="draft-label" for="affAadhaar">Aadhaar Number (Last 4 digits or Full) *</label>
+              <input type="text" id="affAadhaar" class="draft-input" placeholder="e.g. 1234 XXXX 5678" required />
+            </div>
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <label class="draft-label" for="affAddress">Complete Residential Address *</label>
+            <input type="text" id="affAddress" class="draft-input" placeholder="House/Flat No., Street, Sector, Gurugram, Haryana" required />
+          </div>
+        </div>
+
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">3. Relevant Facts & Statements (तथ्य)</div>
+          <div id="affDynamicFacts">
+            <label class="draft-label" for="affCustomFacts">Statement of Facts / Specific Reason *</label>
+            <textarea id="affCustomFacts" class="draft-textarea" rows="3" placeholder="State your exact declaration (e.g. My name in 10th marksheet is Rahul Kumar and in Aadhaar it is Rahul Dhamija, both names belong to one and the same person...)" required></textarea>
+          </div>
+        </div>
+
+        <div class="statutory-hindi-notice">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>नोटरी के लिए आपकी व्यक्तिगत उपस्थिति अनिवार्य होगी।</strong><br/>
+            <span>यह एक प्रारंभिक ड्राफ्ट तैयार करेगा। अंतिम सत्यापन और ई-स्टैंप पेपर प्रिंटिंग DASTAVEZ MITRA द्वारा की जाएगी।</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+          <button type="submit" class="btn-lead-submit" id="btnGenerateAffDraft" style="flex: 1; padding: 0.85rem;">
+            ${getIconHtml('sparkles')}
+            <span>Generate Preliminary Affidavit Draft</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="affDraftResult" style="display: none; margin-top: 1.5rem;"></div>
+    </div>
+  `;
+}
+
+window.handleAffPurposeChange = function(val) {
+  const textarea = document.getElementById('affCustomFacts');
+  if (!textarea) return;
+
+  if (val.includes('Name Discrepancy')) {
+    textarea.placeholder = "State both name spellings (e.g. In marksheets my name is spelled 'Rahul Kumar' and in Aadhaar it is 'Rahul', both belong to one and the same person).";
+  } else if (val.includes('Address Proof')) {
+    textarea.placeholder = "State your residential stay period and that you are residing at the specified address.";
+  } else if (val.includes('Date of Birth')) {
+    textarea.placeholder = "State your correct date of birth and reference supporting records.";
+  } else if (val.includes('Gap Year')) {
+    textarea.placeholder = "State the academic gap period (e.g. 2023 to 2024) and that you did not engage in any unlawful activity.";
+  } else {
+    textarea.placeholder = "State the key factual declarations required for this affidavit.";
+  }
+};
+
+window.handleAffidavitDraftSubmit = async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('btnGenerateAffDraft');
+  const resultContainer = document.getElementById('affDraftResult');
+
+  const data = {
+    purpose: form.affPurpose.value,
+    submittingAuthority: form.affAuthority.value,
+    deponentName: form.affName.value,
+    relativeName: form.affRelative.value,
+    age: form.affAge.value,
+    idNumber: form.affAadhaar.value,
+    address: form.affAddress.value,
+    customFacts: form.affCustomFacts.value
+  };
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Drafting Preliminary Affidavit...</span>';
+  }
+
+  try {
+    const res = await fetch('/api/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ draftType: 'affidavit', data })
+    });
+
+    const json = await res.json();
+    if (res.ok && json.success && json.draft) {
+      renderGeneratedDraftPreview(resultContainer, json.draft, 'Affidavit', data.deponentName);
+    } else {
+      alert(json.error || 'Failed to generate draft.');
+    }
+  } catch (err) {
+    alert('Error generating preliminary draft. Please try again.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${getIconHtml('sparkles')} <span>Generate Preliminary Affidavit Draft</span>`;
+    }
+  }
+};
+
+// 2. Agreement AI Drafting Wizard (Multi-party & Vehicle Rental support)
+let agreementPartiesList = [
+  { label: 'First Party (Owner / Lessor / Party 1)', name: '', address: '', id: '', role: 'Owner' },
+  { label: 'Second Party (Tenant / Lessee / Party 2)', name: '', address: '', id: '', role: 'User' }
+];
+
+function renderAgreementDraftingWizard() {
+  agreementPartiesList = [
+    { label: 'First Party (Party 1)', name: '', address: '', id: '', role: 'First Party' },
+    { label: 'Second Party (Party 2)', name: '', address: '', id: '', role: 'Second Party' }
+  ];
+
+  return `
+    <div class="draft-wizard-container">
+      <div class="draft-wizard-header">
+        <h3 class="draft-wizard-title">
+          ${getIconHtml('sparkles')}
+          <span>अपना Agreement Draft करें</span>
+        </h3>
+        <p class="draft-wizard-desc">Interactive Detailed Questionnaire for Legal & Commercial Contracts</p>
+      </div>
+
+      <form id="agreementDraftForm" onsubmit="handleAgreementDraftSubmit(event)">
+        <!-- Step 1: Agreement Type & Duration -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">1. Agreement Type & Purpose</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="agType">Type of Agreement *</label>
+              <select id="agType" class="draft-select" required onchange="handleAgTypeChange(this.value)">
+                <option value="Residential Rent Agreement">Residential Rent Agreement</option>
+                <option value="Commercial Lease Agreement">Commercial Lease Agreement</option>
+                <option value="Vehicle Rental Agreement">Vehicle Rental Agreement</option>
+                <option value="Vehicle Sale Agreement">Vehicle Sale Agreement</option>
+                <option value="Partnership Deed / Business Agreement">Partnership Deed</option>
+                <option value="Service & Freelance Contract">Service & Freelance Contract</option>
+                <option value="Loan / Financial Agreement">Loan / Financial Agreement</option>
+                <option value="Other Custom Agreement">Other Custom Agreement</option>
+              </select>
+            </div>
+            <div>
+              <label class="draft-label" for="agDuration">Agreement Duration / Tenure *</label>
+              <input type="text" id="agDuration" class="draft-input" placeholder="e.g. 11 Months / 1 Year / 30 Days" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Parties Identification (2, 3, 4+ Parties) -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">
+            <span>2. Parties Involved (All Contracting Parties)</span>
+            <button type="button" class="btn-add-dynamic-item" onclick="addAgreementParty()">
+              + Add Another Party (3rd / 4th Party)
+            </button>
+          </div>
+          <div id="agPartiesContainer">
+            ${renderAgPartiesFields()}
+          </div>
+        </div>
+
+        <!-- Step 3: Specific Terms & Conditions (Dynamically Adapts) -->
+        <div class="draft-card-section" id="agSpecificTermsSection">
+          ${renderAgSpecificFields('Residential Rent Agreement')}
+        </div>
+
+        <!-- Step 4: Confirmation Notice -->
+        <div class="statutory-hindi-notice" style="background: #eff6ff; border-color: #93c5fd; color: #1e40af;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <div>
+            <strong>Preliminary Verification Notice:</strong><br/>
+            <span>This generates a structured preliminary agreement. Final stamp duty payment, execution, and witness verification must be completed in accordance with applicable requirements.</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+          <button type="submit" class="btn-lead-submit" id="btnGenerateAgDraft" style="flex: 1; padding: 0.85rem;">
+            ${getIconHtml('sparkles')}
+            <span>Confirm & Generate Preliminary Agreement Draft</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="agDraftResult" style="display: none; margin-top: 1.5rem;"></div>
+    </div>
+  `;
+}
+
+function renderAgPartiesFields() {
+  return agreementPartiesList.map((p, idx) => `
+    <div class="dynamic-item-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <strong style="font-size: 0.88rem; color: var(--color-primary);">Party #${idx + 1}: ${p.label}</strong>
+        ${idx >= 2 ? `<button type="button" class="btn-remove-dynamic-item" onclick="removeAgreementParty(${idx})">Remove</button>` : ''}
+      </div>
+      <div class="draft-input-grid">
+        <div>
+          <label class="draft-label">Full Name *</label>
+          <input type="text" class="draft-input" id="agPartyName_${idx}" placeholder="Full Name" required value="${p.name || ''}" />
+        </div>
+        <div>
+          <label class="draft-label">Aadhaar / ID Details *</label>
+          <input type="text" class="draft-input" id="agPartyId_${idx}" placeholder="Aadhaar / PAN" required value="${p.id || ''}" />
+        </div>
+      </div>
+      <div style="margin-top: 0.5rem;">
+        <label class="draft-label">Complete Address *</label>
+        <input type="text" class="draft-input" id="agPartyAddr_${idx}" placeholder="Residential / Office Address" required value="${p.address || ''}" />
+      </div>
+    </div>
+  `).join('');
+}
+
+window.addAgreementParty = function() {
+  const nextNum = agreementPartiesList.length + 1;
+  const labels = ['', '', 'Third Party', 'Fourth Party', 'Fifth Party'];
+  agreementPartiesList.push({
+    label: labels[nextNum - 1] || `Party #${nextNum}`,
+    name: '',
+    address: '',
+    id: '',
+    role: 'Partner / Participant'
+  });
+  const container = document.getElementById('agPartiesContainer');
+  if (container) container.innerHTML = renderAgPartiesFields();
+};
+
+window.removeAgreementParty = function(idx) {
+  if (agreementPartiesList.length > 2) {
+    agreementPartiesList.splice(idx, 1);
+    const container = document.getElementById('agPartiesContainer');
+    if (container) container.innerHTML = renderAgPartiesFields();
+  }
+};
+
+window.handleAgTypeChange = function(selectedType) {
+  const termsSection = document.getElementById('agSpecificTermsSection');
+  if (termsSection) {
+    termsSection.innerHTML = renderAgSpecificFields(selectedType);
+  }
+};
+
+function renderAgSpecificFields(type) {
+  if (type.includes('Vehicle Rental')) {
+    return `
+      <div class="draft-card-section-title">3. Vehicle & Commercial Particulars (Vehicle Rental)</div>
+      <div class="draft-input-grid">
+        <div>
+          <label class="draft-label">Vehicle Make & Model *</label>
+          <input type="text" id="agVehicleModel" class="draft-input" placeholder="e.g. Maruti Swift / Hyundai Creta" required />
+        </div>
+        <div>
+          <label class="draft-label">Vehicle Registration No. *</label>
+          <input type="text" id="agVehicleReg" class="draft-input" placeholder="e.g. HR-26-XX-XXXX" required />
+        </div>
+        <div>
+          <label class="draft-label">Chassis Number</label>
+          <input type="text" id="agChassis" class="draft-input" placeholder="Chassis No. (as per RC)" />
+        </div>
+        <div>
+          <label class="draft-label">Engine Number</label>
+          <input type="text" id="agEngine" class="draft-input" placeholder="Engine No. (as per RC)" />
+        </div>
+        <div>
+          <label class="draft-label">Rent Amount (Rs.) *</label>
+          <input type="text" id="agRentAmount" class="draft-input" placeholder="e.g. 25,000 / month" required />
+        </div>
+        <div>
+          <label class="draft-label">Security Deposit (Rs.) *</label>
+          <input type="text" id="agDeposit" class="draft-input" placeholder="e.g. 15,000" required />
+        </div>
+        <div>
+          <label class="draft-label">Fuel Responsibility *</label>
+          <select id="agFuel" class="draft-select">
+            <option value="Second Party (Renter / Hirer)">Second Party (Renter / Hirer)</option>
+            <option value="First Party (Owner)">First Party (Owner)</option>
+          </select>
+        </div>
+        <div>
+          <label class="draft-label">Maintenance Responsibility *</label>
+          <select id="agMaintenance" class="draft-select">
+            <option value="First Party (Routine wear/tear by Owner)">First Party (Owner)</option>
+            <option value="Second Party (Renter / Hirer)">Second Party (Renter)</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+
+  if (type.includes('Rent') || type.includes('Lease')) {
+    return `
+      <div class="draft-card-section-title">3. Property & Tenancy Particulars</div>
+      <div style="margin-bottom: 0.75rem;">
+        <label class="draft-label">Rental Property Address *</label>
+        <input type="text" id="agPropAddr" class="draft-input" placeholder="Complete address of the rented premises in Gurugram" required />
+      </div>
+      <div class="draft-input-grid">
+        <div>
+          <label class="draft-label">Monthly Rent Amount (Rs.) *</label>
+          <input type="text" id="agRentAmount" class="draft-input" placeholder="e.g. 22,000" required />
+        </div>
+        <div>
+          <label class="draft-label">Refundable Security Deposit (Rs.) *</label>
+          <input type="text" id="agDeposit" class="draft-input" placeholder="e.g. 44,000" required />
+        </div>
+        <div>
+          <label class="draft-label">Notice Period for Termination *</label>
+          <input type="text" id="agNotice" class="draft-input" placeholder="e.g. 1 Month" value="1 Month" required />
+        </div>
+        <div>
+          <label class="draft-label">Permitted Use *</label>
+          <select id="agUse" class="draft-select">
+            <option value="Residential Living">Residential Living</option>
+            <option value="Commercial Office / Store">Commercial Office / Store</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="draft-card-section-title">3. Commercial Terms & Obligations</div>
+    <div class="draft-input-grid">
+      <div>
+        <label class="draft-label">Consideration / Payment Amount *</label>
+        <input type="text" id="agConsideration" class="draft-input" placeholder="e.g. Rs. 50,000 / As per milestones" required />
+      </div>
+      <div>
+        <label class="draft-label">Notice Period *</label>
+        <input type="text" id="agNotice" class="draft-input" placeholder="e.g. 30 Days" value="30 Days" required />
+      </div>
+    </div>
+    <div style="margin-top: 0.75rem;">
+      <label class="draft-label">Key Mutually Agreed Terms / Deliverables *</label>
+      <textarea id="agCustomTerms" class="draft-textarea" rows="3" placeholder="Describe the main responsibilities, delivery schedule, and payment conditions..." required></textarea>
+    </div>
+  `;
+}
+
+window.handleAgreementDraftSubmit = async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnGenerateAgDraft');
+  const resultContainer = document.getElementById('agDraftResult');
+
+  const agType = document.getElementById('agType')?.value;
+  const agDuration = document.getElementById('agDuration')?.value;
+
+  // Collect Parties
+  const parties = agreementPartiesList.map((p, idx) => ({
+    label: p.label,
+    name: document.getElementById(`agPartyName_${idx}`)?.value || `Party ${idx + 1}`,
+    id: document.getElementById(`agPartyId_${idx}`)?.value || 'Aadhaar Verified',
+    address: document.getElementById(`agPartyAddr_${idx}`)?.value || 'Gurugram'
+  }));
+
+  const data = {
+    agreementType: agType,
+    duration: agDuration,
+    parties,
+    isVehicleRental: agType.includes('Vehicle Rental'),
+    vehicleModel: document.getElementById('agVehicleModel')?.value,
+    vehicleRegNo: document.getElementById('agVehicleReg')?.value,
+    chassisNo: document.getElementById('agChassis')?.value,
+    engineNo: document.getElementById('agEngine')?.value,
+    fuelResponsibility: document.getElementById('agFuel')?.value,
+    maintenanceResponsibility: document.getElementById('agMaintenance')?.value,
+    isRentAgreement: agType.includes('Rent') || agType.includes('Lease'),
+    propertyAddress: document.getElementById('agPropAddr')?.value,
+    rentAmount: document.getElementById('agRentAmount')?.value,
+    securityDeposit: document.getElementById('agDeposit')?.value,
+    noticePeriod: document.getElementById('agNotice')?.value,
+    permittedUse: document.getElementById('agUse')?.value,
+    consideration: document.getElementById('agConsideration')?.value,
+    purpose: document.getElementById('agCustomTerms')?.value
+  };
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Generating Preliminary Agreement...</span>';
+  }
+
+  try {
+    const res = await fetch('/api/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ draftType: 'agreement', data })
+    });
+
+    const json = await res.json();
+    if (res.ok && json.success && json.draft) {
+      renderGeneratedDraftPreview(resultContainer, json.draft, agType, parties[0].name);
+    } else {
+      alert(json.error || 'Failed to generate agreement draft.');
+    }
+  } catch (err) {
+    alert('Error generating agreement draft. Please try again.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${getIconHtml('sparkles')} <span>Confirm & Generate Preliminary Agreement Draft</span>`;
+    }
+  }
+};
+
+// 3. Will / Testament AI Drafting Wizard (5-Step Structured Interview)
+let willImmovableAssets = [];
+let willMovableAssets = [];
+
+function renderWillDraftingWizard() {
+  willImmovableAssets = [
+    { propertyType: 'Residential House / Flat', address: '', share: '100%', beneficiaryName: '', relation: '', conditions: '', alternateBeneficiary: '' }
+  ];
+  willMovableAssets = [
+    { assetType: 'Bank Account & Fixed Deposits', details: '', share: '100%', beneficiaryName: '', relation: '', specialNotes: '' }
+  ];
+
+  return `
+    <div class="draft-wizard-container">
+      <div class="draft-wizard-header">
+        <h3 class="draft-wizard-title">
+          ${getIconHtml('sparkles')}
+          <span>अपनी Will Draft करें</span>
+        </h3>
+        <p class="draft-wizard-desc">Step-by-Step Structured Will & Testament Drafting Interview</p>
+      </div>
+
+      <form id="willDraftForm" onsubmit="handleWillDraftSubmit(event)">
+        <!-- Step 1: Testator Details -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">STEP 1: Testator Details (वसीयतकर्ता)</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="willTestatorName">Testator Full Name *</label>
+              <input type="text" id="willTestatorName" class="draft-input" placeholder="Full name of Testator" required />
+            </div>
+            <div>
+              <label class="draft-label" for="willRelativeName">Father's / Husband's Name *</label>
+              <input type="text" id="willRelativeName" class="draft-input" placeholder="Father or Husband name" required />
+            </div>
+            <div>
+              <label class="draft-label" for="willAge">Age (Years) *</label>
+              <input type="number" id="willAge" class="draft-input" placeholder="Age" min="18" max="110" required />
+            </div>
+            <div>
+              <label class="draft-label" for="willAadhaar">Aadhaar Number *</label>
+              <input type="text" id="willAadhaar" class="draft-input" placeholder="Aadhaar Card No." required />
+            </div>
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <label class="draft-label" for="willAddress">Residential Address *</label>
+            <input type="text" id="willAddress" class="draft-input" placeholder="Complete address in Gurugram" required />
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <label class="draft-label" for="willExecutor">Executor / Sole Admin Name *</label>
+            <input type="text" id="willExecutor" class="draft-input" placeholder="Name of Executor to administer the Will" required />
+          </div>
+        </div>
+
+        <!-- Step 2 & 3: Immovable Assets -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">
+            <span>STEP 2A: Immovable Properties (मकान, प्लॉट, जमीन)</span>
+            <button type="button" class="btn-add-dynamic-item" onclick="addWillImmovableAsset()">
+              + Add Another Property
+            </button>
+          </div>
+          <div id="willImmovableContainer">
+            ${renderWillImmovableFields()}
+          </div>
+        </div>
+
+        <!-- Step 2 & 3: Movable Assets -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">
+            <span>STEP 2B: Movable Properties / Investments (बैंक खाते, FD, जेवर, गाड़ियां)</span>
+            <button type="button" class="btn-add-dynamic-item" onclick="addWillMovableAsset()">
+              + Add Another Financial Asset
+            </button>
+          </div>
+          <div id="willMovableContainer">
+            ${renderWillMovableFields()}
+          </div>
+        </div>
+
+        <!-- Step 4: Special Conditions & Residuary -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">STEP 4: Special Wishes & Residuary Clause</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="willResiduary">Residuary Beneficiary (for unmentioned assets) *</label>
+              <input type="text" id="willResiduary" class="draft-input" placeholder="Name of primary heir / executor" required />
+            </div>
+            <div>
+              <label class="draft-label" for="willSpecialWishes">Life Interest / Special Conditions (Optional)</label>
+              <input type="text" id="willSpecialWishes" class="draft-input" placeholder="e.g. Spouse to have life interest in residence before distribution" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmation Notice -->
+        <div class="statutory-hindi-notice">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>वसीयत (Will) सत्यापन सूचना:</strong><br/>
+            <span>This generates a structured preliminary Will based on your inputs. Final drafting, medical fitness certification, and Sub-Registrar registration guidance will be provided by DASTAVEZ MITRA.</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+          <button type="submit" class="btn-lead-submit" id="btnGenerateWillDraft" style="flex: 1; padding: 0.85rem;">
+            ${getIconHtml('sparkles')}
+            <span>Confirm Asset Schedules & Generate Will Draft</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="willDraftResult" style="display: none; margin-top: 1.5rem;"></div>
+    </div>
+  `;
+}
+
+function renderWillImmovableFields() {
+  return willImmovableAssets.map((prop, idx) => `
+    <div class="dynamic-item-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <strong style="font-size: 0.88rem; color: var(--color-primary);">Immovable Property #${idx + 1}</strong>
+        ${idx >= 1 ? `<button type="button" class="btn-remove-dynamic-item" onclick="removeWillImmovableAsset(${idx})">Remove</button>` : ''}
+      </div>
+      <div class="draft-input-grid">
+        <div>
+          <label class="draft-label">Property Type & Location *</label>
+          <input type="text" class="draft-input" id="willPropAddr_${idx}" placeholder="e.g. Flat No. 402, Sector 56, Gurugram" required value="${prop.address || ''}" />
+        </div>
+        <div>
+          <label class="draft-label">Beneficiary Name & Relation *</label>
+          <input type="text" class="draft-input" id="willPropBen_${idx}" placeholder="e.g. Amit Kumar (Son)" required value="${prop.beneficiaryName || ''}" />
+        </div>
+        <div>
+          <label class="draft-label">Share Allocated *</label>
+          <input type="text" class="draft-input" id="willPropShare_${idx}" placeholder="e.g. 100% / 50%" required value="${prop.share || '100%'}" />
+        </div>
+        <div>
+          <label class="draft-label">Alternate Beneficiary (If primary dies)</label>
+          <input type="text" class="draft-input" id="willPropAlt_${idx}" placeholder="e.g. Grandchildren" value="${prop.alternateBeneficiary || ''}" />
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.addWillImmovableAsset = function() {
+  willImmovableAssets.push({ propertyType: 'Property', address: '', share: '100%', beneficiaryName: '', relation: '', conditions: '', alternateBeneficiary: '' });
+  const container = document.getElementById('willImmovableContainer');
+  if (container) container.innerHTML = renderWillImmovableFields();
+};
+
+window.removeWillImmovableAsset = function(idx) {
+  if (willImmovableAssets.length > 1) {
+    willImmovableAssets.splice(idx, 1);
+    const container = document.getElementById('willImmovableContainer');
+    if (container) container.innerHTML = renderWillImmovableFields();
+  }
+};
+
+function renderWillMovableFields() {
+  return willMovableAssets.map((asset, idx) => `
+    <div class="dynamic-item-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <strong style="font-size: 0.88rem; color: var(--color-primary);">Financial Asset #${idx + 1}</strong>
+        ${idx >= 1 ? `<button type="button" class="btn-remove-dynamic-item" onclick="removeWillMovableAsset(${idx})">Remove</button>` : ''}
+      </div>
+      <div class="draft-input-grid">
+        <div>
+          <label class="draft-label">Asset Description & Account Details *</label>
+          <input type="text" class="draft-input" id="willAssetDet_${idx}" placeholder="e.g. SBI Bank Savings A/c & FDs, Gurugram" required value="${asset.details || ''}" />
+        </div>
+        <div>
+          <label class="draft-label">Beneficiary Name *</label>
+          <input type="text" class="draft-input" id="willAssetBen_${idx}" placeholder="e.g. Suman (Wife)" required value="${asset.beneficiaryName || ''}" />
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.addWillMovableAsset = function() {
+  willMovableAssets.push({ assetType: 'Investment / Bank', details: '', share: '100%', beneficiaryName: '', relation: '', specialNotes: '' });
+  const container = document.getElementById('willMovableContainer');
+  if (container) container.innerHTML = renderWillMovableFields();
+};
+
+window.removeWillMovableAsset = function(idx) {
+  if (willMovableAssets.length > 1) {
+    willMovableAssets.splice(idx, 1);
+    const container = document.getElementById('willMovableContainer');
+    if (container) container.innerHTML = renderWillMovableFields();
+  }
+};
+
+window.handleWillDraftSubmit = async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnGenerateWillDraft');
+  const resultContainer = document.getElementById('willDraftResult');
+
+  const immovableAssets = willImmovableAssets.map((prop, idx) => ({
+    propertyType: 'Immovable Property',
+    address: document.getElementById(`willPropAddr_${idx}`)?.value || 'Gurugram',
+    beneficiaryName: document.getElementById(`willPropBen_${idx}`)?.value || 'Beneficiary',
+    share: document.getElementById(`willPropShare_${idx}`)?.value || '100%',
+    alternateBeneficiary: document.getElementById(`willPropAlt_${idx}`)?.value || ''
+  }));
+
+  const movableAssets = willMovableAssets.map((asset, idx) => ({
+    assetType: 'Movable / Financial Asset',
+    details: document.getElementById(`willAssetDet_${idx}`)?.value || 'Bank & Investments',
+    beneficiaryName: document.getElementById(`willAssetBen_${idx}`)?.value || 'Beneficiary',
+    share: '100%'
+  }));
+
+  const data = {
+    testatorName: document.getElementById('willTestatorName')?.value,
+    relativeName: document.getElementById('willRelativeName')?.value,
+    age: document.getElementById('willAge')?.value,
+    aadhaar: document.getElementById('willAadhaar')?.value,
+    address: document.getElementById('willAddress')?.value,
+    executorName: document.getElementById('willExecutor')?.value,
+    residuaryBeneficiary: document.getElementById('willResiduary')?.value,
+    specialConditions: document.getElementById('willSpecialWishes')?.value,
+    immovableAssets,
+    movableAssets
+  };
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Compiling Will & Schedules...</span>';
+  }
+
+  try {
+    const res = await fetch('/api/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ draftType: 'will', data })
+    });
+
+    const json = await res.json();
+    if (res.ok && json.success && json.draft) {
+      renderGeneratedDraftPreview(resultContainer, json.draft, 'Will / Testament', data.testatorName);
+    } else {
+      alert(json.error || 'Failed to generate Will draft.');
+    }
+  } catch (err) {
+    alert('Error generating Will draft. Please try again.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${getIconHtml('sparkles')} <span>Confirm Asset Schedules & Generate Will Draft</span>`;
+    }
+  }
+};
+
+// 4. GPA / SPA AI Drafting Wizard
+function renderGpaSpaDraftingWizard() {
+  return `
+    <div class="draft-wizard-container">
+      <div class="draft-wizard-header">
+        <h3 class="draft-wizard-title">
+          ${getIconHtml('sparkles')}
+          <span>अपना GPA / SPA Draft करें</span>
+        </h3>
+        <p class="draft-wizard-desc">Interactive Assistant for General & Special Power of Attorney</p>
+      </div>
+
+      <form id="gpaSpaDraftForm" onsubmit="handleGpaSpaDraftSubmit(event)">
+        <!-- Step 1: Document Type & Purpose -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">1. Authorization Type & Scope</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="gpaDocType">Document Required *</label>
+              <select id="gpaDocType" class="draft-select" required>
+                <option value="GPA">General Power of Attorney (GPA) - Broad Powers</option>
+                <option value="SPA">Special Power of Attorney (SPA) - Specific Single Task</option>
+              </select>
+            </div>
+            <div>
+              <label class="draft-label" for="gpaPurpose">Specific Purpose *</label>
+              <input type="text" id="gpaPurpose" class="draft-input" placeholder="e.g. Property management / Vehicle sale / Court case" required />
+            </div>
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <label class="draft-label" for="gpaMatterDetails">Matter / Property / Authority Particulars *</label>
+            <input type="text" id="gpaMatterDetails" class="draft-input" placeholder="Complete details of property, vehicle reg no., or department" required />
+          </div>
+        </div>
+
+        <!-- Step 2: Principal Particulars -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">2. Principal / Executant Details (पावर देने वाला)</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="gpaPrincipalName">Principal Full Name *</label>
+              <input type="text" id="gpaPrincipalName" class="draft-input" placeholder="Full name as per Aadhaar" required />
+            </div>
+            <div>
+              <label class="draft-label" for="gpaPrincipalRel">Father's / Husband's Name *</label>
+              <input type="text" id="gpaPrincipalRel" class="draft-input" placeholder="Father or Husband name" required />
+            </div>
+            <div>
+              <label class="draft-label" for="gpaPrincipalAadhaar">Principal Aadhaar Number *</label>
+              <input type="text" id="gpaPrincipalAadhaar" class="draft-input" placeholder="Aadhaar Card No." required />
+            </div>
+            <div>
+              <label class="draft-label" for="gpaPrincipalAddr">Complete Residential Address *</label>
+              <input type="text" id="gpaPrincipalAddr" class="draft-input" placeholder="Residential address" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Attorney Particulars -->
+        <div class="draft-card-section">
+          <div class="draft-card-section-title">3. Attorney Holder Details (जिसके नाम पावर बन रही है)</div>
+          <div class="draft-input-grid">
+            <div>
+              <label class="draft-label" for="gpaAttorneyName">Attorney Full Name *</label>
+              <input type="text" id="gpaAttorneyName" class="draft-input" placeholder="Full name of representative" required />
+            </div>
+            <div>
+              <label class="draft-label" for="gpaAttorneyRel">Father's / Husband's Name *</label>
+              <input type="text" id="gpaAttorneyRel" class="draft-input" placeholder="Father or Husband name" required />
+            </div>
+            <div>
+              <label class="draft-label" for="gpaAttorneyAadhaar">Attorney Aadhaar Number *</label>
+              <input type="text" id="gpaAttorneyAadhaar" class="draft-input" placeholder="Aadhaar Card No." required />
+            </div>
+            <div>
+              <label class="draft-label" for="gpaAttorneyAddr">Complete Residential Address *</label>
+              <input type="text" id="gpaAttorneyAddr" class="draft-input" placeholder="Residential address" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Notary & Registration Notice -->
+        <div class="statutory-hindi-notice">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>Notary & Registration Notice:</strong><br/>
+            <span>• "Notary GPA/SPA can be provided."<br/>
+            • "Notary के लिए आपकी व्यक्तिगत उपस्थिति आवश्यक होगी।"<br/>
+            • If GPA/SPA registration is open/available in the applicable Tehsil, registration assistance can be provided. Registration remains subject to the competent authority.</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+          <button type="submit" class="btn-lead-submit" id="btnGenerateGpaDraft" style="flex: 1; padding: 0.85rem;">
+            ${getIconHtml('sparkles')}
+            <span>Generate Preliminary GPA / SPA Draft</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="gpaDraftResult" style="display: none; margin-top: 1.5rem;"></div>
+    </div>
+  `;
+}
+
+window.handleGpaSpaDraftSubmit = async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnGenerateGpaDraft');
+  const resultContainer = document.getElementById('gpaDraftResult');
+
+  const data = {
+    docType: document.getElementById('gpaDocType')?.value,
+    purpose: document.getElementById('gpaPurpose')?.value,
+    matterDetails: document.getElementById('gpaMatterDetails')?.value,
+    principalName: document.getElementById('gpaPrincipalName')?.value,
+    principalRelative: document.getElementById('gpaPrincipalRel')?.value,
+    principalAadhaar: document.getElementById('gpaPrincipalAadhaar')?.value,
+    principalAddress: document.getElementById('gpaPrincipalAddr')?.value,
+    attorneyName: document.getElementById('gpaAttorneyName')?.value,
+    attorneyRelative: document.getElementById('gpaAttorneyRel')?.value,
+    attorneyAadhaar: document.getElementById('gpaAttorneyAadhaar')?.value,
+    attorneyAddress: document.getElementById('gpaAttorneyAddr')?.value
+  };
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Drafting Power of Attorney...</span>';
+  }
+
+  try {
+    const res = await fetch('/api/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ draftType: 'gpa-spa', data })
+    });
+
+    const json = await res.json();
+    if (res.ok && json.success && json.draft) {
+      renderGeneratedDraftPreview(resultContainer, json.draft, data.docType, data.principalName);
+    } else {
+      alert(json.error || 'Failed to generate draft.');
+    }
+  } catch (err) {
+    alert('Error generating draft. Please try again.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${getIconHtml('sparkles')} <span>Generate Preliminary GPA / SPA Draft</span>`;
+    }
+  }
+};
+
+// Render Draft Preview Container with Copy & WhatsApp CTAs
+function renderGeneratedDraftPreview(container, draftText, docType, personName) {
+  if (!container) return;
+
+  container.style.display = 'block';
+  container.innerHTML = `
+    <div class="draft-preview-card">
+      <div class="draft-preview-header">
+        <span class="draft-preview-header-tag">Preliminary Generated Draft: ${docType}</span>
+        <button class="btn-secondary" onclick="copyDraftText()" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          📋 Copy Draft Text
+        </button>
+      </div>
+
+      <div class="draft-text-box" id="generatedDraftTextBox">${escapeHtml(draftText)}</div>
+
+      <div class="draft-actions-grid">
+        <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.85rem;">
+          ${getIconHtml('phone')} Call: 9540403071 (9 AM–7 PM)
+        </a>
+        <a href="${getWhatsappLink(`Hello DASTAVEZ MITRA, I have prepared a preliminary draft for ${docType} on your website (Name: ${personName || ''}) and want to get it finalized, printed on e-stamp paper and notarized.`)}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="justify-content: center; padding: 0.85rem;">
+          ${getIconHtml('whatsapp')} WhatsApp to Finalize
+        </a>
+      </div>
+    </div>
+  `;
+
+  container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+window.copyDraftText = function() {
+  const textBox = document.getElementById('generatedDraftTextBox');
+  if (!textBox) return;
+
+  navigator.clipboard.writeText(textBox.innerText).then(() => {
+    alert('Draft text copied to clipboard! You can now paste and review it.');
+  }).catch(() => {
+    alert('Please select and copy the text manually.');
+  });
+};
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 // Render Services Catalog View
 function renderServicesView() {
   const filtered = filterServices();
@@ -760,7 +1785,7 @@ function renderServicesView() {
             ${BRAND_INFO.serviceLocationNotice}
           </span>
         </div>
-        <p class="section-subtitle">Explore our documentation categories or search for your required paperwork.</p>
+        <p class="section-subtitle">Explore our documentation categories, view required documents, or use our embedded AI drafting assistants.</p>
       </div>
 
       <div class="filter-controls-wrapper">
@@ -772,7 +1797,7 @@ function renderServicesView() {
             type="text" 
             id="serviceSearchInput" 
             class="search-input" 
-            placeholder="Filter services by keyword (e.g. Form 28, International DL, Marriage, Gazette)..."
+            placeholder="Search services (e.g. RC Transfer, RTO, Quick Marriage, Affidavit, Will, GPA)..."
             value="${currentSearchQuery}"
             oninput="handleSearchChange(this.value)"
           />
@@ -789,7 +1814,7 @@ function renderServicesView() {
         </div>
       </div>
 
-      <div class="services-grid">
+      <div class="services-grid" id="servicesGrid">
         ${filtered.length > 0 ? filtered.map(renderServiceCard).join('') : `
           <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: var(--radius-lg); border: 1px dashed var(--color-border);">
             <p style="font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem;">No services match your search query: "<strong>${currentSearchQuery}</strong>"</p>
@@ -817,7 +1842,7 @@ function renderServiceDetailView(slug) {
   const waUrl = getWhatsappLink(service.whatsappMessage);
 
   return `
-    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 800px;">
+    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 850px;">
       <a href="#/services" style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--color-accent); font-weight: 700; font-size: 0.9rem; margin-bottom: 1.5rem;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
         Back to Services
@@ -832,6 +1857,9 @@ function renderServiceDetailView(slug) {
         </div>
         <h1 class="detail-title">${service.name}</h1>
         <p class="detail-intro">${service.shortDescription}</p>
+
+        <!-- Embedded AI Drafting Trigger Button (inside service) -->
+        ${renderAiDraftingTrigger(service)}
 
         <!-- Who Needs This -->
         <div class="detail-card-box">
@@ -849,7 +1877,7 @@ function renderServiceDetailView(slug) {
         <div class="detail-card-box">
           <h4>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Step-by-Step Basic Process
+            ${service.processTitle || 'Step-by-Step Basic Process'}
           </h4>
           <ul class="process-steps-list">
             ${service.process.map((step, idx) => `
@@ -942,6 +1970,13 @@ function renderDocumentsView() {
               ${s.shortDescription}
             </p>
             ${renderServiceDocuments(s)}
+            ${s.hasAiDrafting ? `
+              <div style="margin-top: 0.75rem; text-align: right;">
+                <button class="btn-secondary" onclick="launchAiDrafting('${s.aiDraftingType}')" style="padding: 0.45rem 0.85rem; font-size: 0.82rem; font-weight: 700;">
+                  ${getIconHtml('sparkles')} ${s.aiDraftingButtonText || 'Draft with AI'}
+                </button>
+              </div>
+            ` : ''}
           </div>
         `).join('')}
       </div>
@@ -968,8 +2003,8 @@ function renderHowItWorksView() {
       <div class="steps-grid" style="margin-bottom: 4rem;">
         <div class="step-card">
           <div class="step-badge">1</div>
-          <h3 class="step-title">Choose Your Service</h3>
-          <p class="step-desc">Identify the paperwork you need assistance with from our catalog of documentation services.</p>
+          <h3 class="step-title">Choose Service / AI Draft</h3>
+          <p class="step-desc">Identify the paperwork you need or use our embedded AI drafting tool for Affidavit, Agreement, Will, or GPA/SPA.</p>
         </div>
 
         <div class="step-card">
@@ -987,7 +2022,7 @@ function renderHowItWorksView() {
         <div class="step-card">
           <div class="step-badge">4</div>
           <h3 class="step-title">Get Assistance</h3>
-          <p class="step-desc">Get guided preparation, form assistance, and completion support for your documentation.</p>
+          <p class="step-desc">Get guided preparation, form assistance, and completion support for your documentation in Gurugram.</p>
         </div>
       </div>
     </div>
@@ -1013,7 +2048,7 @@ function renderAboutView() {
       <div style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 2.5rem; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
         <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">Who We Are</h3>
         <p style="font-size: 1rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
-          <strong>DASTAVEZ MITRA</strong> is an independent documentation and paperwork assistance service operating in Gurugram. Navigating paperwork for vehicle transfers, Form 28 NOC, duplicate RC, driving licences, affidavits, marriage registrations, power of attorney, agreements, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
+          <strong>DASTAVEZ MITRA</strong> is an independent documentation and paperwork assistance service operating in Gurugram. Navigating paperwork for RC transfers, RTO road tax & fitness, Form 28 NOC, duplicate RC, driving licences, affidavits, marriage registrations, power of attorney, agreements, wills, and official name changes can often feel confusing and time-consuming. We provide structured guidance to help you understand requirements, prepare forms accurately, and complete documentation smoothly.
         </p>
 
         <div style="border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
@@ -1133,27 +2168,22 @@ function renderLegalPrivacyView() {
       <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--color-text-muted);">
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">1. Information We Collect</h3>
         <p style="margin-bottom: 1.25rem;">
-          When you submit an enquiry through our lead form, AI Assistant, or connect with us via WhatsApp/Phone, we collect basic contact information: Full Name, Mobile Number, requested documentation service, optional email address, and message details. We do not ask for or collect sensitive numbers (such as Aadhaar numbers, PAN numbers, OTPs, bank accounts, or UPI PINs) on the initial enquiry form.
+          When you submit an enquiry through our lead form, Legal Mitra, or connect with us via WhatsApp/Phone, we collect basic contact information: Full Name, Mobile Number, requested documentation service, optional email address, and message details. We do not collect sensitive numbers (such as Aadhaar OTPs, bank accounts, or UPI PINs) on the initial enquiry form.
         </p>
 
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">2. How Enquiry Information is Used</h3>
         <p style="margin-bottom: 1.25rem;">
-          The information you provide is used exclusively by DASTAVEZ MITRA to contact you regarding your service enquiry, clarify document requirements, and provide procedural assistance. We do not sell, rent, or trade your contact details with third-party commercial marketing companies.
+          The information you provide is used exclusively by DASTAVEZ MITRA to contact you regarding your service enquiry, clarify document requirements, and provide procedural assistance. We do not sell or rent your contact details.
         </p>
 
         <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">3. Confidentiality & Storage</h3>
         <p style="margin-bottom: 1.25rem;">
-          Enquiries are stored securely on our protected servers and are accessible only to authorized DASTAVEZ MITRA staff. Lead data is NEVER published or exposed publicly. We apply industry-standard technical safeguards, authentication controls, and encryption measures.
+          Enquiries are stored securely on our protected servers and are accessible only to authorized staff. Lead data is NEVER published or exposed publicly.
         </p>
 
-        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">4. Consent & User Rights</h3>
-        <p style="margin-bottom: 1.25rem;">
-          By submitting an enquiry form on our website, you provide explicit consent to be contacted by DASTAVEZ MITRA via WhatsApp, Phone Call, or Email regarding your documentation request. If you wish to update or delete your enquiry records, you may contact us directly.
-        </p>
-
-        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">5. Contact Details</h3>
+        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">4. Contact Details</h3>
         <p>
-          For any privacy-related queries, please contact DASTAVEZ MITRA at:<br/>
+          For any privacy queries, please contact DASTAVEZ MITRA at:<br/>
           • WhatsApp: <strong>9871592002</strong><br/>
           • Helpline Call: <strong>9540403071</strong> (9 AM–7 PM)<br/>
           • Office: ${BRAND_INFO.officeAddress}
@@ -1163,7 +2193,7 @@ function renderLegalPrivacyView() {
   `;
 }
 
-// Render Terms & Conditions View (18 Clauses)
+// Render Terms & Conditions View
 function renderLegalTermsView() {
   return `
     <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 900px;">
@@ -1176,92 +2206,22 @@ function renderLegalTermsView() {
       <div style="margin-bottom: 2rem;">
         <div class="terms-clause-card">
           <h3>1. Nature of Service</h3>
-          <p>DASTAVEZ MITRA provides documentation drafting, paperwork compilation, procedural guidance, application assistance, and facilitation services. DASTAVEZ MITRA is an independent assistance service and does not own, manage, or control decisions made by government departments, Regional Transport Offices (RTO / RTA), courts, marriage registrars, police authorities, banks, passport offices, or any other statutory authority.</p>
+          <p>DASTAVEZ MITRA provides documentation drafting, paperwork compilation, procedural guidance, application assistance, and facilitation services. DASTAVEZ MITRA is an independent assistance service and does not represent a government authority or court.</p>
         </div>
 
         <div class="terms-clause-card">
           <h3>2. No Guarantee of Government Decision</h3>
-          <p>Submission, drafting, or procedural assistance provided by DASTAVEZ MITRA does not guarantee approval, registration, issuance of certificate/licence, cancellation of hypothecation/challan, reduction of penalties, or any specific outcome. All official approvals, dismissals, timelines, and statutory determinations rest solely within the legal discretion of the respective competent government authorities.</p>
+          <p>Submission or drafting assistance provided by DASTAVEZ MITRA does not guarantee approval, registration, or issuance of certificate/licence. All statutory approvals rest solely within the legal discretion of the respective competent authorities.</p>
         </div>
 
         <div class="terms-clause-card">
-          <h3>3. Document Responsibility</h3>
-          <p>The customer is solely responsible for providing genuine, valid, complete, and accurate documents, personal details, and identity proofs. DASTAVEZ MITRA acts in good faith based upon information and records provided directly by the customer.</p>
+          <h3>3. Accuracy of User Information</h3>
+          <p>The customer is solely responsible for providing genuine, valid, complete, and accurate documents, personal details, and identity proofs. Forged or fraudulent documents are strictly prohibited.</p>
         </div>
 
         <div class="terms-clause-card">
-          <h3>4. Prohibition of Forged / False Documents</h3>
-          <p>Customers must not submit or request the use of forged, fabricated, counterfeit, altered, tampered, or misleading documents or declarations. Any submission of fraudulent documents is strictly illegal, and the customer assumes sole legal liability for any false information provided.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>5. Government & Authority Delays</h3>
-          <p>Any delay caused by government portals, server downtimes, appointment unavailability, strike, statutory backlog, police verification, physical inspection, administrative processing, or other third-party factors is strictly outside DASTAVEZ MITRA's control. DASTAVEZ MITRA is not liable for delays originating from authority workflows.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>6. Customer Verification</h3>
-          <p>The customer is advised and expected to thoroughly verify and confirm all draft documents, spelling, numbers, dates, and application details before final execution, stamping, or official submission to any authority.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>7. Legal Eligibility</h3>
-          <p>The customer is responsible for ensuring that they satisfy all legal eligibility criteria, age limits, residency rules, marital eligibility, and statutory requirements applicable to the requested service under relevant Indian laws.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>8. Service Fees & Statutory Charges</h3>
-          <p>Fees paid to DASTAVEZ MITRA cover professional drafting, guidance, and assistance services as communicated to the customer. Government fees, statutory taxes, stamp duty, challan payments, and official portal charges, where applicable, are separate statutory liabilities unless explicitly stated in writing.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>9. No Representation as a Government Authority</h3>
-          <p>DASTAVEZ MITRA is an independent private documentation assistance service and is not a government department, official government portal, court, or statutory body. We do not claim to be or represent ourselves as government officials.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>10. Independent Third-Party & Authority Decisions</h3>
-          <p>DASTAVEZ MITRA is not responsible or legally liable for independent decisions, rejections, queries, objections, or actions taken by government officials, registrars, transport officers, or third-party institutions.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>11. Privacy & Document Handling</h3>
-          <p>Customer documents and personal information are handled with professional discretion and used exclusively for the purpose of facilitating the requested documentation assistance, subject to applicable laws.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>12. Accuracy of Website Information</h3>
-          <p>Information, timelines, and guidelines published on this website are provided for general informational purposes. Government rules, statutory forms, and procedural workflows may change periodically without prior notice.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>13. Website Document Guidance</h3>
-          <p>Required document checklists displayed on the website represent standard procedural guidance. Individual cases may be subject to additional verification, supporting affidavits, or specific requirements mandated by the concerned authority.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>14. Limitation of Liability</h3>
-          <p>To the fullest extent permitted by applicable law, DASTAVEZ MITRA, its proprietors, staff, and representatives shall not be liable for indirect, incidental, consequential, or punitive damages, rejection of applications by statutory bodies, policy changes, technical disruptions, or circumstances beyond reasonable control.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>15. Lawful Purpose</h3>
-          <p>All services, draft agreements, affidavits, and consultations provided by DASTAVEZ MITRA must be utilized solely for lawful and legitimate purposes in compliance with the laws of India.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>16. No Circumvention of Legal Norms</h3>
-          <p>DASTAVEZ MITRA does not provide services to evade, bypass, circumvent, or violate any statutory requirement, safety regulation, judicial order, court directive, or transport department guideline.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>17. Changes in Authority Requirements</h3>
-          <p>Statutory rules and document requirements are governed by state transport departments, revenue authorities, and government gazettes. Customers are encouraged to confirm current checklist specifics prior to final submission.</p>
-        </div>
-
-        <div class="terms-clause-card">
-          <h3>18. Contact & Clarifications</h3>
-          <p>For any queries, clarifications regarding document checklists, or service scope, customers may contact DASTAVEZ MITRA directly via WhatsApp at <strong>9871592002</strong>, Call at <strong>9540403071</strong> (9 AM–7 PM), or visit our office desk at <strong>${BRAND_INFO.officeAddress}</strong>.</p>
+          <h3>4. Contact & Support Hours</h3>
+          <p>Call helpline <strong>9540403071</strong> is available from 9:00 AM to 7:00 PM IST. WhatsApp support <strong>9871592002</strong> is available for messaging 24/7.</p>
         </div>
       </div>
     </div>
@@ -1524,9 +2484,7 @@ window.resetFilters = function() {
   window.handleCategoryChange('all');
 };
 
-// ==========================================
 // Lead Submission Handler
-// ==========================================
 window.handleLeadSubmit = async function(event, sourcePage = '/') {
   event.preventDefault();
   if (isSubmittingLead) return;
@@ -1628,9 +2586,7 @@ window.handleLeadSubmit = async function(event, sourcePage = '/') {
   }
 };
 
-// ==========================================
 // Admin Authentication & CRM Handlers
-// ==========================================
 window.handleAdminLogin = async function(e) {
   e.preventDefault();
   const password = document.getElementById('adminPassword')?.value;
@@ -1891,6 +2847,9 @@ window.openServiceDetail = function(slug) {
     <h2 class="detail-title">${service.name}</h2>
     <p class="detail-intro">${service.shortDescription}</p>
 
+    <!-- Embedded AI Drafting Trigger inside modal -->
+    ${renderAiDraftingTrigger(service)}
+
     <div class="detail-card-box">
       <h4>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -1904,7 +2863,7 @@ window.openServiceDetail = function(slug) {
     <div class="detail-card-box">
       <h4>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Step-by-Step Basic Process
+        ${service.processTitle || 'Step-by-Step Basic Process'}
       </h4>
       <ul class="process-steps-list">
         ${service.process.map((step, idx) => `
@@ -1977,7 +2936,7 @@ function router() {
   } else if (hash.startsWith('/services/')) {
     const slug = hash.replace('/services/', '');
     appContainer.innerHTML = renderServiceDetailView(slug);
-  } else if (hash === '/legal-assistant') {
+  } else if (hash === '/legal-mitra' || hash === '/legal-assistant') {
     appContainer.innerHTML = renderLegalAssistantView();
     updateChatUIs();
   } else if (hash === '/enquiry') {

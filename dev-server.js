@@ -9,6 +9,7 @@ import adminLoginHandler from './api/admin-login.js';
 import updateLeadHandler from './api/update-lead.js';
 import statsHandler from './api/stats.js';
 import chatHandler from './api/chat.js';
+import draftHandler from './api/draft.js';
 
 const PORT = process.env.PORT || 3000;
 const MIME_TYPES = {
@@ -61,6 +62,8 @@ const server = http.createServer(async (req, res) => {
           return await statsHandler(req, res);
         } else if (pathname === '/api/chat') {
           return await chatHandler(req, res);
+        } else if (pathname === '/api/draft') {
+          return await draftHandler(req, res);
         } else {
           return res.status(404).json({ success: false, error: 'API route not found' });
         }
