@@ -89,10 +89,25 @@ async function runTests() {
   assert(fallback.isFallbackService, 'Must be marked as fallback');
   console.log('  ✓ Any Other Documents verified as fallback contact service.');
 
-  // Verify Contact Numbers
+  // Verify Duplicate RC documents
+  const duplicateRc = getServiceBySlug('duplicate-rc');
+  assert(duplicateRc, 'Duplicate RC service must exist');
+  assert(duplicateRc.documents.includes('Form 26'), 'Duplicate RC must include Form 26');
+  assert(duplicateRc.documents.includes('FIR Copy'), 'Duplicate RC must include FIR Copy');
+  assert(duplicateRc.documents.includes('Insurance Copy'), 'Duplicate RC must include Insurance Copy');
+  assert(duplicateRc.documents.includes('Pollution Certificate / PUC Copy'), 'Duplicate RC must include Pollution Certificate / PUC Copy');
+  assert(duplicateRc.documents.includes('NCRB Report'), 'Duplicate RC must include NCRB Report');
+  assert(duplicateRc.documents.includes('Address Proof'), 'Duplicate RC must include Address Proof');
+  assert(duplicateRc.documents.includes('Affidavit'), 'Duplicate RC must include Affidavit');
+  assert(duplicateRc.documents.length === 7, 'Duplicate RC must have exactly 7 required documents');
+  console.log('  ✓ Duplicate RC verified with full 7-point document checklist.');
+
+  // Verify Contact Numbers & Instagram
   assert(BRAND_INFO.whatsappNumber === '9871592002', 'WhatsApp number must be 9871592002');
   assert(BRAND_INFO.callingNumber === '9540403071', 'Calling number must be 9540403071');
-  console.log('  ✓ Contact numbers strictly verified: WhatsApp 9871592002 | Call 9540403071.');
+  assert(BRAND_INFO.instagramHandle === '@dastavezmitra', 'Instagram handle must be @dastavezmitra');
+  assert(BRAND_INFO.instagramUrl.includes('dastavezmitra'), 'Instagram URL must point to dastavezmitra');
+  console.log('  ✓ Contact numbers & Instagram verified: WhatsApp 9871592002 | Call 9540403071 | Instagram @dastavezmitra.');
 
   // TEST 2: Legal Mitra Chat API Test
   console.log('\n[2] Testing Legal Mitra Chat API (/api/chat)...');

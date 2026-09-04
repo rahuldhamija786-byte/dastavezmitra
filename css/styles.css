@@ -3071,3 +3071,160 @@ img {
   gap: 0.35rem;
 }
 
+/* ==========================================================================
+   Toast Notification System
+   ========================================================================== */
+.dm-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: 400px;
+  width: calc(100vw - 48px);
+}
+
+.dm-toast-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  color: #0f172a;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.08);
+  border-left: 5px solid var(--color-accent);
+  opacity: 0;
+  transform: translateX(40px) scale(0.95);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.dm-toast-item.dm-toast-show {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.dm-toast-icon {
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dm-toast-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.dm-toast-success {
+  border-left-color: #10b981;
+}
+
+.dm-toast-success .dm-toast-icon {
+  color: #10b981;
+}
+
+.dm-toast-error {
+  border-left-color: #ef4444;
+}
+
+.dm-toast-error .dm-toast-icon {
+  color: #ef4444;
+}
+
+.dm-toast-warning {
+  border-left-color: #f59e0b;
+}
+
+.dm-toast-warning .dm-toast-icon {
+  color: #f59e0b;
+}
+
+.dm-toast-info {
+  border-left-color: #0284c7;
+}
+
+.dm-toast-info .dm-toast-icon {
+  color: #0284c7;
+}
+
+/* ==========================================================================
+   Pulse Animation for Floating AI Launcher
+   ========================================================================== */
+@keyframes aiPulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.5), 0 8px 24px rgba(11, 37, 69, 0.25);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(2, 132, 199, 0), 0 8px 24px rgba(11, 37, 69, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0), 0 8px 24px rgba(11, 37, 69, 0.25);
+  }
+}
+
+.floating-ai-widget-launcher {
+  animation: aiPulseGlow 3s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   Print Document Optimization
+   ========================================================================== */
+@media print {
+  .site-header,
+  .mobile-drawer,
+  .drawer-backdrop,
+  .mobile-sticky-bar,
+  .floating-whatsapp,
+  .floating-ai-widget-launcher,
+  .floating-ai-drawer,
+  .site-footer,
+  .filter-controls-wrapper,
+  .draft-preview-header button,
+  .draft-actions-grid {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+  }
+
+  .modal-overlay {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .modal-content {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .draft-preview-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .draft-text-box {
+    border: 1px solid #999 !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt !important;
+    white-space: pre-wrap !important;
+  }
+}
+

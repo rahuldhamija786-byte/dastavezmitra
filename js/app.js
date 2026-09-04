@@ -59,6 +59,7 @@ function getIconHtml(iconName) {
     'check-circle': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
     'layers': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
     'whatsapp': '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
+    'instagram': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
     'phone': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
     'map-pin': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
     'send': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
@@ -1725,7 +1726,45 @@ window.handleGpaSpaDraftSubmit = async function(e) {
   }
 };
 
-// Render Draft Preview Container with Copy & WhatsApp CTAs
+// Toast Notification System
+export function showToast(message, type = 'info', duration = 3500) {
+  let container = document.getElementById('dm-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'dm-toast-container';
+    container.className = 'dm-toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `dm-toast-item dm-toast-${type}`;
+
+  const iconMap = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠️',
+    info: 'ℹ️'
+  };
+
+  toast.innerHTML = `
+    <span class="dm-toast-icon">${iconMap[type] || 'ℹ️'}</span>
+    <span class="dm-toast-text">${escapeHtml(message)}</span>
+  `;
+
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('dm-toast-show');
+  });
+
+  setTimeout(() => {
+    toast.classList.remove('dm-toast-show');
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, duration);
+}
+window.showToast = showToast;
+
+// Render Draft Preview Container with Copy, Print & WhatsApp CTAs
 function renderGeneratedDraftPreview(container, draftText, docType, personName) {
   if (!container) return;
 
@@ -1734,9 +1773,14 @@ function renderGeneratedDraftPreview(container, draftText, docType, personName) 
     <div class="draft-preview-card">
       <div class="draft-preview-header">
         <span class="draft-preview-header-tag">Preliminary Generated Draft: ${docType}</span>
-        <button class="btn-secondary" onclick="copyDraftText()" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
-          📋 Copy Draft Text
-        </button>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn-secondary" onclick="printDraftText('${escapeHtml(docType)}')" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+            🖨️ Print / Save PDF
+          </button>
+          <button class="btn-secondary" onclick="copyDraftText()" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+            📋 Copy Text
+          </button>
+        </div>
       </div>
 
       <div class="draft-text-box" id="generatedDraftTextBox">${escapeHtml(draftText)}</div>
@@ -1760,13 +1804,60 @@ window.copyDraftText = function() {
   if (!textBox) return;
 
   navigator.clipboard.writeText(textBox.innerText).then(() => {
-    alert('Draft text copied to clipboard! You can now paste and review it.');
+    showToast('Draft text copied to clipboard successfully!', 'success');
   }).catch(() => {
-    alert('Please select and copy the text manually.');
+    showToast('Please select and copy the text manually.', 'warning');
   });
 };
 
+window.printDraftText = function(docType = 'Legal Draft') {
+  const textBox = document.getElementById('generatedDraftTextBox');
+  if (!textBox) return;
+  const content = textBox.innerText;
+
+  const printWindow = window.open('', '_blank', 'width=850,height=950');
+  if (!printWindow) {
+    showToast('Please allow popups to print/save document as PDF.', 'warning');
+    return;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>${escapeHtml(docType)} - DASTAVEZ MITRA</title>
+      <style>
+        @page { size: A4; margin: 25mm 20mm; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12.5pt; line-height: 1.6; color: #111; margin: 0; padding: 25px; }
+        .header { text-align: center; border-bottom: 2px solid #222; padding-bottom: 12px; margin-bottom: 24px; }
+        .header h1 { font-size: 16pt; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header p { font-size: 9.5pt; margin: 0; color: #555; }
+        pre { white-space: pre-wrap; font-family: inherit; font-size: inherit; line-height: 1.6; margin: 0; }
+        .footer { margin-top: 35px; border-top: 1px dashed #777; padding-top: 10px; font-size: 9pt; color: #666; text-align: center; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>DASTAVEZ MITRA • GURUGRAM</h1>
+        <p>Documentation & Assistance Services | WhatsApp: 9871592002 | Call: 9540403071</p>
+      </div>
+      <pre>${escapeHtml(content)}</pre>
+      <div class="footer">
+        <p>Generated via DASTAVEZ MITRA • Preliminary Draft subject to verification & appropriate e-Stamp Paper execution.</p>
+      </div>
+      <script>
+        window.onload = function() { window.print(); }
+      <\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  showToast('Opening print / PDF dialog...', 'success');
+};
+
 function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
@@ -2130,6 +2221,22 @@ function renderContactView() {
           <a href="tel:+919540403071" class="btn-secondary" style="justify-content: center; font-weight: 700;">
             ${getIconHtml('phone')}
             Call 9540403071
+          </a>
+        </div>
+
+        <!-- Instagram Social Channel Card -->
+        <div class="channel-card">
+          <div class="channel-icon-circle" style="background: var(--color-instagram-bg); color: var(--color-instagram);">
+            ${getIconHtml('instagram')}
+          </div>
+          <div>
+            <h3 class="channel-title">Instagram</h3>
+            <p class="channel-handle">${BRAND_INFO.instagramHandle}</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Follow for documentation updates, legal facts, and tips in Gurugram.</p>
+          </div>
+          <a href="${BRAND_INFO.instagramUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="justify-content: center; font-weight: 700; color: var(--color-instagram); border-color: rgba(225, 48, 108, 0.3);">
+            ${getIconHtml('instagram')}
+            Follow on Instagram
           </a>
         </div>
 

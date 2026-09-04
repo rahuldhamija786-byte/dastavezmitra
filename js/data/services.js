@@ -21,7 +21,7 @@ export const BRAND_INFO = {
   serviceLocationNotice: "Services currently available in Gurugram only.",
   officeAddress: "Seat No. 4, R C Khatana Lane, Hall No. 8, District and Sessions Court, Gurugram",
   instagramHandle: "@dastavezmitra",
-  instagramUrl: "https://instagram.com/dastavezmitra",
+  instagramUrl: "https://www.instagram.com/dastavezmitra?igsh=MWFsdHBucm15eWZudg%3D%3D&utm_source=qr",
   facebookName: "DASTAVEZ MITRA",
   facebookUrl: "https://facebook.com",
   defaultWhatsappMessage: "Hello DASTAVEZ MITRA, I want information about documentation services.",
@@ -289,9 +289,10 @@ export const SERVICES = [
       "Form 26",
       "FIR Copy",
       "Insurance Copy",
-      "Pollution Certificate Copy",
+      "Pollution Certificate / PUC Copy",
+      "NCRB Report",
       "Address Proof",
-      "NCRB"
+      "Affidavit"
     ],
     process: [
       "Contact DASTAVEZ MITRA on WhatsApp with your vehicle details.",
