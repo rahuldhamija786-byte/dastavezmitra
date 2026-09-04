@@ -12,10 +12,8 @@ export const BRAND_INFO = {
   // Dedicated Separate Contact Numbers (STRICT: Only these numbers)
   whatsappNumber: "9871592002",
   callingNumber: "9540403071",
-  whatsappDisplay: "WhatsApp: 9871592002",
-  callingDisplay: "Call: 9540403071",
-  contactNumbersDisplay: "WhatsApp: 9871592002 | Call: 9540403071",
-  callingHoursNotice: "Call Support: 9:00 AM – 7:00 PM (Outside call hours, please message on WhatsApp)",
+  contactNumbersDisplay: "WhatsApp: 9871592002 / 9540403071 | Call: 9871592002 / 9540403071",
+  callingHoursNotice: "Calling Hours: 9 AM – 7 PM (WhatsApp available 24/7)",
   
   whatsappUrlPrefix: "https://wa.me/919871592002",
   serviceLocationNotice: "Services currently available in Gurugram only.",

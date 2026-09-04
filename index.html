@@ -81,17 +81,17 @@
         </ul>
       </nav>
 
-      <!-- Right Header Actions (Distinct WhatsApp & Call Now Buttons) -->
+            <!-- Right Header Actions (Distinct WhatsApp & Call Now Selection Buttons) -->
       <div class="header-actions">
-        <a href="tel:+919540403071" class="btn-header-call" aria-label="Call Helpline directly on 9540403071">
+        <button type="button" class="btn-header-call" onclick="openCallModal()" aria-label="Call Helpline (Calling Hours: 9 AM – 7 PM)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          CALL: 9540403071
-        </a>
+          CALL US
+        </button>
 
-        <a href="https://wa.me/919871592002?text=Hello%20DASTAVEZ%20MITRA%2C%20I%20need%20assistance%20with%20a%20documentation%20service." target="_blank" rel="noopener noreferrer" class="btn-header-cta" aria-label="Chat on WhatsApp at 9871592002">
+        <button type="button" class="btn-header-cta" onclick="openWhatsappModal()" aria-label="Chat on WhatsApp">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
           WHATSAPP
-        </a>
+        </button>
 
         <!-- Mobile Hamburger -->
         <button class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
@@ -127,17 +127,17 @@
 
     <div class="drawer-footer">
       <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">
-        <div>💬 WhatsApp: <strong>9871592002</strong></div>
-        <div style="margin-top: 2px;">📞 Call: <strong>9540403071</strong> (9 AM–7 PM)</div>
+        <div>💬 WhatsApp (24/7): <strong>9871592002 / 9540403071</strong></div>
+        <div style="margin-top: 2px;">📞 Calling Hours: <strong>9 AM – 7 PM</strong></div>
       </div>
       <p style="font-size: 0.78rem; color: #92400e; background: #fef3c7; padding: 0.25rem 0.5rem; border-radius: 4px; margin-bottom: 0.75rem; font-weight: 600;">📍 Services in Gurugram only</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-        <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.75rem; justify-content: center;">
-          📞 Call Now
-        </a>
-        <a href="https://wa.me/919871592002?text=Hello%20DASTAVEZ%20MITRA%2C%20I%20need%20assistance%20with%20a%20documentation%20service." target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.75rem; justify-content: center;">
+        <button type="button" class="btn-card-call" onclick="openCallModal()" style="padding: 0.75rem; justify-content: center; width: 100%; border: none; cursor: pointer;">
+          📞 Call
+        </button>
+        <button type="button" class="btn-card-wa" onclick="openWhatsappModal()" style="padding: 0.75rem; justify-content: center; width: 100%; border: none; cursor: pointer;">
           💬 WhatsApp
-        </a>
+        </button>
       </div>
     </div>
   </aside>
@@ -173,6 +173,94 @@
     </div>
   </div>
 
+  <!-- Call Us Selection Modal (Two Line Options) -->
+  <div class="modal-overlay" id="callModal" aria-hidden="true" role="dialog">
+    <div class="modal-content modal-contact-choice">
+      <div class="modal-header">
+        <div class="brand-logo">
+          <div class="logo-badge" style="width: 32px; height: 32px; font-size: 0.9rem; background: #0284c7;">📞</div>
+          <span style="font-weight: 800; font-size: 1.05rem; color: var(--color-primary);">Call Us</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeCallModal()" aria-label="Close call modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem;">
+        <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
+          <strong>Calling Hours: 9 AM – 7 PM</strong><br/>
+          Select a line to call our Gurugram desk directly:
+        </p>
+        <div class="contact-choice-list">
+          <div class="contact-choice-item">
+            <div class="contact-choice-meta">
+              <span class="contact-choice-label">Line 1</span>
+              <span class="contact-choice-num">9871592002</span>
+            </div>
+            <a href="tel:9871592002" class="btn-choice-action btn-choice-call" aria-label="Call Line 1 on 9871592002">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Call
+            </a>
+          </div>
+
+          <div class="contact-choice-item">
+            <div class="contact-choice-meta">
+              <span class="contact-choice-label">Line 2</span>
+              <span class="contact-choice-num">9540403071</span>
+            </div>
+            <a href="tel:9540403071" class="btn-choice-action btn-choice-call" aria-label="Call Line 2 on 9540403071">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Call
+            </a>
+          </div>
+        </div>
+        <p style="font-size: 0.78rem; color: #64748b; margin-top: 1rem; text-align: center;">
+          If line 1 is busy or unavailable, please connect on line 2.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- WhatsApp Us Selection Modal (Two Line Options) -->
+  <div class="modal-overlay" id="whatsappModal" aria-hidden="true" role="dialog">
+    <div class="modal-content modal-contact-choice">
+      <div class="modal-header">
+        <div class="brand-logo">
+          <div class="logo-badge" style="width: 32px; height: 32px; font-size: 0.9rem; background: #25d366;">💬</div>
+          <span style="font-weight: 800; font-size: 1.05rem; color: var(--color-primary);">WhatsApp Us</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeWhatsappModal()" aria-label="Close whatsapp modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem;">
+        <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
+          <strong>WhatsApp Support Available 24/7</strong><br/>
+          Choose a WhatsApp number to message our Gurugram desk:
+        </p>
+        <div class="contact-choice-list">
+          <div class="contact-choice-item">
+            <div class="contact-choice-meta">
+              <span class="contact-choice-label">Line 1</span>
+              <span class="contact-choice-num">9871592002</span>
+            </div>
+            <a id="waModalLink1" href="https://wa.me/919871592002" target="_blank" rel="noopener noreferrer" class="btn-choice-action btn-choice-wa" aria-label="Message Line 1 on WhatsApp">
+              Message on WhatsApp
+            </a>
+          </div>
+
+          <div class="contact-choice-item">
+            <div class="contact-choice-meta">
+              <span class="contact-choice-label">Line 2</span>
+              <span class="contact-choice-num">9540403071</span>
+            </div>
+            <a id="waModalLink2" href="https://wa.me/919540403071" target="_blank" rel="noopener noreferrer" class="btn-choice-action btn-choice-wa" aria-label="Message Line 2 on WhatsApp">
+              Message on WhatsApp
+            </a>
+          </div>
+        </div>
+        <p style="font-size: 0.78rem; color: #64748b; margin-top: 1rem; text-align: center;">
+          Direct chat for quick document checks & service assistance.
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Legal Mitra Assistant Widget Launcher -->
   <button class="floating-ai-widget-launcher" id="aiChatLauncherBtn" onclick="toggleFloatingAiWidget()" aria-label="Open Legal Mitra Information Assistant">
     <span style="font-size: 1.15rem;">⚖️</span>
@@ -192,7 +280,7 @@
       <button onclick="toggleFloatingAiWidget(false)" style="background: transparent; border: none; color: white; font-size: 1.4rem; cursor: pointer; line-height: 1;">&times;</button>
     </div>
     <div class="ai-chat-disclaimer-bar" style="font-size: 0.72rem; padding: 0.35rem 0.65rem;">
-      General legal info only • Not legal advice • WhatsApp: 9871592002
+      General legal info only • Calling Hours: 9 AM – 7 PM • WhatsApp 24/7
     </div>
     <div class="ai-chat-messages" id="floatingChatMessages"></div>
     <div class="chat-quick-prompts" style="padding: 0.4rem 0.65rem;">
@@ -210,28 +298,28 @@
   </div>
 
   <!-- Floating Desktop WhatsApp Trigger -->
-  <a href="https://wa.me/919871592002?text=Hello%20DASTAVEZ%20MITRA%2C%20I%20need%20assistance%20with%20a%20documentation%20service." target="_blank" rel="noopener noreferrer" class="floating-whatsapp" aria-label="Chat on WhatsApp at 9871592002" style="bottom: 140px;">
+  <button type="button" onclick="openWhatsappModal()" class="floating-whatsapp" aria-label="WhatsApp Us (9871592002 / 9540403071)" style="bottom: 140px; border: none;">
     <span class="floating-wa-icon">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
     </span>
     <span>WhatsApp Us</span>
-  </a>
+  </button>
 
   <!-- Mobile Sticky Bottom Contact Bar with Separate Actions -->
   <div class="mobile-sticky-bar">
     <div class="mobile-sticky-info">
       <span class="mobile-sticky-title">DASTAVEZ MITRA</span>
-      <span class="mobile-sticky-num">Gurugram Assistance</span>
+      <span class="mobile-sticky-num">Calling Hours: 9 AM – 7 PM</span>
     </div>
     <div class="mobile-sticky-actions">
-      <a href="tel:+919540403071" class="mobile-sticky-call-btn" aria-label="Call 9540403071">
+      <button type="button" class="mobile-sticky-call-btn" onclick="openCallModal()" aria-label="Call Us (Calling Hours: 9 AM – 7 PM)" style="border: none; cursor: pointer;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         CALL NOW
-      </a>
-      <a href="https://wa.me/919871592002?text=Hello%20DASTAVEZ%20MITRA%2C%20I%20need%20assistance%20with%20a%20documentation%20service." target="_blank" rel="noopener noreferrer" class="mobile-sticky-wa-btn" aria-label="WhatsApp 9871592002">
+      </button>
+      <button type="button" class="mobile-sticky-wa-btn" onclick="openWhatsappModal()" aria-label="WhatsApp Us" style="border: none; cursor: pointer;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
         WHATSAPP
-      </a>
+      </button>
     </div>
   </div>
 
@@ -250,7 +338,7 @@
             <a href="https://www.instagram.com/dastavezmitra?igsh=MWFsdHBucm15eWZudg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Follow Dastavez Mitra on Instagram">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
-            <a href="https://wa.me/919871592002" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Contact Dastavez Mitra on WhatsApp">
+            <a href="javascript:void(0)" onclick="openWhatsappModal()" class="footer-social-btn" aria-label="Contact Dastavez Mitra on WhatsApp">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.952 1.18-.176.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.493-.895-.798-1.5-1.783-1.676-2.083-.175-.3-.019-.462.132-.612.135-.135.301-.351.451-.527.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.235-.244-.588-.492-.508-.677-.518l-.577-.01c-.2 0-.527.075-.802.376s-1.054 1.03-1.054 2.511 1.08 2.912 1.23 3.113c.15.201 2.126 3.246 5.151 4.553.72.31 1.282.496 1.72.635.723.23 1.38.198 1.9.12.58-.087 1.78-.727 2.03-1.43.25-.703.25-1.305.175-1.43-.075-.125-.276-.2-.577-.35zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.438 5.178L2 22l4.97-1.398A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
             </a>
           </div>
@@ -274,8 +362,8 @@
         <div class="footer-column">
           <h4>Contact Helpline</h4>
           <ul class="footer-links">
-            <li><strong style="color: white;">WhatsApp:</strong> <a href="https://wa.me/919871592002" target="_blank" rel="noopener noreferrer">9871592002</a></li>
-            <li><strong style="color: white;">Call:</strong> <a href="tel:+919540403071">9540403071</a></li>
+            <li><strong style="color: white;">WhatsApp (24/7):</strong> <a href="javascript:void(0)" onclick="openWhatsappModal()">9871592002 / 9540403071</a></li>
+            <li><strong style="color: white;">Calling Hours:</strong> <a href="javascript:void(0)" onclick="openCallModal()">9 AM – 7 PM</a></li>
             <li><strong style="color: white;">Location:</strong> Gurugram Only</li>
             <li><strong style="color: white;">Instagram:</strong> <a href="https://www.instagram.com/dastavezmitra?igsh=MWFsdHBucm15eWZudg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">@dastavezmitra</a></li>
             <li style="margin-top: 0.5rem;"><a href="#/privacy">Privacy Policy</a></li>

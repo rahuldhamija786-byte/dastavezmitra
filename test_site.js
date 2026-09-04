@@ -107,7 +107,21 @@ async function runTests() {
   assert(BRAND_INFO.callingNumber === '9540403071', 'Calling number must be 9540403071');
   assert(BRAND_INFO.instagramHandle === '@dastavezmitra', 'Instagram handle must be @dastavezmitra');
   assert(BRAND_INFO.instagramUrl.includes('dastavezmitra'), 'Instagram URL must point to dastavezmitra');
+  assert(BRAND_INFO.callingHoursNotice.includes('9 AM – 7 PM'), 'Calling hours must be 9 AM – 7 PM');
   console.log('  ✓ Contact numbers & Instagram verified: WhatsApp 9871592002 | Call 9540403071 | Instagram @dastavezmitra.');
+
+  // Verify HTML structure for Two-Line Call and WhatsApp Selection Modals
+  import('fs').then(fs => {
+    const htmlContent = fs.readFileSync('./index.html', 'utf8');
+    assert(htmlContent.includes('id="callModal"'), 'HTML must have #callModal');
+    assert(htmlContent.includes('id="whatsappModal"'), 'HTML must have #whatsappModal');
+    assert(htmlContent.includes('tel:9871592002'), 'HTML must have Line 1 tel:9871592002');
+    assert(htmlContent.includes('tel:9540403071'), 'HTML must have Line 2 tel:9540403071');
+    assert(htmlContent.includes('https://wa.me/919871592002'), 'HTML must have Line 1 WhatsApp link');
+    assert(htmlContent.includes('https://wa.me/919540403071'), 'HTML must have Line 2 WhatsApp link');
+    assert(htmlContent.includes('Calling Hours: 9 AM – 7 PM'), 'HTML must display "Calling Hours: 9 AM – 7 PM"');
+    console.log('  ✓ Two-line Call & WhatsApp selection modals verified in HTML.');
+  });
 
   // TEST 2: Legal Mitra Chat API Test
   console.log('\n[2] Testing Legal Mitra Chat API (/api/chat)...');

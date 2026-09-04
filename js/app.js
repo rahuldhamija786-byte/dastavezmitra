@@ -36,6 +36,51 @@ function isCallingHoursActive() {
   }
 }
 
+// Contact Modal Controllers (Two Number Selection)
+window.openCallModal = function() {
+  const modal = document.getElementById('callModal');
+  if (modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeCallModal = function() {
+  const modal = document.getElementById('callModal');
+  if (modal) {
+    modal.classList.remove('open');
+    if (!document.querySelector('.modal-overlay.open')) {
+      document.body.style.overflow = '';
+    }
+  }
+};
+
+window.openWhatsappModal = function(customMessage) {
+  const modal = document.getElementById('whatsappModal');
+  if (!modal) return;
+  const msg = customMessage || BRAND_INFO.defaultWhatsappMessage;
+  const link1 = document.getElementById('waModalLink1');
+  const link2 = document.getElementById('waModalLink2');
+  if (link1) {
+    link1.href = `https://wa.me/919871592002?text=${encodeURIComponent(msg)}`;
+  }
+  if (link2) {
+    link2.href = `https://wa.me/919540403071?text=${encodeURIComponent(msg)}`;
+  }
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeWhatsappModal = function() {
+  const modal = document.getElementById('whatsappModal');
+  if (modal) {
+    modal.classList.remove('open');
+    if (!document.querySelector('.modal-overlay.open')) {
+      document.body.style.overflow = '';
+    }
+  }
+};
+
 // Icons helper
 function getIconHtml(iconName) {
   const iconMap = {
@@ -108,10 +153,10 @@ function renderServiceDocuments(service) {
                 <h4 class="rto-subservice-title">${sub.name}</h4>
                 <p class="rto-subservice-desc">${sub.description}</p>
               </div>
-              <a href="${getWhatsappLink(`Hello DASTAVEZ MITRA, I need assistance for RTO: ${sub.name}.`)}" target="_blank" rel="noopener noreferrer" class="btn-subservice-action">
+              <button type="button" onclick="openWhatsappModal('Hello DASTAVEZ MITRA, I need assistance for RTO: ${escapeHtml(sub.name)}.')" class="btn-subservice-action">
                 <span>Inquire on WhatsApp</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
+              </button>
             </div>
           `).join('')}
         </div>
@@ -159,12 +204,12 @@ function renderServiceDocuments(service) {
           ${service.fallbackPromptText || 'आप हमें अपना matter/message भेज सकते हैं। WhatsApp या Call के माध्यम से हम आपकी सहायता के लिए उपलब्ध हैं।'}
         </p>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; font-size: 0.9rem;">
-            ${getIconHtml('phone')} Call: 9540403071
-          </a>
-          <a href="${getWhatsappLink(service.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 0.9rem;">
-            ${getIconHtml('whatsapp')} WhatsApp: 9871592002
-          </a>
+          <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-weight: 700; font-size: 0.9rem;">
+            ${getIconHtml('phone')} Call: 9 AM – 7 PM
+          </button>
+          <button type="button" onclick="openWhatsappModal('${escapeHtml(service.whatsappMessage)}')" class="btn-primary-wa" style="font-size: 0.9rem;">
+            ${getIconHtml('whatsapp')} WhatsApp Us
+          </button>
         </div>
       </div>
     `;
@@ -402,8 +447,6 @@ function renderLeadFormComponent(preselectedServiceName = '', sourcePage = '/') 
 
 // Render Service Card for Catalog & Home
 function renderServiceCard(service) {
-  const waUrl = getWhatsappLink(service.whatsappMessage);
-
   return `
     <article class="service-card" data-category="${service.category}" id="card-${service.slug}">
       <div class="card-top">
@@ -423,14 +466,14 @@ function renderServiceCard(service) {
         </button>
         
         <div class="card-action-row">
-          <a href="tel:+919540403071" class="btn-card-call" aria-label="Call directly for ${service.name}">
+          <button type="button" onclick="openCallModal()" class="btn-card-call" aria-label="Call for ${escapeHtml(service.name)}">
             ${getIconHtml('phone')}
             Call
-          </a>
-          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" aria-label="WhatsApp for ${service.name}">
+          </button>
+          <button type="button" onclick="openWhatsappModal('${escapeHtml(service.whatsappMessage)}')" class="btn-card-wa" aria-label="WhatsApp for ${escapeHtml(service.name)}">
             ${getIconHtml('whatsapp')}
             WhatsApp
-          </a>
+          </button>
         </div>
       </div>
     </article>
@@ -440,7 +483,6 @@ function renderServiceCard(service) {
 // Render Home View
 function renderHomeView() {
   const filtered = filterServices();
-  const callingHoursActive = isCallingHoursActive();
   
   return `
     <!-- Hero Section -->
@@ -461,14 +503,14 @@ function renderHomeView() {
           </p>
 
           <div class="hero-cta-group">
-            <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
+            <button type="button" onclick="openWhatsappModal()" class="btn-primary-wa">
               ${getIconHtml('whatsapp')}
-              WHATSAPP: 9871592002
-            </a>
-            <a href="tel:+919540403071" class="btn-secondary">
+              WHATSAPP US
+            </button>
+            <button type="button" onclick="openCallModal()" class="btn-secondary">
               ${getIconHtml('phone')}
-              CALL: 9540403071 ${callingHoursActive ? '(9 AM–7 PM)' : '(Available 9 AM)'}
-            </a>
+              CALL US (9 AM – 7 PM)
+            </button>
           </div>
 
           <div class="hero-highlights">
@@ -601,7 +643,7 @@ function renderHomeView() {
           <div class="step-card">
             <div class="step-badge">3</div>
             <h3 class="step-title">Call or WhatsApp</h3>
-            <p class="step-desc">Connect on WhatsApp at 9871592002 or call Helpline 9540403071 (9 AM–7 PM) for immediate consultation.</p>
+            <p class="step-desc">Connect on WhatsApp (24/7) or call Helpline (Calling Hours: 9 AM – 7 PM) for immediate consultation.</p>
           </div>
 
           <div class="step-card">
@@ -621,14 +663,14 @@ function renderHomeView() {
           Contact DASTAVEZ MITRA directly for quick consultation and document verification in Gurugram.
         </p>
         <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-          <a href="tel:+919540403071" class="btn-secondary" style="font-size: 1rem; padding: 0.85rem 1.5rem; font-weight: 700;">
+          <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-size: 1rem; padding: 0.85rem 1.5rem; font-weight: 700;">
             ${getIconHtml('phone')}
-            CALL: 9540403071 (9 AM–7 PM)
-          </a>
-          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1rem; padding: 0.85rem 1.5rem;">
+            CALL US (9 AM – 7 PM)
+          </button>
+          <button type="button" onclick="openWhatsappModal()" class="btn-primary-wa" style="font-size: 1rem; padding: 0.85rem 1.5rem;">
             ${getIconHtml('whatsapp')}
-            WHATSAPP: 9871592002
-          </a>
+            WHATSAPP US
+          </button>
         </div>
       </div>
     </section>
@@ -637,8 +679,6 @@ function renderHomeView() {
 
 // Render Dedicated Legal Mitra Assistant Page View
 function renderLegalAssistantView() {
-  const callingHoursActive = isCallingHoursActive();
-
   return `
     <div class="ai-assistant-wrapper">
       <div class="container">
@@ -654,7 +694,7 @@ function renderLegalAssistantView() {
             </div>
 
             <span class="ai-calling-status-badge">
-              ${callingHoursActive ? '📞 Calling Hours Online (9 AM – 7 PM)' : '🌙 WhatsApp 24/7 (Call: 9 AM–7 PM)'}
+              📞 Calling Hours: 9 AM – 7 PM
             </span>
           </div>
 
@@ -711,8 +751,6 @@ function formatMessageText(text) {
 
 // Render Chat Messages List HTML
 function renderMessagesHtml(messages) {
-  const callingHoursActive = isCallingHoursActive();
-
   return messages.map(m => {
     if (m.role === 'user') {
       return `
@@ -728,18 +766,12 @@ function renderMessagesHtml(messages) {
         <div class="chat-cta-box">
           <div class="chat-cta-prompt">क्या आप अपनी समस्या या डॉक्यूमेंट के बारे में expert assistance चाहते हैं?</div>
           <div class="chat-cta-actions">
-            ${callingHoursActive ? `
-              <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
-                ${getIconHtml('phone')} Call: 9540403071
-              </a>
-            ` : `
-              <span style="font-size: 0.76rem; color: var(--color-text-muted); align-self: center;">
-                Call: 9 AM–7 PM (9540403071)
-              </span>
-            `}
-            <a href="${getWhatsappLink('Hello DASTAVEZ MITRA, I was consulting Legal Mitra and want assistance with my paperwork.')}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
-              ${getIconHtml('whatsapp')} WhatsApp: 9871592002
-            </a>
+            <button type="button" onclick="openCallModal()" class="btn-card-call" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
+              ${getIconHtml('phone')} Call: 9 AM – 7 PM
+            </button>
+            <button type="button" onclick="openWhatsappModal('Hello DASTAVEZ MITRA, I was consulting Legal Mitra and want assistance with my paperwork.')" class="btn-card-wa" style="padding: 0.45rem 0.8rem; font-size: 0.8rem;">
+              ${getIconHtml('whatsapp')} WhatsApp Us
+            </button>
           </div>
         </div>
       </div>
@@ -1786,12 +1818,12 @@ function renderGeneratedDraftPreview(container, draftText, docType, personName) 
       <div class="draft-text-box" id="generatedDraftTextBox">${escapeHtml(draftText)}</div>
 
       <div class="draft-actions-grid">
-        <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.85rem;">
-          ${getIconHtml('phone')} Call: 9540403071 (9 AM–7 PM)
-        </a>
-        <a href="${getWhatsappLink(`Hello DASTAVEZ MITRA, I have prepared a preliminary draft for ${docType} on your website (Name: ${personName || ''}) and want to get it finalized, printed on e-stamp paper and notarized.`)}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="justify-content: center; padding: 0.85rem;">
+        <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.85rem;">
+          ${getIconHtml('phone')} Call: 9 AM – 7 PM
+        </button>
+        <button type="button" onclick="openWhatsappModal('Hello DASTAVEZ MITRA, I have prepared a preliminary draft for ${escapeHtml(docType)} on your website (Name: ${escapeHtml(personName || '')}) and want to get it finalized, printed on e-stamp paper and notarized.')" class="btn-primary-wa" style="justify-content: center; padding: 0.85rem;">
           ${getIconHtml('whatsapp')} WhatsApp to Finalize
-        </a>
+        </button>
       </div>
     </div>
   `;
@@ -1982,14 +2014,14 @@ function renderServiceDetailView(slug) {
 
         <!-- Action Buttons -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 2rem;">
-          <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.9rem;">
+          <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.9rem;">
             ${getIconHtml('phone')}
-            CALL: 9540403071
-          </a>
-          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="justify-content: center; padding: 0.9rem;">
+            CALL: 9 AM – 7 PM
+          </button>
+          <button type="button" onclick="openWhatsappModal('${escapeHtml(service.whatsappMessage)}')" class="btn-primary-wa" style="justify-content: center; padding: 0.9rem;">
             ${getIconHtml('whatsapp')}
-            WHATSAPP: 9871592002
-          </a>
+            WHATSAPP US
+          </button>
         </div>
       </article>
 
@@ -2049,12 +2081,12 @@ function renderDocumentsView() {
                 <span>${s.name}</span>
               </div>
               <div style="display: flex; gap: 0.4rem;">
-                <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.5rem 0.75rem;">
+                <button type="button" onclick="openCallModal()" class="btn-card-call" style="padding: 0.5rem 0.75rem;">
                   ${getIconHtml('phone')} Call
-                </a>
-                <a href="${getWhatsappLink(s.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.5rem 0.75rem;">
+                </button>
+                <button type="button" onclick="openWhatsappModal('${escapeHtml(s.whatsappMessage)}')" class="btn-card-wa" style="padding: 0.5rem 0.75rem;">
                   ${getIconHtml('whatsapp')} WhatsApp
-                </a>
+                </button>
               </div>
             </div>
             <p style="font-size: 0.92rem; color: var(--color-text-muted); margin-bottom: 0.75rem;">
@@ -2107,7 +2139,7 @@ function renderHowItWorksView() {
         <div class="step-card">
           <div class="step-badge">3</div>
           <h3 class="step-title">Call or WhatsApp</h3>
-          <p class="step-desc">Reach out via WhatsApp at 9871592002 or Call Helpline 9540403071 (9 AM–7 PM) for immediate consultation.</p>
+          <p class="step-desc">Reach out via WhatsApp (24/7) or Call Helpline (Calling Hours: 9 AM – 7 PM) for immediate consultation.</p>
         </div>
 
         <div class="step-card">
@@ -2148,12 +2180,12 @@ function renderAboutView() {
             📍 <strong>Office Address:</strong> ${BRAND_INFO.officeAddress}
           </p>
           <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;">
-            <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700;">
-              ${getIconHtml('phone')} Call: 9540403071 (9 AM–7 PM)
-            </a>
-            <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa">
-              ${getIconHtml('whatsapp')} WhatsApp: 9871592002
-            </a>
+            <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-weight: 700;">
+              ${getIconHtml('phone')} Call: 9 AM – 7 PM
+            </button>
+            <button type="button" onclick="openWhatsappModal()" class="btn-primary-wa">
+              ${getIconHtml('whatsapp')} WhatsApp Us
+            </button>
           </div>
         </div>
       </div>
@@ -2163,8 +2195,6 @@ function renderAboutView() {
 
 // Render Contact View
 function renderContactView() {
-  const callingHoursActive = isCallingHoursActive();
-
   return `
     <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
       <div class="contact-hero-banner">
@@ -2180,14 +2210,14 @@ function renderContactView() {
         </p>
         
         <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
-          <a href="tel:+919540403071" class="btn-secondary" style="font-size: 1.05rem; padding: 0.9rem 1.8rem; font-weight: 700;">
+          <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-size: 1.05rem; padding: 0.9rem 1.8rem; font-weight: 700;">
             ${getIconHtml('phone')}
-            CALL: 9540403071 ${callingHoursActive ? '(Online Now)' : '(9 AM–7 PM)'}
-          </a>
-          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="font-size: 1.05rem; padding: 0.9rem 1.8rem;">
+            CALL US (9 AM – 7 PM)
+          </button>
+          <button type="button" onclick="openWhatsappModal()" class="btn-primary-wa" style="font-size: 1.05rem; padding: 0.9rem 1.8rem;">
             ${getIconHtml('whatsapp')}
-            WHATSAPP: 9871592002
-          </a>
+            WHATSAPP US
+          </button>
         </div>
       </div>
 
@@ -2199,13 +2229,13 @@ function renderContactView() {
           </div>
           <div>
             <h3 class="channel-title">WhatsApp Support</h3>
-            <p class="channel-handle">9871592002</p>
+            <p class="channel-handle">9871592002 / 9540403071</p>
             <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct chat for quick document checks & checklist queries (24/7).</p>
           </div>
-          <a href="${getWhatsappLink()}" target="_blank" rel="noopener noreferrer" class="btn-channel btn-channel-wa">
+          <button type="button" onclick="openWhatsappModal()" class="btn-channel btn-channel-wa" style="border: none; cursor: pointer; font-family: inherit;">
             ${getIconHtml('whatsapp')}
             Chat on WhatsApp
-          </a>
+          </button>
         </div>
 
         <!-- Phone / Calling Helpline Card -->
@@ -2215,13 +2245,13 @@ function renderContactView() {
           </div>
           <div>
             <h3 class="channel-title">Calling Helpline</h3>
-            <p class="channel-handle">9540403071</p>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct voice call (9:00 AM – 7:00 PM IST) for consultations.</p>
+            <p class="channel-handle">Calling Hours: 9 AM – 7 PM</p>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.25rem;">Direct voice call (Line 1: 9871592002 | Line 2: 9540403071).</p>
           </div>
-          <a href="tel:+919540403071" class="btn-secondary" style="justify-content: center; font-weight: 700;">
+          <button type="button" onclick="openCallModal()" class="btn-secondary" style="justify-content: center; font-weight: 700;">
             ${getIconHtml('phone')}
-            Call 9540403071
-          </a>
+            Call Helpline
+          </button>
         </div>
 
         <!-- Instagram Social Channel Card -->
@@ -2665,12 +2695,12 @@ window.handleLeadSubmit = async function(event, sourcePage = '/') {
               Thank you, <strong>${name}</strong>. Your enquiry for <strong>${service}</strong> has been received. DASTAVEZ MITRA will contact you shortly on <strong>${mobile}</strong>.
             </p>
             <div class="success-actions-grid">
-              <a href="tel:+919540403071" class="btn-card-call" style="padding: 0.85rem; justify-content: center; font-size: 0.95rem;">
-                ${getIconHtml('phone')} Call: 9540403071
-              </a>
-              <a href="${getWhatsappLink(`Hello DASTAVEZ MITRA, I have submitted an enquiry for ${service} (Name: ${name}).`)}" target="_blank" rel="noopener noreferrer" class="btn-card-wa" style="padding: 0.85rem; justify-content: center; font-size: 0.95rem;">
-                ${getIconHtml('whatsapp')} WhatsApp: 9871592002
-              </a>
+              <button type="button" onclick="openCallModal()" class="btn-card-call" style="padding: 0.85rem; justify-content: center; font-size: 0.95rem;">
+                ${getIconHtml('phone')} Call: 9 AM – 7 PM
+              </button>
+              <button type="button" onclick="openWhatsappModal('Hello DASTAVEZ MITRA, I have submitted an enquiry for ${escapeHtml(service)} (Name: ${escapeHtml(name)}).')" class="btn-card-wa" style="padding: 0.85rem; justify-content: center; font-size: 0.95rem;">
+                ${getIconHtml('whatsapp')} WhatsApp Us
+              </button>
             </div>
           </div>
         `;
@@ -2989,12 +3019,12 @@ window.openServiceDetail = function(slug) {
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; padding-top: 0.5rem;">
-      <a href="tel:+919540403071" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.85rem;">
-        ${getIconHtml('phone')} Call 9540403071
-      </a>
-      <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary-wa" style="justify-content: center; padding: 0.85rem;">
+      <button type="button" onclick="openCallModal()" class="btn-secondary" style="font-weight: 700; justify-content: center; padding: 0.85rem;">
+        ${getIconHtml('phone')} Call: 9 AM – 7 PM
+      </button>
+      <button type="button" onclick="openWhatsappModal('${escapeHtml(service.whatsappMessage)}')" class="btn-primary-wa" style="justify-content: center; padding: 0.85rem;">
         ${getIconHtml('whatsapp')} WhatsApp Us
-      </a>
+      </button>
     </div>
   `;
 
@@ -3006,7 +3036,9 @@ window.closeServiceModal = function() {
   const modalOverlay = document.getElementById('serviceModal');
   if (modalOverlay) {
     modalOverlay.classList.remove('open');
-    document.body.style.overflow = '';
+    if (!document.querySelector('.modal-overlay.open')) {
+      document.body.style.overflow = '';
+    }
   }
 };
 
@@ -3014,7 +3046,9 @@ window.closeLeadModal = function() {
   const modalOverlay = document.getElementById('leadModal');
   if (modalOverlay) {
     modalOverlay.classList.remove('open');
-    document.body.style.overflow = '';
+    if (!document.querySelector('.modal-overlay.open')) {
+      document.body.style.overflow = '';
+    }
   }
 };
 
@@ -3027,6 +3061,8 @@ function router() {
   window.toggleMobileMenu(false);
   window.closeServiceModal();
   window.closeLeadModal();
+  window.closeCallModal();
+  window.closeWhatsappModal();
 
   document.querySelectorAll('.nav-link, .drawer-links a').forEach(link => {
     const href = link.getAttribute('href');
@@ -3087,13 +3123,15 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', router);
   router();
 
-  ['serviceModal', 'leadModal'].forEach(id => {
+  ['serviceModal', 'leadModal', 'callModal', 'whatsappModal'].forEach(id => {
     const modal = document.getElementById(id);
     if (modal) {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
           window.closeServiceModal();
           window.closeLeadModal();
+          window.closeCallModal();
+          window.closeWhatsappModal();
         }
       });
     }
@@ -3103,6 +3141,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       window.closeServiceModal();
       window.closeLeadModal();
+      window.closeCallModal();
+      window.closeWhatsappModal();
       window.toggleMobileMenu(false);
       window.toggleFloatingAiWidget(false);
     }

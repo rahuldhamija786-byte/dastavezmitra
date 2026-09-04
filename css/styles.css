@@ -895,6 +895,10 @@ img {
   font-weight: 700;
   padding: 0.65rem 0.5rem;
   border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
   transition: all var(--transition-fast);
   white-space: nowrap;
   text-align: center;
@@ -916,6 +920,10 @@ img {
   font-weight: 700;
   padding: 0.65rem 0.5rem;
   border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
   transition: all var(--transition-fast);
   white-space: nowrap;
   text-align: center;
@@ -3227,4 +3235,98 @@ img {
     white-space: pre-wrap !important;
   }
 }
+
+/* ==========================================================================
+   Contact Choice Selection Modal (Call Us & WhatsApp Us)
+   ========================================================================== */
+.modal-contact-choice {
+  max-width: 440px;
+}
+
+.contact-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.contact-choice-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  background: #f8fafc;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+}
+
+.contact-choice-item:hover {
+  border-color: var(--color-accent);
+  background: #f0f9ff;
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-choice-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.contact-choice-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-choice-num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  letter-spacing: 0.5px;
+}
+
+.btn-choice-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.92rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-choice-call {
+  background: #0284c7;
+  color: white;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.btn-choice-call:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.btn-choice-wa {
+  background: var(--color-whatsapp);
+  color: white;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.btn-choice-wa:hover {
+  background: var(--color-whatsapp-hover);
+  transform: translateY(-1px);
+}
+
 
